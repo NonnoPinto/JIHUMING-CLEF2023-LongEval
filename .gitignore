@@ -3,6 +3,7 @@
 *.ko
 *.obj
 *.elf
+appPass.txt
 
 # Precompiled Headers
 *.gch
