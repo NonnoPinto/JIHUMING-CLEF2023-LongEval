@@ -1,8 +1,14 @@
 package index;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.StopFilterFactory;
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.en.PorterStemFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.*;
+import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -411,7 +417,21 @@ public class DirectoryIndexer {
      */
     public static void main(String[] args) throws Exception
     {
-        // TODO: Code a simple test program for this indexer. Help: hello-tipster project created by Nicola Ferro.
+        final int ramBuffer = 256;
+        final String docsPath = "/"; //TODO
+        final String indexPath = "experiment/index-stop-stem";
+
+        final String extension = "txt";
+        final int expectedDocs = 528155;
+        final String charsetName = "ISO-8859-1";
+
+        final Analyzer a = CustomAnalyzer.builder().withTokenizer(StandardTokenizerFactory.class).addTokenFilter(
+                LowerCaseFilterFactory.class).addTokenFilter(StopFilterFactory.class).addTokenFilter(PorterStemFilterFactory.class).build();
+
+        DirectoryIndexer i = new DirectoryIndexer(a, new BM25Similarity(), ramBuffer, indexPath, docsPath, extension,
+                charsetName, expectedDocs, LongevalParser.class);
+
+        i.index();
     }
 
 }
