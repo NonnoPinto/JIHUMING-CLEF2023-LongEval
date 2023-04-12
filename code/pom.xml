@@ -20,6 +20,41 @@
             <email>jesus.moncadaramirez@studenti.unipd.it</email>
             <organization>University of Padua, Italy</organization>
         </developer>
+
+        <developer>
+            <id>hc</id>
+            <name>Huimin Chen</name>
+            <email>huimin.chen@studenti.unipd.it</email>
+            <organization>University of Padua, Italy</organization>
+        </developer>
+
+        <developer>
+            <id>mc</id>
+            <name>Michele Canale</name>
+            <email>michele.canale.1@studenti.unipd.it</email>
+            <organization>University of Padua, Italy</organization>
+        </developer>
+
+        <developer>
+            <id>gz</id>
+            <name>Giovanni Zago</name>
+            <email>giovanni.zago.3@studenti.unipd.it</email>
+            <organization>University of Padua, Italy</organization>
+        </developer>
+
+        <developer>
+            <id>ns</id>
+            <name>Nicolò Santini</name>
+            <email>nicolo.santini.1@studenti.unipd.it</email>
+            <organization>University of Padua, Italy</organization>
+        </developer>
+
+        <developer>
+            <id>ia</id>
+            <name>Isil Atabek</name>
+            <email>isil.atabek@studenti.unipd.it</email>
+            <organization>University of Padua, Italy</organization>
+        </developer>
     </developers>
 
     <licenses>
