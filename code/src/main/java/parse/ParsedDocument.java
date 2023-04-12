@@ -7,7 +7,6 @@ import org.apache.lucene.document.Field;
 /**
  * Represents a parsed document to be indexed.
  *
- * @author Jesús Moncada Ramírez
  * @version 1.00
  * @since 1.00
  */

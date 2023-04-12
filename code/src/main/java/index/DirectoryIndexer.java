@@ -13,9 +13,10 @@ import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
+import parse.DocumentParser;
+import parse.LongevalParser;
 import parse.ParsedDocument;
 
-import javax.swing.text.html.parser.DocumentParser;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
@@ -26,7 +27,6 @@ import java.util.*;
  * Indexes documents processing a whole directory tree.
  * Some elements of the code are taken by the project hello-tipster by Nicola Ferro.
  *
- * @author Jesús Moncada Ramírez
  * @version 1.00
  * @since 1.00
  */
@@ -67,6 +67,14 @@ public class DirectoryIndexer {
 
     // The total number of indexed bytes
     private long bytesCount;
+
+    /*
+    TODO some ideas for the index:
+        - Create an abstract class and create non-abstract classes overriding index().
+        - For each document, save the English and French text into the same entry of the index.
+        - For each document, save separately the English and French text as two documents in the index. For example,
+        including a prefix to distinguish if it is a English or French document.
+     */
 
     /**
      * Creates a new indexer.
@@ -421,7 +429,7 @@ public class DirectoryIndexer {
         final String docsPath = "/"; //TODO
         final String indexPath = "experiment/index-stop-stem";
 
-        final String extension = "txt";
+        final String extension = "json";
         final int expectedDocs = 528155;
         final String charsetName = "ISO-8859-1";
 

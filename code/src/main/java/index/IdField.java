@@ -9,7 +9,6 @@ import java.io.Reader;
 /**
  * Represents a {@link Field} for containing the id/number of a document.
  *
- * @author Jesús Moncada Ramírez
  * @version 1.00
  * @since 1.00
  */
