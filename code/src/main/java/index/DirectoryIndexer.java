@@ -1,28 +1,24 @@
 package index;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
-import org.apache.lucene.analysis.core.StopFilterFactory;
-import org.apache.lucene.analysis.custom.CustomAnalyzer;
-import org.apache.lucene.analysis.en.PorterStemFilterFactory;
-import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.search.similarities.BM25Similarity;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.similarities.Similarity;
+import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.BytesRef;
+import parse.ParsedDocument;
 
 import javax.swing.text.html.parser.DocumentParser;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
 
 /**
  * Indexes documents processing a whole directory tree.
+ * Some elements of the code are taken by the project hello-tipster by Nicola Ferro.
  *
  * @author Jesús Moncada Ramírez
  * @version 1.00
@@ -38,6 +34,9 @@ public class DirectoryIndexer {
 
     // The class of the {@code DocumentParser} to be used.
     private final Class<? extends DocumentParser> dpCls;
+
+    // The directory where the index is stored.
+    private final Path indexDir;
 
     // The directory (and sub-directories) where documents are stored.
     private final Path docsDir;
@@ -82,67 +81,67 @@ public class DirectoryIndexer {
                             final String indexPath, final String docsPath, final String extension,
                             final String charsetName, final long expectedDocs,
                             final Class<? extends DocumentParser> dpCls) {
-
+        // dpCls
         if (dpCls == null) {
             throw new NullPointerException("Document parser class cannot be null.");
         }
-
         this.dpCls = dpCls;
 
+        // analyzer
         if (analyzer == null) {
             throw new NullPointerException("Analyzer cannot be null.");
         }
 
+        // similarity
         if (similarity == null) {
             throw new NullPointerException("Similarity cannot be null.");
         }
 
+        // ramBufferSizeMB
         if (ramBufferSizeMB <= 0) {
             throw new IllegalArgumentException("RAM buffer size cannot be less than or equal to zero.");
         }
 
-        final IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
-        iwc.setSimilarity(similarity);
-        iwc.setRAMBufferSizeMB(ramBufferSizeMB);
-        iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-        iwc.setCommitOnClose(true);
-        iwc.setUseCompoundFile(true);
+        final IndexWriterConfig indexConfig = new IndexWriterConfig(analyzer);
+        indexConfig.setSimilarity(similarity);
+        indexConfig.setRAMBufferSizeMB(ramBufferSizeMB);
+        indexConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+        indexConfig.setCommitOnClose(true);
+        indexConfig.setUseCompoundFile(true);
 
+        // indexPath
         if (indexPath == null) {
             throw new NullPointerException("Index path cannot be null.");
         }
-
         if (indexPath.isEmpty()) {
             throw new IllegalArgumentException("Index path cannot be empty.");
         }
 
         final Path indexDir = Paths.get(indexPath);
-
         // if the directory does not already exist, create it
         if (Files.notExists(indexDir)) {
             try {
                 Files.createDirectory(indexDir);
             } catch (Exception e) {
                 throw new IllegalArgumentException(
-                        String.format("Unable to create directory %s: %s.", indexDir.toAbsolutePath().toString(),
+                        String.format("Unable to create directory %s: %s.", indexDir.toAbsolutePath(),
                                 e.getMessage()), e);
             }
         }
-
         if (!Files.isWritable(indexDir)) {
             throw new IllegalArgumentException(
-                    String.format("Index directory %s cannot be written.", indexDir.toAbsolutePath().toString()));
+                    String.format("Index directory %s cannot be written.", indexDir.toAbsolutePath()));
         }
-
         if (!Files.isDirectory(indexDir)) {
             throw new IllegalArgumentException(String.format("%s expected to be a directory where to write the index.",
-                    indexDir.toAbsolutePath().toString()));
+                    indexDir.toAbsolutePath()));
         }
+        this.indexDir = indexDir;
 
+        // docsPath
         if (docsPath == null) {
             throw new NullPointerException("Documents path cannot be null.");
         }
-
         if (docsPath.isEmpty()) {
             throw new IllegalArgumentException("Documents path cannot be empty.");
         }
@@ -150,29 +149,27 @@ public class DirectoryIndexer {
         final Path docsDir = Paths.get(docsPath);
         if (!Files.isReadable(docsDir)) {
             throw new IllegalArgumentException(
-                    String.format("Documents directory %s cannot be read.", docsDir.toAbsolutePath().toString()));
+                    String.format("Documents directory %s cannot be read.", docsDir.toAbsolutePath()));
         }
-
         if (!Files.isDirectory(docsDir)) {
             throw new IllegalArgumentException(
-                    String.format("%s expected to be a directory of documents.", docsDir.toAbsolutePath().toString()));
+                    String.format("%s expected to be a directory of documents.", docsDir.toAbsolutePath()));
         }
-
         this.docsDir = docsDir;
 
+        // extension
         if (extension == null) {
             throw new NullPointerException("File extension cannot be null.");
         }
-
         if (extension.isEmpty()) {
             throw new IllegalArgumentException("File extension cannot be empty.");
         }
         this.extension = extension;
 
+        // charsetName
         if (charsetName == null) {
             throw new NullPointerException("Charset name cannot be null.");
         }
-
         if (charsetName.isEmpty()) {
             throw new IllegalArgumentException("Charset name cannot be empty.");
         }
@@ -184,27 +181,27 @@ public class DirectoryIndexer {
                     String.format("Unable to create the charset %s: %s.", charsetName, e.getMessage()), e);
         }
 
+        // expectedDocs
         if (expectedDocs <= 0) {
             throw new IllegalArgumentException(
                     "The expected number of documents to be indexed cannot be less than or equal to zero.");
         }
         this.expectedDocs = expectedDocs;
 
+        // Set all the counts to 0
         this.docsCount = 0;
-
         this.bytesCount = 0;
-
         this.filesCount = 0;
 
+        // Create the IndexWritter object
         try {
-            writer = new IndexWriter(FSDirectory.open(indexDir), iwc);
+            writer = new IndexWriter(FSDirectory.open(indexDir), indexConfig);
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format("Unable to create the index writer in directory %s: %s.",
-                    indexDir.toAbsolutePath().toString(), e.getMessage()), e);
+                    indexDir.toAbsolutePath(), e.getMessage()), e);
         }
 
         this.start = System.currentTimeMillis();
-
     }
 
     /**
@@ -219,13 +216,11 @@ public class DirectoryIndexer {
         Files.walkFileTree(docsDir, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-
                 if (file.getFileName().toString().endsWith(extension)) {
 
                     DocumentParser dp = DocumentParser.create(dpCls, Files.newBufferedReader(file, cs));
 
                     bytesCount += Files.size(file);
-
                     filesCount += 1;
 
                     Document doc = null;
@@ -236,10 +231,11 @@ public class DirectoryIndexer {
                         doc = new Document();
 
                         // add the document identifier
-                        doc.add(new StringField(ParsedDocument.FIELDS.ID, pd.getIdentifier(), Field.Store.YES)); //TODO
+                        //doc.add(new StringField(ParsedDocument.FIELDS.ID, pd.getIdentifier(), Field.Store.YES));
+                        doc.add(new IdField(pd.getIdentifier()));
 
                         // add the document body
-                        doc.add(new BodyField(pd.getBody())); //TODO
+                        doc.add(new BodyField(pd.getBody()));
 
                         writer.addDocument(doc);
 
@@ -270,6 +266,141 @@ public class DirectoryIndexer {
                 bytesCount / MBYTE, (System.currentTimeMillis() - start) / 1000);
 
         System.out.printf("#### Indexing complete ####%n");
+    }
+
+    /**
+     * Prints the inverted index to the console.
+     *
+     * @author Nicola Ferro
+     * @throws IOException if something goes wrong while accessing the index.
+     * //TODO: need to be tested
+     */
+    public void printInvertedIndex() throws IOException {
+
+        System.out.printf("%n------------- PRINTING THE INVERTED INDEX -------------%n");
+
+        // Open the directory in Lucene
+        final Directory dir = FSDirectory.open(indexDir);
+
+        // Open the index
+        final IndexReader index = DirectoryReader.open(dir);
+
+        // The inverted index. Keys are terms; values are lists of (docID, term frequency) pairs
+        final Map<String, List<Map.Entry<String, Long>>> invertedIndex = new TreeMap<>();
+
+        // Iterate over each document in the index
+        for (int i = 0, docs = index.numDocs(); i < docs; i++) {
+
+            // Read the document and get its identifier
+            String docID = index.document(i).get(ParsedDocument.FIELDS.ID);
+
+            // Get the vector of terms for that document
+            Terms terms = index.getTermVector(i, ParsedDocument.FIELDS.BODY);
+
+            // Get an iterator over the vector of terms
+            TermsEnum termsEnum = terms.iterator();
+
+            // Iterate until there are terms
+            for (BytesRef term = termsEnum.next(); term != null; term = termsEnum.next()) {
+
+                // Get the text string of the term
+                String termstr = term.utf8ToString();
+
+                // Get the total frequency of the term
+                long freq = termsEnum.totalTermFreq();
+
+                // Create a new (docID, term frequency) pair
+                Map.Entry<String, Long> entry = new AbstractMap.SimpleEntry<>(docID, freq);
+
+                // update the inverted index with the new entry
+                invertedIndex.compute(termstr, (k, v) -> {
+
+                    // if the term is not already in the index, create a new list for its pairs
+                    if (v==null) {
+                        v = new ArrayList<>();
+                    }
+
+                    // add the pair to the list
+                    v.add(entry);
+
+                    // return the updated list
+                    return v;
+                });
+            }
+        }
+
+        // close the index and the directory
+        index.close();
+        dir.close();
+
+        // Print the inverted index to the console
+        invertedIndex.forEach( (k, v) -> {
+
+            System.out.printf("+ %s ->", k);
+
+            v.forEach((e) -> {
+                System.out.printf(" %s:%d", e.getKey(), e.getValue());
+            });
+
+            System.out.printf("%n");
+
+        });
+
+        System.out.printf("-------------------------------------------------------%n");
+    }
+
+    /**
+     * Prints statistics about the vocaulary to the console.
+     *
+     * @throws IOException if something goes wrong while accessing the index.
+     * //TODO: need to be tested
+     */
+    public void printVocabularyStatistics() throws IOException {
+
+        System.out.printf("%n------------- PRINTING VOCABULARY STATISTICS -------------%n");
+
+        // Open the directory in Lucene
+        final Directory dir = FSDirectory.open(indexDir);
+
+        // Open the index - we need to get a LeafReader to be able to directly access terms
+        final LeafReader index = DirectoryReader.open(dir).leaves().get(0).reader();
+
+        // Total number of documents in the collection
+        System.out.printf("+ Total number of documents: %d%n", index.numDocs());
+
+        // Get the vocabulary of the index.
+        final Terms voc = index.terms(ParsedDocument.FIELDS.BODY);
+
+        // Total number of unique terms in the collection
+        System.out.printf("+ Total number of unique terms: %d%n", voc.size());
+
+        // Total number of terms in the collection
+        System.out.printf("+ Total number of terms: %d%n", voc.getSumTotalTermFreq());
+
+        // Get an iterator over the vector of terms in the vocabulary
+        final TermsEnum termsEnum = voc.iterator();
+
+        // Iterate until there are terms
+        System.out.printf("+ Vocabulary:%n");
+        System.out.printf("  - %-20s%-5s%-5s%n", "TERM", "DF", "FREQ");
+        for (BytesRef term = termsEnum.next(); term != null; term = termsEnum.next()) {
+
+            // Get the text string of the term
+            String termstr = term.utf8ToString();
+
+            // Get the document frequency (DF) of the term
+            int df = termsEnum.docFreq();
+
+            // Get the total frequency of the term
+            long freq = termsEnum.totalTermFreq();
+            System.out.printf("  - %-20s%-5d%-5d%n", termstr, df, freq);
+        }
+
+        // close the index and the directory
+        index.close();
+        dir.close();
+
+        System.out.printf("----------------------------------------------------------%n");
     }
 
     /**
