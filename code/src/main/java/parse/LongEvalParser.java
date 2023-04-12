@@ -1,11 +1,20 @@
 package parse;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
-public class LongevalParser extends DocumentParser {
+/**
+ * Implements a document parser for the LongEval corpus (JSON version).
+ *
+ * @version 1.00
+ * @since 1.00
+ */
+public class LongEvalParser extends DocumentParser {
 
     /**
      * The size of the buffer for the body element.
@@ -17,42 +26,47 @@ public class LongevalParser extends DocumentParser {
      */
     private ParsedDocument document = null;
 
+    /**
+     * The JSON reader to be used to parse document(s).
+     */
+    private JsonReader in_json;
 
     /**
-     * Creates a new Longeval Corpus document parser.
+     * Creates a new Longeval Corpus (JSON) document parser.
      *
      * @param in the reader to the document(s) to be parsed.
      * @throws NullPointerException     if {@code in} is {@code null}.
      * @throws IllegalArgumentException if any error occurs while creating the parser.
      */
-    public LongevalParser(final Reader in) {
+    public LongEvalParser(final Reader in) {
         super(new BufferedReader(in));
-    }
 
+        in_json = new JsonReader(new BufferedReader(in));
+        try {
+            in_json.beginArray();
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to parse the JSON file.", e);
+        }
+    }
 
     @Override
     public boolean hasNext() {
 
-        String id = null;
-        StringBuilder body = new StringBuilder(BODY_SIZE);
-
-
+        // JSON stream reading taken from https://www.amitph.com/java-parse-large-json-files/
         try {
-            //TODO: here the parsing of a document must be implemented.
-            // It must follow the rules specified by LongEval Train Collection Readme
-            id = null; //TODO
-            body = null; //TODO
-        } catch (Exception e)
-        {
-            throw new IllegalStateException("Unable to parse the document.", e);
-        }
-        /*catch (IOException e) {
-            throw new IllegalStateException("Unable to parse the document.", e);
-        }*/
+            if (in_json.hasNext()) {
+                JsonDocument jdoc = new Gson().fromJson(in_json, JsonDocument.class);
+                document = new ParsedDocument(jdoc.getId(), jdoc.getContents());
 
-        if (id != null) {
-            document = new ParsedDocument(id, body.length() > 0 ?
-                    body.toString().replaceAll("<[^>]*>", " ") : "#");
+                next = true;
+            } else {
+                in_json.endArray();
+                in_json.close();
+                next = false;
+            }
+        }
+        catch (IOException e) {
+            throw new IllegalStateException("Unable to parse the document.", e);
         }
 
         return next;
@@ -75,7 +89,7 @@ public class LongevalParser extends DocumentParser {
         Reader reader = new FileReader(
                 "file.txt"); //TODO
 
-        LongevalParser p = new LongevalParser(reader);
+        LongEvalParser p = new LongEvalParser(reader);
 
         for (ParsedDocument d : p) {
             System.out.printf("%n%n------------------------------------%n%s%n%n%n", d.toString());

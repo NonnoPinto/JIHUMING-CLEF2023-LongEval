@@ -14,7 +14,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
 import parse.DocumentParser;
-import parse.LongevalParser;
+import parse.LongEvalParser;
 import parse.ParsedDocument;
 
 import java.io.IOException;
@@ -437,7 +437,7 @@ public class DirectoryIndexer {
                 LowerCaseFilterFactory.class).addTokenFilter(StopFilterFactory.class).addTokenFilter(PorterStemFilterFactory.class).build();
 
         DirectoryIndexer i = new DirectoryIndexer(a, new BM25Similarity(), ramBuffer, indexPath, docsPath, extension,
-                charsetName, expectedDocs, LongevalParser.class);
+                charsetName, expectedDocs, LongEvalParser.class);
 
         i.index();
     }
