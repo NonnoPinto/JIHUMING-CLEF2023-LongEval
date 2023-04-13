@@ -9,6 +9,6 @@ selected documents from the Qwant index.
 
 The folder content: 
 * `DocumentParser`: DocumentParser parse the document .
-* `JsonDocument`: this folder contains the runs produced by the developed system.
-* `LongEvalParser`: this folder contains the performance scores of the runs.
+* `JsonDocument`: create a class for json doc.
+* `LongEvalParser`: counts the document and print out.
 * `ParsedDocument`:  document parsed has FIELDS including ID, ENGLISH_BODY, and FRENCH_BODY .
