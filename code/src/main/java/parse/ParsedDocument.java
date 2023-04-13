@@ -50,6 +50,8 @@ public class ParsedDocument {
 
     //TODO: we could use DocT5Query expansion
 
+
+
     /**
      * Creates a new parsed document
      *
@@ -80,6 +82,9 @@ public class ParsedDocument {
 
         this.body = body;
     }
+
+
+
 
     /**
      * Returns the unique document identifier.

@@ -15,11 +15,8 @@ The homeworks are carried out by groups of students and consists in participatin
 
 The repository is organised as follows:
 
-* `code`: this folder contains the source code of the developed system.
-* `runs`: this folder contains the runs produced by the developed system.
-* `results`: this folder contains the performance scores of the runs.
-* `homework-1`: this folder contains the report describing the techniques applied and insights gained.
-* `homework-2`: this folder contains the final paper submitted to CLEF.
+
+
 * `slides`: this folder contains the slides used for presenting the conducted project.
 
 ### License ###
