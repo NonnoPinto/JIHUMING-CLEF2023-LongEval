@@ -75,7 +75,7 @@ public abstract class DocumentParser
 
     /**
      * Creates a new {@code DocumentParser}.
-     * <p>
+     *
      * It assumes the {@code DocumentParser} has a single-parameter constructor which takes a {@code Reader} as input.
      *
      * @param cls the class of the document parser to be instantiated.
@@ -106,7 +106,7 @@ public abstract class DocumentParser
 
     /**
      * Creates a new {@code DocumentParser}.
-     * <p>
+     *
      * It assumes the {@code DocumentParser} has a single-parameter constructor which takes a {@code Reader} as input.
      *
      * @param cls the fully qualified name of class of the document parser to be instantiated.

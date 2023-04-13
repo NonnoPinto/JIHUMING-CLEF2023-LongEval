@@ -30,6 +30,11 @@ import java.util.*;
  * @version 1.00
  * @since 1.00
  */
+/*
+    TODO some ideas for the index:
+        - Create an abstract class and create non-abstract classes overriding index().
+        - For each document, save the English and French text into the same entry of the index.
+ */
 public class DirectoryIndexer {
 
     // One megabyte
@@ -67,14 +72,6 @@ public class DirectoryIndexer {
 
     // The total number of indexed bytes
     private long bytesCount;
-
-    /*
-    TODO some ideas for the index:
-        - Create an abstract class and create non-abstract classes overriding index().
-        - For each document, save the English and French text into the same entry of the index.
-        - For each document, save separately the English and French text as two documents in the index. For example,
-        including a prefix to distinguish if it is a English or French document.
-     */
 
     /**
      * Creates a new indexer.

@@ -27,7 +27,7 @@ public class LongEvalParser extends DocumentParser {
     private ParsedDocument document = null;
 
     /**
-     * The JSON reader to be used to parse document(s).
+     * The JSON reader to be used to parse document(s). This JsonReader will be used instead of the Reader in.
      */
     private JsonReader in_json;
 
@@ -41,11 +41,11 @@ public class LongEvalParser extends DocumentParser {
     public LongEvalParser(final Reader in) {
         super(new BufferedReader(in));
 
-        in_json = new JsonReader(new BufferedReader(in));
+        in_json = new JsonReader(this.in);
         try {
             in_json.beginArray();
         } catch (IOException e) {
-            throw new IllegalStateException("Unable to parse the JSON file.", e);
+            throw new IllegalStateException("Unable to parse the JSON file: Error beginning array", e);
         }
     }
 
@@ -86,13 +86,19 @@ public class LongEvalParser extends DocumentParser {
      */
     public static void main(String[] args) throws Exception {
 
+        final String FILE_NAME = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
         Reader reader = new FileReader(
-                "file.txt"); //TODO
+                FILE_NAME);
 
         LongEvalParser p = new LongEvalParser(reader);
 
+        System.out.printf("Starting document parsing at %s %n", FILE_NAME);
+        int count = 0;
         for (ParsedDocument d : p) {
-            System.out.printf("%n%n------------------------------------%n%s%n%n%n", d.toString());
+            //System.out.printf("%n%n------------------------------------%n%s%n%n%n", d.toString());
+            System.out.printf("Parsed document with id=%s %n", d.getIdentifier());
+            count++;
         }
+        System.out.printf("Number of parsed documents: %d", count);
     }
 }
