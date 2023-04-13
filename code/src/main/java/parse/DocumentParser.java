@@ -14,7 +14,8 @@ import java.util.NoSuchElementException;
  */
 public abstract class DocumentParser
         implements Iterator<ParsedDocument>, Iterable<ParsedDocument> {
-
+    //Iterable - Represents a collection that can be iterated over using a for-each loop
+    //Iterator - Represents an interface that can be used to iterate over a collection
     /**
      * Indicates whether there is another {@code ParsedDocument} to return.
      */
@@ -93,8 +94,6 @@ public abstract class DocumentParser
         if (in == null) {
             throw new NullPointerException("Reader cannot be null.");
         }
-
-
         try {
             return cls.getConstructor(Reader.class).newInstance(in);
         } catch (Exception e) {
