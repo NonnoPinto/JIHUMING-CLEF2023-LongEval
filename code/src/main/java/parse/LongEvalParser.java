@@ -86,7 +86,7 @@ public class LongEvalParser extends DocumentParser {
      */
     public static void main(String[] args) throws Exception {
 
-        final String FILE_NAME = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME = "G:\\我的云端硬盘\\06-Compuer Engineering\\1-2-SEARCH ENGINES\\longeval-train-v2\\longeval-train-v2\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
         Reader reader = new FileReader(
                 FILE_NAME);
 
