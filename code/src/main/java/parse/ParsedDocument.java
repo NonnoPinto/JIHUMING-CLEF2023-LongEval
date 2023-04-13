@@ -27,9 +27,14 @@ public class ParsedDocument {
         public static final String ID = "id";
 
         /**
-         * The document identifier
+         * The document English body
          */
-        public static final String BODY = "body";
+        public static final String ENGLISH_BODY = "english_body";
+
+        /**
+         * The document French body
+         */
+        public static final String FRENCH_BODY = "french_body";
     }
 
 

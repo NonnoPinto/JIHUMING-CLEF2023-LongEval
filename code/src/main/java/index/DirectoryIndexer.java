@@ -246,7 +246,7 @@ public class DirectoryIndexer {
                         doc.add(new IdField(pd.getIdentifier()));
 
                         // add the document body
-                        doc.add(new BodyField(pd.getBody()));
+                        doc.add(new EnglishBodyField(pd.getBody()));
 
                         writer.addDocument(doc);
 
@@ -280,93 +280,12 @@ public class DirectoryIndexer {
     }
 
     /**
-     * Prints the inverted index to the console.
-     *
-     * @author Nicola Ferro
-     * @throws IOException if something goes wrong while accessing the index.
-     * //TODO: need to be tested
-     */
-    public void printInvertedIndex() throws IOException {
-
-        System.out.printf("%n------------- PRINTING THE INVERTED INDEX -------------%n");
-
-        // Open the directory in Lucene
-        final Directory dir = FSDirectory.open(indexDir);
-
-        // Open the index
-        final IndexReader index = DirectoryReader.open(dir);
-
-        // The inverted index. Keys are terms; values are lists of (docID, term frequency) pairs
-        final Map<String, List<Map.Entry<String, Long>>> invertedIndex = new TreeMap<>();
-
-        // Iterate over each document in the index
-        for (int i = 0, docs = index.numDocs(); i < docs; i++) {
-
-            // Read the document and get its identifier
-            String docID = index.document(i).get(ParsedDocument.FIELDS.ID);
-
-            // Get the vector of terms for that document
-            Terms terms = index.getTermVector(i, ParsedDocument.FIELDS.BODY);
-
-            // Get an iterator over the vector of terms
-            TermsEnum termsEnum = terms.iterator();
-
-            // Iterate until there are terms
-            for (BytesRef term = termsEnum.next(); term != null; term = termsEnum.next()) {
-
-                // Get the text string of the term
-                String termstr = term.utf8ToString();
-
-                // Get the total frequency of the term
-                long freq = termsEnum.totalTermFreq();
-
-                // Create a new (docID, term frequency) pair
-                Map.Entry<String, Long> entry = new AbstractMap.SimpleEntry<>(docID, freq);
-
-                // update the inverted index with the new entry
-                invertedIndex.compute(termstr, (k, v) -> {
-
-                    // if the term is not already in the index, create a new list for its pairs
-                    if (v==null) {
-                        v = new ArrayList<>();
-                    }
-
-                    // add the pair to the list
-                    v.add(entry);
-
-                    // return the updated list
-                    return v;
-                });
-            }
-        }
-
-        // close the index and the directory
-        index.close();
-        dir.close();
-
-        // Print the inverted index to the console
-        invertedIndex.forEach( (k, v) -> {
-
-            System.out.printf("+ %s ->", k);
-
-            v.forEach((e) -> {
-                System.out.printf(" %s:%d", e.getKey(), e.getValue());
-            });
-
-            System.out.printf("%n");
-
-        });
-
-        System.out.printf("-------------------------------------------------------%n");
-    }
-
-    /**
      * Prints statistics about the vocaulary to the console.
      *
+     * @param maxVocabularyWords maximum number of words to be printed in the vocabulary part of the statistics
      * @throws IOException if something goes wrong while accessing the index.
-     * //TODO: need to be tested
      */
-    public void printVocabularyStatistics() throws IOException {
+    public void printVocabularyStatistics(int maxVocabularyWords) throws IOException {
 
         System.out.printf("%n------------- PRINTING VOCABULARY STATISTICS -------------%n");
 
@@ -380,7 +299,7 @@ public class DirectoryIndexer {
         System.out.printf("+ Total number of documents: %d%n", index.numDocs());
 
         // Get the vocabulary of the index.
-        final Terms voc = index.terms(ParsedDocument.FIELDS.BODY);
+        final Terms voc = index.terms(ParsedDocument.FIELDS.ENGLISH_BODY);
 
         // Total number of unique terms in the collection
         System.out.printf("+ Total number of unique terms: %d%n", voc.size());
@@ -392,10 +311,11 @@ public class DirectoryIndexer {
         final TermsEnum termsEnum = voc.iterator();
 
         // Iterate until there are terms
-        System.out.printf("+ Vocabulary:%n");
+        System.out.printf("+ Vocabulary (printing only %d):%n", maxVocabularyWords);
         System.out.printf("  - %-20s%-5s%-5s%n", "TERM", "DF", "FREQ");
+        int count = 0;
         for (BytesRef term = termsEnum.next(); term != null; term = termsEnum.next()) {
-
+            count++;
             // Get the text string of the term
             String termstr = term.utf8ToString();
 
@@ -404,7 +324,10 @@ public class DirectoryIndexer {
 
             // Get the total frequency of the term
             long freq = termsEnum.totalTermFreq();
-            System.out.printf("  - %-20s%-5d%-5d%n", termstr, df, freq);
+            System.out.printf("  - %-30s%-5d%-5d%n", termstr, df, freq);
+
+            if (count == maxVocabularyWords)
+                break;
         }
 
         // close the index and the directory
@@ -423,11 +346,11 @@ public class DirectoryIndexer {
     public static void main(String[] args) throws Exception
     {
         final int ramBuffer = 256;
-        final String docsPath = "/"; //TODO
-        final String indexPath = "experiment/index-stop-stem";
+        final String docsPath = "C:\\longeval_train\\app_test\\dir";
+        final String indexPath = "index/index-stop-stem";
 
         final String extension = "json";
-        final int expectedDocs = 528155;
+        final int expectedDocs = 17408;
         final String charsetName = "ISO-8859-1";
 
         final Analyzer a = CustomAnalyzer.builder().withTokenizer(StandardTokenizerFactory.class).addTokenFilter(
@@ -437,6 +360,8 @@ public class DirectoryIndexer {
                 charsetName, expectedDocs, LongEvalParser.class);
 
         i.index();
+
+        i.printVocabularyStatistics(50);
     }
 
 }
