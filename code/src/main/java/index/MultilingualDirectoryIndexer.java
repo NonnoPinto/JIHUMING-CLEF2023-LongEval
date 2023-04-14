@@ -1,12 +1,19 @@
 package index;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.StopFilterFactory;
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.en.PorterStemFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.FSDirectory;
 import parse.DocumentParser;
+import parse.LongEvalParser;
 import parse.ParsedDocument;
 
 import java.io.File;
@@ -308,7 +315,7 @@ public class MultilingualDirectoryIndexer {
                 }
             }
         }
-        
+
         writer.commit();
         writer.close();
 
@@ -321,4 +328,36 @@ public class MultilingualDirectoryIndexer {
 
         System.out.printf("#### Indexing complete ####%n");
     }
+
+    // TODO: adapt method printVocabularyStatistics and include to this class (testing purposes)
+
+    /**
+     * Main method of the class. Just for testing purposes.
+     *
+     * @param args command line arguments.
+     * @throws Exception if something goes wrong while indexing.
+     */
+    public static void main(String[] args) throws Exception
+    {
+        final int ramBuffer = 256;
+        final String enDocsPath = "C:\\longeval_train\\app_test\\en";
+        final String frDocsPath = "C:\\longeval_train\\app_test\\fr";
+        final String indexPath = "index/index-stop-stem";
+
+        final String extension = "json";
+        final int expectedDocs = 17408;
+        final String charsetName = "ISO-8859-1";
+
+        final Analyzer a = CustomAnalyzer.builder().withTokenizer(StandardTokenizerFactory.class).addTokenFilter(
+                LowerCaseFilterFactory.class).addTokenFilter(StopFilterFactory.class).addTokenFilter(PorterStemFilterFactory.class).build();
+
+        MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(a, new BM25Similarity(), ramBuffer, indexPath, enDocsPath, frDocsPath, extension,
+                charsetName, expectedDocs, LongEvalParser.class);
+
+        i.index();
+
+        //i.printVocabularyStatistics(50);
+    }
+
+    // TODO: test main, if working mark DirectoryIndexer as DEPRECATED
 }
