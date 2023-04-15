@@ -9,33 +9,31 @@ import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.*;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
-import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.BytesRef;
 import parse.DocumentParser;
 import parse.LongEvalParser;
 import parse.ParsedDocument;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
- * Indexes documents processing a whole directory tree.
- * Some elements of the code are taken by the project hello-tipster by Nicola Ferro.
+ * Indexes two versions of the same documents (in English and in French) processing a whole directory tree.
+ * It will create documents with their ID (field), their ENGLISH BODY (field) and their FRENCH BODY (field).
  *
- * @deprecated this is a DEPRECATED directory indexer in our project. In a first version of the project, it was used
- * to test a simple indexing over the documents, but now it has been substituted by
- * {@link MultilingualDirectoryIndexer()}.
  * @version 1.00
  * @since 1.00
  */
-@Deprecated
-public class DirectoryIndexer {
+public class MultilingualDirectoryIndexer {
 
     // One megabyte
     private static final int MBYTE = 1024 * 1024;
@@ -49,8 +47,11 @@ public class DirectoryIndexer {
     // The directory where the index is stored.
     private final Path indexDir;
 
-    // The directory (and sub-directories) where documents are stored.
-    private final Path docsDir;
+    // The directory (and sub-directories) where English documents are stored.
+    private final Path enDocsDir;
+
+    // The directory (and sub-directories) where French documents are stored.
+    private final Path frDocsDir;
 
     // The extension of the files to be indexed.
     private final String extension;
@@ -58,7 +59,10 @@ public class DirectoryIndexer {
     // The charset used for encoding documents.
     private final Charset cs;
 
-    // The total number of documents expected to be indexed.
+    /**
+     * The total number of documents expected to be indexed. For every document there will be two versions (English and
+     * French), the count is 1, not 2.
+     */
     private final long expectedDocs;
 
     // The start instant of the indexing.
@@ -80,7 +84,8 @@ public class DirectoryIndexer {
      * @param similarity      the {@code Similarity} to be used.
      * @param ramBufferSizeMB the size in megabytes of the RAM buffer for indexing documents.
      * @param indexPath       the directory where to store the index.
-     * @param docsPath        the directory from which documents have to be read.
+     * @param enDocsPath      the directory from which English documents have to be read.
+     * @param frDocsPath      the directory from which French documents have to be read.
      * @param extension       the extension of the files to be indexed.
      * @param charsetName     the name of the charset used for encoding documents.
      * @param expectedDocs    the total number of documents expected to be indexed
@@ -88,10 +93,10 @@ public class DirectoryIndexer {
      * @throws NullPointerException     if any of the parameters is {@code null}.
      * @throws IllegalArgumentException if any of the parameters assumes invalid values.
      */
-    public DirectoryIndexer(final Analyzer analyzer, final Similarity similarity, final int ramBufferSizeMB,
-                            final String indexPath, final String docsPath, final String extension,
-                            final String charsetName, final long expectedDocs,
-                            final Class<? extends DocumentParser> dpCls) {
+    public MultilingualDirectoryIndexer(final Analyzer analyzer, final Similarity similarity, final int ramBufferSizeMB,
+                                        final String indexPath, final String enDocsPath, final String frDocsPath,
+                                        final String extension, final String charsetName, final long expectedDocs,
+                                        final Class<? extends DocumentParser> dpCls) {
         // dpCls
         if (dpCls == null) {
             throw new NullPointerException("Document parser class cannot be null.");
@@ -149,24 +154,41 @@ public class DirectoryIndexer {
         }
         this.indexDir = indexDir;
 
-        // docsPath
-        if (docsPath == null) {
-            throw new NullPointerException("Documents path cannot be null.");
+        // enDocsPath
+        if (enDocsPath == null) {
+            throw new NullPointerException("English documents path cannot be null.");
         }
-        if (docsPath.isEmpty()) {
-            throw new IllegalArgumentException("Documents path cannot be empty.");
+        if (enDocsPath.isEmpty()) {
+            throw new IllegalArgumentException("English documents path cannot be empty.");
         }
+        final Path enDocsDir = Paths.get(enDocsPath);
+        if (!Files.isReadable(enDocsDir)) {
+            throw new IllegalArgumentException(
+                    String.format("English documents directory %s cannot be read.", enDocsDir.toAbsolutePath()));
+        }
+        if (!Files.isDirectory(enDocsDir)) {
+            throw new IllegalArgumentException(
+                    String.format("%s expected to be a directory of documents.", enDocsDir.toAbsolutePath()));
+        }
+        this.enDocsDir = enDocsDir;
 
-        final Path docsDir = Paths.get(docsPath);
-        if (!Files.isReadable(docsDir)) {
-            throw new IllegalArgumentException(
-                    String.format("Documents directory %s cannot be read.", docsDir.toAbsolutePath()));
+        // frDocsPath
+        if (frDocsPath == null) {
+            throw new NullPointerException("French documents path cannot be null.");
         }
-        if (!Files.isDirectory(docsDir)) {
-            throw new IllegalArgumentException(
-                    String.format("%s expected to be a directory of documents.", docsDir.toAbsolutePath()));
+        if (frDocsPath.isEmpty()) {
+            throw new IllegalArgumentException("French documents path cannot be empty.");
         }
-        this.docsDir = docsDir;
+        final Path frDocsDir = Paths.get(frDocsPath);
+        if (!Files.isReadable(frDocsDir)) {
+            throw new IllegalArgumentException(
+                    String.format("French documents directory %s cannot be read.", frDocsDir.toAbsolutePath()));
+        }
+        if (!Files.isDirectory(frDocsDir)) {
+            throw new IllegalArgumentException(
+                    String.format("%s expected to be a directory of documents.", frDocsDir.toAbsolutePath()));
+        }
+        this.frDocsDir = frDocsDir;
 
         // extension
         if (extension == null) {
@@ -224,116 +246,92 @@ public class DirectoryIndexer {
 
         System.out.printf("%n#### Start indexing ####%n");
 
-        Files.walkFileTree(docsDir, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                if (file.getFileName().toString().endsWith(extension)) {
+        // Create an iterator to access every file in the English directory (enFileIterator)
+        File[] enFiles = enDocsDir.toFile().listFiles();
+        Iterator<File> enFileIterator;
+        if (enFiles != null) {
+            enFileIterator = Arrays.stream(enFiles).iterator();
+        } else {
+            throw new RuntimeException("List of files in English documents directory is null");
+        }
 
-                    DocumentParser dp = DocumentParser.create(dpCls, Files.newBufferedReader(file, cs));
+        // Create an iterator to access every file in the French directory (frFileIterator)
+        File[] frFiles = frDocsDir.toFile().listFiles();
+        Iterator<File> frFileIterator;
+        if (frFiles != null) {
+            frFileIterator = Arrays.stream(frFiles).iterator();
+        } else {
+            throw new RuntimeException("List of files in French documents directory is null");
+        }
 
-                    bytesCount += Files.size(file);
-                    filesCount += 1;
+        while (enFileIterator.hasNext() && frFileIterator.hasNext())
+        {
+            File enFile = enFileIterator.next();
+            File frFile = frFileIterator.next();
 
-                    Document doc = null;
+            bytesCount += Files.size(enFile.toPath()) + Files.size(frFile.toPath());
+            filesCount += 2;
 
-                    for (ParsedDocument pd : dp) {
+            // Create a document parser for English documents
+            DocumentParser enDp = DocumentParser.create(dpCls, Files.newBufferedReader(enFile.toPath(), cs));
 
-                        doc = new Document();
+            // Create a document parser for French documents
+            DocumentParser frDp = DocumentParser.create(dpCls, Files.newBufferedReader(frFile.toPath(), cs));
 
-                        // add the document identifier
-                        doc.add(new StringField(ParsedDocument.FIELDS.ID, pd.getIdentifier(), Field.Store.YES));
+            // Create an iterator for the English documents
+            Iterator<ParsedDocument> enParDocIterator = enDp.iterator();
 
-                        // add the document body
-                        doc.add(new EnglishBodyField(pd.getBody()));
+            // Create an iterator for the French documents
+            Iterator<ParsedDocument> frParDocIterator = frDp.iterator();
 
-                        writer.addDocument(doc);
+            while (enParDocIterator.hasNext() && frParDocIterator.hasNext())
+            {
+                ParsedDocument enParDoc = enParDocIterator.next();
+                ParsedDocument frParDoc = frParDocIterator.next();
 
-                        docsCount++;
-
-                        // print progress every 10000 indexed documents
-                        if (docsCount % 10000 == 0) {
-                            System.out.printf("%d document(s) (%d files, %d Mbytes) indexed in %d seconds.%n",
-                                    docsCount, filesCount, bytesCount / MBYTE,
-                                    (System.currentTimeMillis() - start) / 1000);
-                        }
-
-                    }
-
+                if (!enParDoc.getIdentifier().equals(frParDoc.getIdentifier()))
+                {
+                    throw new RuntimeException("English and French versions of a document don't have the same ID");
                 }
-                return FileVisitResult.CONTINUE;
+
+                Document doc = new Document();
+
+                // add the document identifier
+                doc.add(new StringField(ParsedDocument.FIELDS.ID, enParDoc.getIdentifier(), Field.Store.YES));
+
+                // add the English document body
+                doc.add(new EnglishBodyField(enParDoc.getBody()));
+
+                // add the French document body
+                doc.add(new FrenchBodyField(frParDoc.getBody()));
+
+                writer.addDocument(doc);
+
+                docsCount++;
+
+                // print progress every 10000 indexed documents
+                if (docsCount % 10000 == 0) {
+                    System.out.printf("%d document(s) in both languages (%d files, %d Mbytes) indexed in %d seconds.%n",
+                            docsCount, filesCount, bytesCount / MBYTE,
+                            (System.currentTimeMillis() - start) / 1000);
+                }
             }
-        });
+        }
 
         writer.commit();
         writer.close();
 
         if (docsCount != expectedDocs) {
-            System.out.printf("Expected to index %d documents; %d indexed instead.%n", expectedDocs, docsCount);
+            System.out.printf("Expected to index %d documents (in both languages); %d indexed instead.%n", expectedDocs, docsCount);
         }
 
-        System.out.printf("%d document(s) (%d files, %d Mbytes) indexed in %d seconds.%n", docsCount, filesCount,
+        System.out.printf("%d document(s) in both languages (%d files, %d Mbytes) indexed in %d seconds.%n", docsCount, filesCount,
                 bytesCount / MBYTE, (System.currentTimeMillis() - start) / 1000);
 
         System.out.printf("#### Indexing complete ####%n");
     }
 
-    /**
-     * Prints statistics about the vocaulary to the console.
-     *
-     * @param maxVocabularyWords maximum number of words to be printed in the vocabulary part of the statistics
-     * @throws IOException if something goes wrong while accessing the index.
-     */
-    public void printVocabularyStatistics(int maxVocabularyWords) throws IOException {
-
-        System.out.printf("%n------------- PRINTING VOCABULARY STATISTICS -------------%n");
-
-        // Open the directory in Lucene
-        final Directory dir = FSDirectory.open(indexDir);
-
-        // Open the index - we need to get a LeafReader to be able to directly access terms
-        final LeafReader index = DirectoryReader.open(dir).leaves().get(0).reader();
-
-        // Total number of documents in the collection
-        System.out.printf("+ Total number of documents: %d%n", index.numDocs());
-
-        // Get the vocabulary of the index.
-        final Terms voc = index.terms(ParsedDocument.FIELDS.ENGLISH_BODY);
-
-        // Total number of unique terms in the collection
-        System.out.printf("+ Total number of unique terms: %d%n", voc.size());
-
-        // Total number of terms in the collection
-        System.out.printf("+ Total number of terms: %d%n", voc.getSumTotalTermFreq());
-
-        // Get an iterator over the vector of terms in the vocabulary
-        final TermsEnum termsEnum = voc.iterator();
-
-        // Iterate until there are terms
-        System.out.printf("+ Vocabulary (printing only %d):%n", maxVocabularyWords);
-        System.out.printf("  - %-20s%-5s%-5s%n", "TERM", "DF", "FREQ");
-        int count = 0;
-        for (BytesRef term = termsEnum.next(); term != null; term = termsEnum.next()) {
-            count++;
-            // Get the text string of the term
-            String termstr = term.utf8ToString();
-
-            // Get the document frequency (DF) of the term
-            int df = termsEnum.docFreq();
-
-            // Get the total frequency of the term
-            long freq = termsEnum.totalTermFreq();
-            System.out.printf("  - %-30s%-5d%-5d%n", termstr, df, freq);
-
-            if (count == maxVocabularyWords)
-                break;
-        }
-
-        // close the index and the directory
-        index.close();
-        dir.close();
-
-        System.out.printf("----------------------------------------------------------%n");
-    }
+    // TODO: adapt method printVocabularyStatistics and include to this class (testing purposes)
 
     /**
      * Main method of the class. Just for testing purposes.
@@ -344,22 +342,22 @@ public class DirectoryIndexer {
     public static void main(String[] args) throws Exception
     {
         final int ramBuffer = 256;
-        final String docsPath = "C:\\longeval_train\\app_test\\DirectoryIndexer";
-        final String indexPath = "index/index-stop-stem";
+        final String enDocsPath = "C:\\longeval_train\\app_test\\MultilingualDirectoryIndexer\\en";
+        final String frDocsPath = "C:\\longeval_train\\app_test\\MultilingualDirectoryIndexer\\fr";
+        final String indexPath = "index/multilingual-index-stop-stem";
 
         final String extension = "json";
-        final int expectedDocs = 17408;
+        final int expectedDocs = 33079;
         final String charsetName = "ISO-8859-1";
 
         final Analyzer a = CustomAnalyzer.builder().withTokenizer(StandardTokenizerFactory.class).addTokenFilter(
                 LowerCaseFilterFactory.class).addTokenFilter(StopFilterFactory.class).addTokenFilter(PorterStemFilterFactory.class).build();
 
-        DirectoryIndexer i = new DirectoryIndexer(a, new BM25Similarity(), ramBuffer, indexPath, docsPath, extension,
+        MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(a, new BM25Similarity(), ramBuffer, indexPath, enDocsPath, frDocsPath, extension,
                 charsetName, expectedDocs, LongEvalParser.class);
 
         i.index();
 
-        i.printVocabularyStatistics(50);
+        //i.printVocabularyStatistics(50);
     }
-
 }
