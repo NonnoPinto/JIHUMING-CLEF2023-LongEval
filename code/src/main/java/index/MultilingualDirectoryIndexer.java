@@ -77,6 +77,10 @@ public class MultilingualDirectoryIndexer {
     // The total number of indexed bytes
     private long bytesCount;
 
+    /*
+       TODO: we may need to receive two analyzers, one for English and one for French.
+        INFO: https://www.baeldung.com/lucene-analyzers
+     */
     /**
      * Creates a new indexer.
      *
