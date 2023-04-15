@@ -1,8 +1,13 @@
 package analyze;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.LowerCaseFilter;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 import java.io.IOException;
+import java.io.Reader;
 
 /**
  * Lucene custom analyzer created for the English version of the documents.
@@ -21,7 +26,22 @@ public class EnglishAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
-        return null;
+        final Tokenizer source = new StandardTokenizer();
+
+        TokenStream tokens = new LowerCaseFilter(source);
+        // TODO: decide how are we going to process our English texts
+
+        return new TokenStreamComponents(source, tokens);
+    }
+
+    @Override
+    protected Reader initReader(String fieldName, Reader reader) {
+        return super.initReader(fieldName, reader);
+    }
+
+    @Override
+    protected TokenStream normalize(String fieldName, TokenStream in) {
+        return new LowerCaseFilter(in);
     }
 
     /**
@@ -34,11 +54,18 @@ public class EnglishAnalyzer extends Analyzer
     public static void main(String[] args) throws IOException {
 
         // TODO: complete test main function
-        // text to analyze
-        //final String text = "I now live in Rome where I met my wife Alice back in 2010 during a beautiful afternoon
-        // . " + "Occasionally, I fly to New York to visit the United Nations where I would like to work. The last " + "time I was there in March 2019, the flight was very inconvenient, leaving at 4:00 am, and expensive," + " over 1,500 dollars.";
-        final String text = "For the first time, in its 800 academic year, University of Padua has a female " +
-                "Rector.";
+        // text to analyze, taken from: https://www.opensourceshakespeare.org/views/plays/play_view.php?WorkID=hamlet&Act=5&Scene=2&Scope=scene
+
+        final String text = "An earnest conjuration from the King,\n" +
+                "As England was his faithful tributary,\n" +
+                "As love between them like the palm might flourish,\n" +
+                "As peace should still her wheaten garland wear\n" +
+                "And stand a comma 'tween their amities,\n" +
+                "And many such-like as's of great charge,\n" +
+                "That, on the view and knowing of these contents,\n" +
+                "Without debatement further, more or less,\n" +
+                "He should the bearers put to sudden death,\n" +
+                "Not shriving time allow'd. ";
 
         // use the analyzer to process the text and print diagnostic information about each token
         //consumeTokenStream(new EnglishAnalyzer(), text);

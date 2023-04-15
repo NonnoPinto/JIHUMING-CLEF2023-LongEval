@@ -5,15 +5,18 @@ import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.StopFilterFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.en.PorterStemFilterFactory;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
+import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.BytesRef;
 import parse.DocumentParser;
 import parse.LongEvalParser;
 import parse.ParsedDocument;
@@ -23,8 +26,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Indexes two versions of the same documents (in English and in French) processing a whole directory tree.
@@ -84,7 +86,8 @@ public class MultilingualDirectoryIndexer {
     /**
      * Creates a new indexer.
      *
-     * @param analyzer        the {@code Analyzer} to be used.
+     * @param enAnalyzer      the {@code Analyzer} to be used for the English documents.
+     * @param frAnalyzer      the {@code Analyzer} to be used for the French documents.
      * @param similarity      the {@code Similarity} to be used.
      * @param ramBufferSizeMB the size in megabytes of the RAM buffer for indexing documents.
      * @param indexPath       the directory where to store the index.
@@ -97,9 +100,10 @@ public class MultilingualDirectoryIndexer {
      * @throws NullPointerException     if any of the parameters is {@code null}.
      * @throws IllegalArgumentException if any of the parameters assumes invalid values.
      */
-    public MultilingualDirectoryIndexer(final Analyzer analyzer, final Similarity similarity, final int ramBufferSizeMB,
-                                        final String indexPath, final String enDocsPath, final String frDocsPath,
-                                        final String extension, final String charsetName, final long expectedDocs,
+    public MultilingualDirectoryIndexer(final Analyzer enAnalyzer, final Analyzer frAnalyzer,
+                                        final Similarity similarity, final int ramBufferSizeMB, final String indexPath,
+                                        final String enDocsPath, final String frDocsPath, final String extension,
+                                        final String charsetName, final long expectedDocs,
                                         final Class<? extends DocumentParser> dpCls) {
         // dpCls
         if (dpCls == null) {
@@ -107,9 +111,14 @@ public class MultilingualDirectoryIndexer {
         }
         this.dpCls = dpCls;
 
-        // analyzer
-        if (analyzer == null) {
-            throw new NullPointerException("Analyzer cannot be null.");
+        // enAnalyzer
+        if (enAnalyzer == null) {
+            throw new NullPointerException("English analyzer cannot be null.");
+        }
+
+        // frAnalyzer
+        if (frAnalyzer == null) {
+            throw new NullPointerException("French analyzer cannot be null.");
         }
 
         // similarity
@@ -122,7 +131,14 @@ public class MultilingualDirectoryIndexer {
             throw new IllegalArgumentException("RAM buffer size cannot be less than or equal to zero.");
         }
 
-        final IndexWriterConfig indexConfig = new IndexWriterConfig(analyzer);
+        // To apply different analyzers to different fields of documents
+        // Taken from: https://www.baeldung.com/lucene-analyzers
+        Map<String,Analyzer> analyzerMap = new HashMap<>();
+        analyzerMap.put(ParsedDocument.FIELDS.ENGLISH_BODY, enAnalyzer);
+        analyzerMap.put(ParsedDocument.FIELDS.FRENCH_BODY, frAnalyzer);
+        PerFieldAnalyzerWrapper wrapper = new PerFieldAnalyzerWrapper(new StandardAnalyzer(), analyzerMap);
+
+        final IndexWriterConfig indexConfig = new IndexWriterConfig(wrapper);
         indexConfig.setSimilarity(similarity);
         indexConfig.setRAMBufferSizeMB(ramBufferSizeMB);
         indexConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
@@ -336,6 +352,74 @@ public class MultilingualDirectoryIndexer {
     }
 
     // TODO: adapt method printVocabularyStatistics and include to this class (testing purposes)
+    /**
+     * Prints statistics about the vocaulary to the console.
+     *
+     * @param maxVocabularyWords maximum number of words to be printed in the vocabulary part of the statistics
+     * @throws IOException if something goes wrong while accessing the index.
+     */
+    public void printVocabularyStatistics(int maxVocabularyWords) throws IOException {
+
+        System.out.printf("%n------------- PRINTING VOCABULARY STATISTICS -------------%n");
+
+        // Open the directory in Lucene
+        final Directory dir = FSDirectory.open(indexDir);
+
+        // Open the index - we need to get a LeafReader to be able to directly access terms
+        final LeafReader index = DirectoryReader.open(dir).leaves().get(0).reader();
+
+        // Total number of documents in the collection
+        System.out.printf("+ Total number of documents (both languages): %d%n", index.numDocs());
+
+        List<Terms> vocs = new ArrayList<>();
+        vocs.add(index.terms(ParsedDocument.FIELDS.ENGLISH_BODY));
+        vocs.add(index.terms(ParsedDocument.FIELDS.FRENCH_BODY));
+
+        for (int i = 0; i < vocs.size(); i++) {
+            if (i == 0)
+                System.out.printf("%n------------- ENGLISH -------------%n");
+            else
+                System.out.printf("%n------------- FRENCH -------------%n");
+
+            // Get the vocabulary of the index.
+            final Terms voc = vocs.get(i);
+
+            // Total number of unique terms in the collection
+            System.out.printf("+ Total number of unique terms: %d%n", voc.size());
+
+            // Total number of terms in the collection
+            System.out.printf("+ Total number of terms: %d%n", voc.getSumTotalTermFreq());
+
+            // Get an iterator over the vector of terms in the vocabulary
+            final TermsEnum termsEnum = voc.iterator();
+
+            // Iterate until there are terms
+            System.out.printf("+ Vocabulary (printing only %d):%n", maxVocabularyWords);
+            System.out.printf("  - %-20s%-5s%-5s%n", "TERM", "DF", "FREQ");
+            int count = 0;
+            for (BytesRef term = termsEnum.next(); term != null; term = termsEnum.next()) {
+                count++;
+                // Get the text string of the term
+                String termstr = term.utf8ToString();
+
+                // Get the document frequency (DF) of the term
+                int df = termsEnum.docFreq();
+
+                // Get the total frequency of the term
+                long freq = termsEnum.totalTermFreq();
+                System.out.printf("  - %-30s%-5d%-5d%n", termstr, df, freq);
+
+                if (count == maxVocabularyWords)
+                    break;
+            }
+        }
+
+        // close the index and the directory
+        index.close();
+        dir.close();
+
+        System.out.printf("----------------------------------------------------------%n");
+    }
 
     /**
      * Main method of the class. Just for testing purposes.
@@ -357,11 +441,11 @@ public class MultilingualDirectoryIndexer {
         final Analyzer a = CustomAnalyzer.builder().withTokenizer(StandardTokenizerFactory.class).addTokenFilter(
                 LowerCaseFilterFactory.class).addTokenFilter(StopFilterFactory.class).addTokenFilter(PorterStemFilterFactory.class).build();
 
-        MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(a, new BM25Similarity(), ramBuffer, indexPath, enDocsPath, frDocsPath, extension,
+        MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(a, a, new BM25Similarity(), ramBuffer, indexPath, enDocsPath, frDocsPath, extension,
                 charsetName, expectedDocs, LongEvalParser.class);
 
         i.index();
 
-        //i.printVocabularyStatistics(50);
+        i.printVocabularyStatistics(10);
     }
 }

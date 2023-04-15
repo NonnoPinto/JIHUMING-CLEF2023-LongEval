@@ -51,7 +51,7 @@ public class LongEvalParser extends DocumentParser {
 
     @Override
     public boolean hasNext() {
-        // JSON stream reading taken from https://www.amitph.com/java-parse-large-json-files/
+        // JSON stream reading taken from: https://www.amitph.com/java-parse-large-json-files/
         try {
             if (in_json.hasNext()) {
                 JsonDocument jdoc = new Gson().fromJson(in_json, JsonDocument.class);

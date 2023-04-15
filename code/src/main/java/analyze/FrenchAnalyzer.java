@@ -1,8 +1,14 @@
 package analyze;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.LowerCaseFilter;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.en.EnglishPossessiveFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 import java.io.IOException;
+import java.io.Reader;
 
 /**
  * Lucene custom analyzer created for the French version of the documents.
@@ -21,7 +27,22 @@ public class FrenchAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
-        return null;
+        final Tokenizer source = new StandardTokenizer();
+
+        TokenStream tokens = new LowerCaseFilter(source);
+        // TODO: decide how are we going to process our French texts
+
+        return new TokenStreamComponents(source, tokens);
+    }
+
+    @Override
+    protected Reader initReader(String fieldName, Reader reader) {
+        return super.initReader(fieldName, reader);
+    }
+
+    @Override
+    protected TokenStream normalize(String fieldName, TokenStream in) {
+        return new LowerCaseFilter(in);
     }
 
     /**
