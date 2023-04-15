@@ -7,6 +7,8 @@ import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
@@ -21,20 +23,18 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
 
 /**
  * Indexes documents processing a whole directory tree.
  * Some elements of the code are taken by the project hello-tipster by Nicola Ferro.
  *
+ * @deprecated this is a DEPRECATED directory indexer in our project. In a first version of the project, it was used
+ * to test a simple indexing over the documents, but now it has been substituted by
+ * {@link MultilingualDirectoryIndexer()}.
  * @version 1.00
  * @since 1.00
  */
-/*
-    TODO some ideas for the index:
-        - Create an abstract class and create non-abstract classes overriding index().
-        - For each document, save the English and French text into the same entry of the index.
- */
+@Deprecated
 public class DirectoryIndexer {
 
     // One megabyte
@@ -236,14 +236,12 @@ public class DirectoryIndexer {
 
                     Document doc = null;
 
-                    // TODO: decide the structure of our ParsedDocuments and our Documents
                     for (ParsedDocument pd : dp) {
 
                         doc = new Document();
 
                         // add the document identifier
-                        //doc.add(new StringField(ParsedDocument.FIELDS.ID, pd.getIdentifier(), Field.Store.YES));
-                        doc.add(new IdField(pd.getIdentifier()));
+                        doc.add(new StringField(ParsedDocument.FIELDS.ID, pd.getIdentifier(), Field.Store.YES));
 
                         // add the document body
                         doc.add(new EnglishBodyField(pd.getBody()));
@@ -346,7 +344,7 @@ public class DirectoryIndexer {
     public static void main(String[] args) throws Exception
     {
         final int ramBuffer = 256;
-        final String docsPath = "C:\\longeval_train\\app_test\\dir";
+        final String docsPath = "C:\\longeval_train\\app_test\\DirectoryIndexer";
         final String indexPath = "index/index-stop-stem";
 
         final String extension = "json";

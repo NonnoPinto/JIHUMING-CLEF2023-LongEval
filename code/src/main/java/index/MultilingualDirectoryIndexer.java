@@ -7,6 +7,8 @@ import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.similarities.BM25Similarity;
@@ -295,13 +297,13 @@ public class MultilingualDirectoryIndexer {
                 Document doc = new Document();
 
                 // add the document identifier
-                doc.add(new IdField(enParDoc.getIdentifier()));
+                doc.add(new StringField(ParsedDocument.FIELDS.ID, enParDoc.getIdentifier(), Field.Store.YES));
 
                 // add the English document body
                 doc.add(new EnglishBodyField(enParDoc.getBody()));
 
                 // add the French document body
-                doc.add(new EnglishBodyField(frParDoc.getBody()));
+                doc.add(new FrenchBodyField(frParDoc.getBody()));
 
                 writer.addDocument(doc);
 
@@ -320,10 +322,10 @@ public class MultilingualDirectoryIndexer {
         writer.close();
 
         if (docsCount != expectedDocs) {
-            System.out.printf("Expected to index %d documents; %d indexed instead.%n", expectedDocs, docsCount);
+            System.out.printf("Expected to index %d documents (in both languages); %d indexed instead.%n", expectedDocs, docsCount);
         }
 
-        System.out.printf("%d document(s) (%d files, %d Mbytes) indexed in %d seconds.%n", docsCount, filesCount,
+        System.out.printf("%d document(s) in both languages (%d files, %d Mbytes) indexed in %d seconds.%n", docsCount, filesCount,
                 bytesCount / MBYTE, (System.currentTimeMillis() - start) / 1000);
 
         System.out.printf("#### Indexing complete ####%n");
@@ -340,12 +342,12 @@ public class MultilingualDirectoryIndexer {
     public static void main(String[] args) throws Exception
     {
         final int ramBuffer = 256;
-        final String enDocsPath = "C:\\longeval_train\\app_test\\en";
-        final String frDocsPath = "C:\\longeval_train\\app_test\\fr";
-        final String indexPath = "index/index-stop-stem";
+        final String enDocsPath = "C:\\longeval_train\\app_test\\MultilingualDirectoryIndexer\\en";
+        final String frDocsPath = "C:\\longeval_train\\app_test\\MultilingualDirectoryIndexer\\fr";
+        final String indexPath = "index/multilingual-index-stop-stem";
 
         final String extension = "json";
-        final int expectedDocs = 17408;
+        final int expectedDocs = 33079;
         final String charsetName = "ISO-8859-1";
 
         final Analyzer a = CustomAnalyzer.builder().withTokenizer(StandardTokenizerFactory.class).addTokenFilter(
@@ -358,6 +360,4 @@ public class MultilingualDirectoryIndexer {
 
         //i.printVocabularyStatistics(50);
     }
-
-    // TODO: test main, if working mark DirectoryIndexer as DEPRECATED
 }
