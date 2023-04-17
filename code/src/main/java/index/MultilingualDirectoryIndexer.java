@@ -1,9 +1,12 @@
 package index;
 
+import analyze.FrenchAnalyzer;
+import analyze.NGramAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.StopFilterFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -79,15 +82,12 @@ public class MultilingualDirectoryIndexer {
     // The total number of indexed bytes
     private long bytesCount;
 
-    /*
-       TODO: we may need to receive two analyzers, one for English and one for French.
-        INFO: https://www.baeldung.com/lucene-analyzers
-     */
     /**
      * Creates a new indexer.
      *
      * @param enAnalyzer      the {@code Analyzer} to be used for the English documents.
      * @param frAnalyzer      the {@code Analyzer} to be used for the French documents.
+     * @param ngramAnalyzer   the {@code Analyzer} to be used for N-Gram field of documents.
      * @param similarity      the {@code Similarity} to be used.
      * @param ramBufferSizeMB the size in megabytes of the RAM buffer for indexing documents.
      * @param indexPath       the directory where to store the index.
@@ -101,10 +101,10 @@ public class MultilingualDirectoryIndexer {
      * @throws IllegalArgumentException if any of the parameters assumes invalid values.
      */
     public MultilingualDirectoryIndexer(final Analyzer enAnalyzer, final Analyzer frAnalyzer,
-                                        final Similarity similarity, final int ramBufferSizeMB, final String indexPath,
-                                        final String enDocsPath, final String frDocsPath, final String extension,
-                                        final String charsetName, final long expectedDocs,
-                                        final Class<? extends DocumentParser> dpCls) {
+                                        final Analyzer ngramAnalyzer, final Similarity similarity,
+                                        final int ramBufferSizeMB, final String indexPath, final String enDocsPath,
+                                        final String frDocsPath, final String extension, final String charsetName,
+                                        final long expectedDocs, final Class<? extends DocumentParser> dpCls) {
         // dpCls
         if (dpCls == null) {
             throw new NullPointerException("Document parser class cannot be null.");
@@ -121,6 +121,11 @@ public class MultilingualDirectoryIndexer {
             throw new NullPointerException("French analyzer cannot be null.");
         }
 
+        // nAnalyzer
+        if (ngramAnalyzer == null) {
+            throw new NullPointerException("N-Gram analyzer cannot be null.");
+        }
+
         // similarity
         if (similarity == null) {
             throw new NullPointerException("Similarity cannot be null.");
@@ -133,9 +138,10 @@ public class MultilingualDirectoryIndexer {
 
         // To apply different analyzers to different fields of documents
         // Taken from: https://www.baeldung.com/lucene-analyzers
-        Map<String,Analyzer> analyzerMap = new HashMap<>();
+        Map<String, Analyzer> analyzerMap = new HashMap<>();
         analyzerMap.put(ParsedDocument.FIELDS.ENGLISH_BODY, enAnalyzer);
         analyzerMap.put(ParsedDocument.FIELDS.FRENCH_BODY, frAnalyzer);
+        analyzerMap.put(ParsedDocument.FIELDS.N_GRAM, ngramAnalyzer);
         PerFieldAnalyzerWrapper wrapper = new PerFieldAnalyzerWrapper(new StandardAnalyzer(), analyzerMap);
 
         final IndexWriterConfig indexConfig = new IndexWriterConfig(wrapper);
@@ -160,8 +166,8 @@ public class MultilingualDirectoryIndexer {
                 Files.createDirectory(indexDir);
             } catch (Exception e) {
                 throw new IllegalArgumentException(
-                        String.format("Unable to create directory %s: %s.", indexDir.toAbsolutePath(),
-                                e.getMessage()), e);
+                        String.format("Unable to create directory %s: %s. (Try to create the directory manually)",
+                                indexDir.toAbsolutePath(), e.getMessage()), e);
             }
         }
         if (!Files.isWritable(indexDir)) {
@@ -284,8 +290,7 @@ public class MultilingualDirectoryIndexer {
             throw new RuntimeException("List of files in French documents directory is null");
         }
 
-        while (enFileIterator.hasNext() && frFileIterator.hasNext())
-        {
+        while (enFileIterator.hasNext() && frFileIterator.hasNext()) {
             File enFile = enFileIterator.next();
             File frFile = frFileIterator.next();
 
@@ -304,13 +309,11 @@ public class MultilingualDirectoryIndexer {
             // Create an iterator for the French documents
             Iterator<ParsedDocument> frParDocIterator = frDp.iterator();
 
-            while (enParDocIterator.hasNext() && frParDocIterator.hasNext())
-            {
+            while (enParDocIterator.hasNext() && frParDocIterator.hasNext()) {
                 ParsedDocument enParDoc = enParDocIterator.next();
                 ParsedDocument frParDoc = frParDocIterator.next();
 
-                if (!enParDoc.getIdentifier().equals(frParDoc.getIdentifier()))
-                {
+                if (!enParDoc.getIdentifier().equals(frParDoc.getIdentifier())) {
                     throw new RuntimeException("English and French versions of a document don't have the same ID");
                 }
 
@@ -324,6 +327,10 @@ public class MultilingualDirectoryIndexer {
 
                 // add the French document body
                 doc.add(new FrenchBodyField(frParDoc.getBody()));
+
+                // add the English body concatenated to the French body to generate the N-Gram
+                // note that the N-Gram will be generated by the class NGramAnalyzer using this field content
+                doc.add(new NGramField(enParDoc.getBody() + " " +frParDoc.getBody()));
 
                 writer.addDocument(doc);
 
@@ -352,6 +359,7 @@ public class MultilingualDirectoryIndexer {
     }
 
     // TODO: adapt method printVocabularyStatistics and include to this class (testing purposes)
+
     /**
      * Prints statistics about the vocaulary to the console.
      *
@@ -427,22 +435,29 @@ public class MultilingualDirectoryIndexer {
      * @param args command line arguments.
      * @throws Exception if something goes wrong while indexing.
      */
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         final int ramBuffer = 256;
         final String enDocsPath = "C:\\longeval_train\\app_test\\MultilingualDirectoryIndexer\\en";
         final String frDocsPath = "C:\\longeval_train\\app_test\\MultilingualDirectoryIndexer\\fr";
-        final String indexPath = "index/multilingual-index-stop-stem";
+        final String indexPath = "created_indexes/multilingual-index-stop-stem";
 
         final String extension = "json";
         final int expectedDocs = 33079;
         final String charsetName = "ISO-8859-1";
 
-        final Analyzer a = CustomAnalyzer.builder().withTokenizer(StandardTokenizerFactory.class).addTokenFilter(
-                LowerCaseFilterFactory.class).addTokenFilter(StopFilterFactory.class).addTokenFilter(PorterStemFilterFactory.class).build();
+        final Analyzer a = CustomAnalyzer.builder()
+                .withTokenizer(StandardTokenizerFactory.class)
+                .addTokenFilter(LowerCaseFilterFactory.class)
+                .addTokenFilter(StopFilterFactory.class)
+                .addTokenFilter(PorterStemFilterFactory.class).build();
 
-        MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(a, a, new BM25Similarity(), ramBuffer, indexPath, enDocsPath, frDocsPath, extension,
-                charsetName, expectedDocs, LongEvalParser.class);
+        // final EnglishAnalyzer enAn = new EnglishAnalyzer(); //TODO: uncomment when EnglishAnalyzer is ready
+        // final FrenchAnalyzer frAn = new FrenchAnalyzer(); //TODO: uncomment when FrenchAnalyzer is ready
+        final NGramAnalyzer ngramAn = new NGramAnalyzer();
+
+        MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(a, a, ngramAn, new BM25Similarity(),
+                ramBuffer, indexPath, enDocsPath, frDocsPath, extension, charsetName, expectedDocs,
+                LongEvalParser.class);
 
         i.index();
 
