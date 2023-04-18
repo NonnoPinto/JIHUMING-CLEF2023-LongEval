@@ -358,8 +358,6 @@ public class MultilingualDirectoryIndexer {
         System.out.printf("#### Indexing complete ####%n");
     }
 
-    // TODO: adapt method printVocabularyStatistics and include to this class (testing purposes)
-
     /**
      * Prints statistics about the vocaulary to the console.
      *
