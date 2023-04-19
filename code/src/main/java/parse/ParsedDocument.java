@@ -88,9 +88,6 @@ public class ParsedDocument {
         this.body = body;
     }
 
-
-
-
     /**
      * Returns the unique document identifier.
      *

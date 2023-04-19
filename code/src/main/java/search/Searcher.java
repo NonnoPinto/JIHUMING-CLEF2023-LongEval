@@ -20,6 +20,8 @@ import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.FSDirectory;
 
 import parse.ParsedDocument;
+import topic.LongEvalTopic;
+import topic.LongEvalTopicReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,9 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Searches a document collection.
@@ -81,7 +81,7 @@ public class Searcher {
     /**
      * The topics to be searched.
      */
-    private final QualityQuery[] topics;
+    private final List<LongEvalTopic> topics;
 
     /**
      * Query parser for English queries.
@@ -189,12 +189,10 @@ public class Searcher {
             BufferedReader in = Files.newBufferedReader(Paths.get(topicsFile), StandardCharsets.UTF_8);
 
             // Reading all the topics/queries
-            /*
-                TODO: TrecTopicsReader is not reading all the LongEval topics properly.
-                 (maybe) we should create our own TrecTopicsReader processing topics as XML documents.
-                 interesting: https://www.w3schools.blog/java-stax-xmlstreamreader-example
-             */
-            topics = new TrecTopicsReader().readQueries(in);
+            LongEvalTopicReader tReader = new LongEvalTopicReader(in);
+            topics = new ArrayList<>();
+            for (LongEvalTopic t : tReader)
+                topics.add(t);
 
             in.close();
         } catch (IOException e) {
@@ -208,9 +206,9 @@ public class Searcher {
                     "The expected number of topics to be searched cannot be less than or equal to zero.");
         }
 
-        if (topics.length != expectedTopics) {
+        if (topics.size() != expectedTopics) {
             System.out.printf("Expected to search for %s topics; %s topics found instead.", expectedTopics,
-                              topics.length);
+                              topics.size());
         }
 
         /*
@@ -305,17 +303,17 @@ public class Searcher {
 
         try {
 
-            for (QualityQuery t : topics) {
+            for (LongEvalTopic t : topics) {
 
-                System.out.printf("Searching for topic %s.%n", t.getQueryID());
+                System.out.printf("Searching for topic %s.%n", t.getNum());
 
                 bq = new BooleanQuery.Builder();
 
                 // TODO: (maybe) detect if the query is English or French and search only either on ENGLISH_BODY or FRENCH_BODY
-                bq.add(enQp.parse(QueryParserBase.escape(t.getValue(TOPIC_FIELDS.TITLE))), BooleanClause.Occur.SHOULD);
-                bq.add(frQp.parse(QueryParserBase.escape(t.getValue(TOPIC_FIELDS.TITLE))), BooleanClause.Occur.SHOULD);
+                bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 // Always in N_GRAM field
-                bq.add(ngramQp.parse(QueryParserBase.escape(t.getValue(TOPIC_FIELDS.TITLE))), BooleanClause.Occur.SHOULD);
+                bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
 
                 q = bq.build();
 
@@ -326,7 +324,7 @@ public class Searcher {
                 for (int i = 0, n = sd.length; i < n; i++) {
                     docID = reader.document(sd[i].doc, idField).get(ParsedDocument.FIELDS.ID);
 
-                    run.printf(Locale.ENGLISH, "%s\tQ0\t%s\t%d\t%.6f\t%s%n", t.getQueryID(), docID, i, sd[i].score,
+                    run.printf(Locale.ENGLISH, "%s\tQ0\t%s\t%d\t%.6f\t%s%n", t.getNum(), docID, i, sd[i].score,
                                runID);
                 }
 
@@ -341,7 +339,7 @@ public class Searcher {
 
         elapsedTime = System.currentTimeMillis() - start;
 
-        System.out.printf("%d topic(s) searched in %d seconds.%n", topics.length, elapsedTime / 1000);
+        System.out.printf("%d topic(s) searched in %d seconds.%n", topics.size(), elapsedTime / 1000);
 
         System.out.printf("#### Searching complete ####%n");
     }
