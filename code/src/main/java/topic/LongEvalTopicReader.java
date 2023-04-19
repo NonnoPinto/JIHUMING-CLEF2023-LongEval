@@ -1,12 +1,5 @@
 package topic;
 
-import parse.LongEvalParser;
-import parse.ParsedDocument;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -17,7 +10,7 @@ public class LongEvalTopicReader implements Iterator<LongEvalTopic>, Iterable<Lo
     /**
      * XML reader from which topics will be retrieved.
      */
-    private XMLStreamReader xmlIn;
+    private Reader in;
 
     /**
      * Indicates whether there is another {@code LongEvalTopic} to return.
@@ -35,16 +28,7 @@ public class LongEvalTopicReader implements Iterator<LongEvalTopic>, Iterable<Lo
      * @throws IOException
      */
     public LongEvalTopicReader (Reader in) throws IOException {
-        //Get XMLInputFactory instance.
-        XMLInputFactory xmlInputFactory =
-                XMLInputFactory.newInstance();
-
-        //Create XMLStreamReader object.
-        try {
-            xmlIn = xmlInputFactory.createXMLStreamReader(in);
-        } catch (XMLStreamException e) {
-            throw new IOException("Unable to create XML reader for topics file.");
-        }
+        this.in = in;
     }
 
     @Override
@@ -54,45 +38,9 @@ public class LongEvalTopicReader implements Iterator<LongEvalTopic>, Iterable<Lo
 
     @Override
     public boolean hasNext() {
-        LongEvalTopic actualTopic = null;
-        int xmlEvent;
-        boolean foundTopic = false;
-        try {
-            while (xmlIn.hasNext() && !foundTopic) {
-                int eventType = xmlIn.next();
-
-                if (eventType == XMLStreamReader.START_ELEMENT && xmlIn.getLocalName().equals("top"))
-                    actualTopic = new LongEvalTopic();
-                else if (eventType == XMLStreamReader.START_ELEMENT && xmlIn.getLocalName().equals("num"))
-                    actualTopic.setNum(readCharacters(xmlIn));
-                else if (eventType == XMLStreamReader.START_ELEMENT && xmlIn.getLocalName().equals("title"))
-                    actualTopic.setTitle(readCharacters(xmlIn));
-                else if (eventType == XMLStreamReader.END_ELEMENT && xmlIn.getLocalName().equals("top")) {
-                    this.topic = actualTopic;
-                    foundTopic = true;
-                }
-            }
-        } catch (XMLStreamException e) {
-            throw new RuntimeException("Unable to process topics document: " + e.getMessage()); //TODO: RuntimeException?
-        }
-        // TODO: it's not working, is not processing XML documents with more than 1 root
-        return foundTopic;
-    }
-
-    private String readCharacters(XMLStreamReader reader) throws XMLStreamException {
-        StringBuilder result = new StringBuilder();
-        while (reader.hasNext()) {
-            int eventType = reader.next();
-            switch (eventType) {
-                case XMLStreamReader.CHARACTERS:
-                case XMLStreamReader.CDATA:
-                    result.append(reader.getText());
-                    break;
-                case XMLStreamReader.END_ELEMENT:
-                    return result.toString();
-            }
-        }
-        throw new XMLStreamException("Premature end of file");
+        // TODO: set next variable to true (if there are more topics to read), false (if there aren't more topics to read)
+        // TODO: save into variable 'topic' the document to be returned by the Iterator
+        return false;
     }
 
     @Override
