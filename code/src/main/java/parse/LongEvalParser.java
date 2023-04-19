@@ -22,7 +22,7 @@ public class LongEvalParser extends DocumentParser {
     private static final int BODY_SIZE = 1024 * 8;
 
     /**
-     * The currently parsed document
+     * The currently parsed document.
      */
     private ParsedDocument document = null;
 

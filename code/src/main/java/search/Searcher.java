@@ -33,6 +33,13 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+/**
+ * Searches a document collection.
+ *
+ * @author Nicola Ferro
+ * @version 1.00
+ * @since 1.00
+ */
 public class Searcher {
 
     /**
@@ -182,7 +189,11 @@ public class Searcher {
             BufferedReader in = Files.newBufferedReader(Paths.get(topicsFile), StandardCharsets.UTF_8);
 
             // Reading all the topics/queries
-            // TODO: TrecTopicsReader is not reading all the LongEval topics properly
+            /*
+                TODO: TrecTopicsReader is not reading all the LongEval topics properly.
+                 (maybe) we should create our own TrecTopicsReader processing topics as XML documents.
+                 interesting: https://www.w3schools.blog/java-stax-xmlstreamreader-example
+             */
             topics = new TrecTopicsReader().readQueries(in);
 
             in.close();
