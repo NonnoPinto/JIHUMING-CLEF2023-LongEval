@@ -186,15 +186,11 @@ public class Searcher {
         }
 
         try {
-            BufferedReader in = Files.newBufferedReader(Paths.get(topicsFile), StandardCharsets.UTF_8);
+            // Create the topic reader
+            LongEvalTopicReader tReader = new LongEvalTopicReader(Paths.get(topicsFile));
 
-            // Reading all the topics/queries
-            LongEvalTopicReader tReader = new LongEvalTopicReader(in);
-            topics = new ArrayList<>();
-            for (LongEvalTopic t : tReader)
-                topics.add(t);
-
-            in.close();
+            // Retrieve all the topics from the reader
+            topics = tReader.read();
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     String.format("Unable to process topic file %s: %s.", topicsFile, e.getMessage()), e);
