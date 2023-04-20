@@ -305,7 +305,6 @@ public class Searcher {
 
                 bq = new BooleanQuery.Builder();
 
-                // TODO: (maybe) detect if the query is English or French and search only either on ENGLISH_BODY or FRENCH_BODY
                 bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 // Always in N_GRAM field
@@ -349,13 +348,13 @@ public class Searcher {
     public static void main(String[] args) throws Exception {
 
         //all paths to write
-        final String topics = "C:\\longeval_train\\app_test\\Searcher\\train.trec";
+        final String topics = "C:\\longeval_train\\publish\\English\\Queries\\heldout.trec";
 
         final String indexPath = "created_indexes/multilingual-index-stop-stem";
 
         final String runPath = "runs";
 
-        final String runID = "run00001";
+        final String runID = "first-run";
 
         final int maxDocsRetrieved = 100;
 
@@ -367,7 +366,7 @@ public class Searcher {
 
         // final EnglishAnalyzer enAn = new EnglishAnalyzer(); //TODO: uncomment when EnglishAnalyzer is ready
         // final FrenchAnalyzer frAn = new FrenchAnalyzer(); //TODO: uncomment when FrenchAnalyzer is ready
-        final NGramAnalyzer ngramAn = new NGramAnalyzer();
+        final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
 
         Searcher s = new Searcher(a, a, ngramAn, new BM25Similarity(), indexPath, topics, 50,
                 runID, runPath, maxDocsRetrieved);

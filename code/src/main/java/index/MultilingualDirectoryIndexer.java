@@ -1,12 +1,10 @@
 package index;
 
-import analyze.FrenchAnalyzer;
 import analyze.NGramAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.StopFilterFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
-import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -28,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 /**
@@ -276,6 +273,7 @@ public class MultilingualDirectoryIndexer {
         File[] enFiles = enDocsDir.toFile().listFiles();
         Iterator<File> enFileIterator;
         if (enFiles != null) {
+            enFiles = deleteWithoutExtension(enFiles, extension);
             enFileIterator = Arrays.stream(enFiles).iterator();
         } else {
             throw new RuntimeException("List of files in English documents directory is null");
@@ -285,23 +283,24 @@ public class MultilingualDirectoryIndexer {
         File[] frFiles = frDocsDir.toFile().listFiles();
         Iterator<File> frFileIterator;
         if (frFiles != null) {
+            frFiles = deleteWithoutExtension(frFiles, extension);
             frFileIterator = Arrays.stream(frFiles).iterator();
         } else {
             throw new RuntimeException("List of files in French documents directory is null");
         }
 
         while (enFileIterator.hasNext() && frFileIterator.hasNext()) {
-            File enFile = enFileIterator.next();
-            File frFile = frFileIterator.next();
+            Path enFile = enFileIterator.next().toPath();
+            Path frFile = frFileIterator.next().toPath();
 
-            bytesCount += Files.size(enFile.toPath()) + Files.size(frFile.toPath());
+            bytesCount += Files.size(enFile) + Files.size(frFile);
             filesCount += 2;
 
             // Create a document parser for English documents
-            DocumentParser enDp = DocumentParser.create(dpCls, Files.newBufferedReader(enFile.toPath(), cs));
+            DocumentParser enDp = DocumentParser.create(dpCls, Files.newBufferedReader(enFile, cs));
 
             // Create a document parser for French documents
-            DocumentParser frDp = DocumentParser.create(dpCls, Files.newBufferedReader(frFile.toPath(), cs));
+            DocumentParser frDp = DocumentParser.create(dpCls, Files.newBufferedReader(frFile, cs));
 
             // Create an iterator for the English documents
             Iterator<ParsedDocument> enParDocIterator = enDp.iterator();
@@ -359,12 +358,29 @@ public class MultilingualDirectoryIndexer {
     }
 
     /**
-     * Prints statistics about the vocaulary to the console.
+     * Given an array of files, delete those files not having the specified extension.
      *
-     * @param maxVocabularyWords maximum number of words to be printed in the vocabulary part of the statistics
+     * @param files array of files from which files without the extension will be deleted.
+     * @param extension extension of files of the resulting array.
+     * @return array of files with the specified extension.
+     */
+    private File[] deleteWithoutExtension(File[] files, String extension) {
+        List<File> result = new ArrayList<>();
+        for (File f : files) {
+            if (f.toPath().getFileName().toString().endsWith(extension))
+                result.add(f);
+        }
+        return result.toArray(new File[0]);
+    }
+
+    /**
+     * Prints statistics about the vocabulary to the console. Statistics from English and French versions of the
+     * documents will be printed independently.
+     *
+     * @param maxVocabularyPrint maximum number of words to be printed in the vocabulary part of the statistics.
      * @throws IOException if something goes wrong while accessing the index.
      */
-    public void printVocabularyStatistics(int maxVocabularyWords) throws IOException {
+    public void printVocabularyStatistics(int maxVocabularyPrint) throws IOException {
 
         System.out.printf("%n------------- PRINTING VOCABULARY STATISTICS -------------%n");
 
@@ -400,7 +416,7 @@ public class MultilingualDirectoryIndexer {
             final TermsEnum termsEnum = voc.iterator();
 
             // Iterate until there are terms
-            System.out.printf("+ Vocabulary (printing only %d):%n", maxVocabularyWords);
+            System.out.printf("+ Vocabulary (printing only %d):%n", maxVocabularyPrint);
             System.out.printf("  - %-20s%-5s%-5s%n", "TERM", "DF", "FREQ");
             int count = 0;
             for (BytesRef term = termsEnum.next(); term != null; term = termsEnum.next()) {
@@ -415,7 +431,7 @@ public class MultilingualDirectoryIndexer {
                 long freq = termsEnum.totalTermFreq();
                 System.out.printf("  - %-30s%-5d%-5d%n", termstr, df, freq);
 
-                if (count == maxVocabularyWords)
+                if (count == maxVocabularyPrint)
                     break;
             }
         }
@@ -443,15 +459,16 @@ public class MultilingualDirectoryIndexer {
         final int expectedDocs = 33079;
         final String charsetName = "ISO-8859-1";
 
+        // Default analyzer //TODO: remove when EnglishAnalyzer and FrenchAnalyzer ready
         final Analyzer a = CustomAnalyzer.builder()
                 .withTokenizer(StandardTokenizerFactory.class)
                 .addTokenFilter(LowerCaseFilterFactory.class)
                 .addTokenFilter(StopFilterFactory.class)
                 .addTokenFilter(PorterStemFilterFactory.class).build();
 
-        // final EnglishAnalyzer enAn = new EnglishAnalyzer(); //TODO: uncomment when EnglishAnalyzer is ready
-        // final FrenchAnalyzer frAn = new FrenchAnalyzer(); //TODO: uncomment when FrenchAnalyzer is ready
-        final NGramAnalyzer ngramAn = new NGramAnalyzer();
+        // final EnglishAnalyzer enAn = new EnglishAnalyzer(); TODO: uncomment when EnglishAnalyzer ready
+        // final FrenchAnalyzer frAn = new FrenchAnalyzer(); TODO: uncomment when FrenchAnalyzer ready
+        final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
 
         MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(a, a, ngramAn, new BM25Similarity(),
                 ramBuffer, indexPath, enDocsPath, frDocsPath, extension, charsetName, expectedDocs,

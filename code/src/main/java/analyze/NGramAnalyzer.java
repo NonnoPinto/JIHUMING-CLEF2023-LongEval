@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import static analyze.AnalyzerUtil.consumeTokenStream;
 
 /**
- * Lucene custom analyzer generating N-Grams of the English and French versions of the documents
+ * Lucene custom analyzer generating N-Grams for the English and French versions of the documents.
  *
  * @version 1.0
  * @since 1.0
@@ -23,22 +23,32 @@ import static analyze.AnalyzerUtil.consumeTokenStream;
 public class NGramAnalyzer extends Analyzer
 {
     /**
+     * N parameter of the N-Gram.
+     */
+    private Integer n;
+
+    /**
      * Creates a new instance of the analyzer.
      */
-    public NGramAnalyzer() {
+    public NGramAnalyzer(Integer n) {
         super();
+        this.n = n;
     }
 
-    // TODO: test the function and include more filters (if necessary)
     @Override
     protected TokenStreamComponents createComponents(String s) {
+        // Delete whitespaces
         final Tokenizer source = new WhitespaceTokenizer();
-
+        // Lowercase all
         TokenStream tokens = new LowerCaseFilter(source);
-        // Remove all real numbers
-        tokens = new PatternReplaceFilter(source, Pattern.compile("^(?:-(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))|(?:0|(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))))(?:.\\d+|)$"),
+        // Delete real numbers
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("^(?:-(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))|(?:0|(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))))(?:.\\d+|)$"),
                 "", true);
-        tokens = new NGramTokenFilter(source,3);
+        // Delete punctuation marks
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("\\p{Punct}"),
+                "", true);
+        // Create N-Gram
+        tokens = new NGramTokenFilter(tokens, n);
 
         return new TokenStreamComponents(source, tokens);
     }
@@ -62,12 +72,16 @@ public class NGramAnalyzer extends Analyzer
      */
     public static void main(String[] args) throws IOException {
 
-        // TODO: complete test main function
-        // text to analyze
-        // TODO: find a text in English and French
-        final String text = "";
+        // Text to analyze
+        final String enText = "A web search engine is a software system designed to carry out web searches. They search " +
+                "the World Wide Web in a systematic way for particular information specified in a textual web search " +
+                "query.";
+        final String frText = "Un moteur de recherche web est un système logiciel conçu pour effectuer des recherches " +
+                "sur le web. Ils recherchent systématiquement sur le World Wide Web des informations particulières " +
+                "spécifiées dans une requête textuelle de recherche sur le Web.";
+        final String text = enText + " " + frText;
 
-        // use the analyzer to process the text and print diagnostic information about each token
-        consumeTokenStream(new NGramAnalyzer(), text);
+        // Use the analyzer to process the text and print diagnostic information about each token
+        consumeTokenStream(new NGramAnalyzer(3), text);
     }
 }
