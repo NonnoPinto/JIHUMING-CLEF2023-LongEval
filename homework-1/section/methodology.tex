@@ -5,10 +5,26 @@ HelloTipster\cite{tipser} repository developed by Professor Nicola Ferro
 and presented to us during the Search Engine course.
 Furthermore, we will present main methodology and approaches
 using the same structure of the repository\cite{jihuming}.
+
+\subsection{Parsing}
+We had a huge collection of documents in English and French. First thing
+was to manually examine document to understand how to read them. As described
+\href{https://github.com/joaopalotti/trectools}{in his GitHub repository},
+documents use a particular format, which includes a DOCNO and a DOCID.
+The DOCNO is the id of the document and the DOCID is the id of the collection.\\
+JSON, on the other side, follows the mouch more standard
+\href{https://github.com/castorini/anserini/issues/1111}{following structure}.\\
+The whole parser is made by:
+\begin{itemize}
+    \item \texttt{DocumentParser}: parses trec document
+    \item \texttt{JsonDocument}: create a class for json doc
+    \item \texttt{LongEvalParser}: counts the document and print out
+    \item \texttt{ParsedDocument}: document parsed has FIELDS including ID, %ENGLISH_BODY, and FRENCH_BODY TODO: for some reason, its an error
+\end{itemize}
 \subsection{Analyzer}
 
 \subsection{Index}
 
-\subsection{Parse}
-
 \subsection{Search}
+
+\subsection{Topic}
