@@ -468,7 +468,7 @@ public class MultilingualDirectoryIndexer {
 
         // final EnglishAnalyzer enAn = new EnglishAnalyzer(); TODO: uncomment when EnglishAnalyzer ready
         // final FrenchAnalyzer frAn = new FrenchAnalyzer(); TODO: uncomment when FrenchAnalyzer ready
-        final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
+        final NGramAnalyzer ngramAn = new NGramAnalyzer();
 
         MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(a, a, ngramAn, new BM25Similarity(),
                 ramBuffer, indexPath, enDocsPath, frDocsPath, extension, charsetName, expectedDocs,

@@ -366,7 +366,7 @@ public class Searcher {
 
         // final EnglishAnalyzer enAn = new EnglishAnalyzer(); //TODO: uncomment when EnglishAnalyzer is ready
         // final FrenchAnalyzer frAn = new FrenchAnalyzer(); //TODO: uncomment when FrenchAnalyzer is ready
-        final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
+        final NGramAnalyzer ngramAn = new NGramAnalyzer();
 
         Searcher s = new Searcher(a, a, ngramAn, new BM25Similarity(), indexPath, topics, 50,
                 runID, runPath, maxDocsRetrieved);

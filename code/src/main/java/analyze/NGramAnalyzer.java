@@ -2,11 +2,8 @@ package analyze;
 
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
-import org.apache.lucene.analysis.en.EnglishPossessiveFilter;
 import org.apache.lucene.analysis.ngram.NGramTokenFilter;
-import org.apache.lucene.analysis.ngram.NGramTokenizer;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -25,14 +22,13 @@ public class NGramAnalyzer extends Analyzer
     /**
      * N parameter of the N-Gram.
      */
-    private Integer n;
+    private final Integer N = 3;
 
     /**
      * Creates a new instance of the analyzer.
      */
-    public NGramAnalyzer(Integer n) {
+    public NGramAnalyzer() {
         super();
-        this.n = n;
     }
 
     @Override
@@ -45,10 +41,10 @@ public class NGramAnalyzer extends Analyzer
         tokens = new PatternReplaceFilter(tokens, Pattern.compile("^(?:-(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))|(?:0|(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))))(?:.\\d+|)$"),
                 "", true);
         // Delete punctuation marks
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile("\\p{Punct}"),
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[.!?\\-]"),
                 "", true);
         // Create N-Gram
-        tokens = new NGramTokenFilter(tokens, n);
+        tokens = new NGramTokenFilter(tokens, N);
 
         return new TokenStreamComponents(source, tokens);
     }
@@ -82,6 +78,6 @@ public class NGramAnalyzer extends Analyzer
         final String text = enText + " " + frText;
 
         // Use the analyzer to process the text and print diagnostic information about each token
-        consumeTokenStream(new NGramAnalyzer(3), text);
+        consumeTokenStream(new NGramAnalyzer(), text);
     }
 }
