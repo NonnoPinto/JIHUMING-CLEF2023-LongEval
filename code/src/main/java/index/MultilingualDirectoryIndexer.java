@@ -451,9 +451,9 @@ public class MultilingualDirectoryIndexer {
      */
     public static void main(String[] args) throws Exception {
         final int ramBuffer = 256;
-        final String enDocsPath = "C:\\longeval_train\\app_test\\MultilingualDirectoryIndexer\\en";
-        final String frDocsPath = "C:\\longeval_train\\app_test\\MultilingualDirectoryIndexer\\fr";
-        final String indexPath = "created_indexes/multilingual-index-stop-stem";
+        final String enDocsPath = "C:\\longeval_train\\publish\\English\\Documents\\Json";
+        final String frDocsPath = "C:\\longeval_train\\publish\\French\\Documents\\Json";
+        final String indexPath = "created_indexes/22-04-2023-multilingual-stop-stem-ngram";
 
         final String extension = "json";
         final int expectedDocs = 33079;

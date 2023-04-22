@@ -4,7 +4,10 @@ import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.ngram.NGramTokenFilter;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
+import parse.LongEvalParser;
+import parse.ParsedDocument;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Pattern;
@@ -67,17 +70,23 @@ public class NGramAnalyzer extends Analyzer
      * @throws IOException if something goes wrong while processing the text.
      */
     public static void main(String[] args) throws IOException {
+        // Take one example (parsed) (English) document from the training set (pdExample)
+        final String FILE_NAME = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        Reader reader = new FileReader(
+                FILE_NAME);
+        LongEvalParser parser = new LongEvalParser(reader);
+        ParsedDocument pdExample = null;
+        if (parser.hasNext())
+            pdExample = parser.next();
 
-        // Text to analyze
-        final String enText = "A web search engine is a software system designed to carry out web searches. They search " +
-                "the World Wide Web in a systematic way for particular information specified in a textual web search " +
-                "query.";
-        final String frText = "Un moteur de recherche web est un système logiciel conçu pour effectuer des recherches " +
-                "sur le web. Ils recherchent systématiquement sur le World Wide Web des informations particulières " +
-                "spécifiées dans une requête textuelle de recherche sur le Web.";
-        final String text = enText + " " + frText;
-
-        // Use the analyzer to process the text and print diagnostic information about each token
-        consumeTokenStream(new NGramAnalyzer(), text);
+        if (pdExample != null) {
+            System.out.println("--------- PARSED DOCUMENT ---------");
+            System.out.println(pdExample.getBody());
+            System.out.println("--------- ANALYZER RESULT ---------");
+            // use the analyzer to process the text and print diagnostic information about each token
+            consumeTokenStream(new NGramAnalyzer(), pdExample.getBody(), false);
+        } else {
+            System.out.println("Error, could not retrieve document to apply analyzer");
+        }
     }
 }

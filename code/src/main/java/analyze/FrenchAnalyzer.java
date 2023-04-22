@@ -6,9 +6,14 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.en.EnglishPossessiveFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import parse.LongEvalParser;
+import parse.ParsedDocument;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+
+import static analyze.AnalyzerUtil.consumeTokenStream;
 
 /**
  * Lucene custom analyzer created for the French version of the documents.
@@ -53,13 +58,23 @@ public class FrenchAnalyzer extends Analyzer
      * @throws IOException if something goes wrong while processing the text.
      */
     public static void main(String[] args) throws IOException {
+        // Take one example (parsed) (French) document from the training set (pdExample)
+        final String FILE_NAME = "C:\\longeval_train\\publish\\French\\Documents\\Json\\collector_kodicare_1.txt.json";
+        Reader reader = new FileReader(
+                FILE_NAME);
+        LongEvalParser parser = new LongEvalParser(reader);
+        ParsedDocument pdExample = null;
+        if (parser.hasNext())
+            pdExample = parser.next();
 
-        // TODO: complete test main function
-        // text to analyze
-        // TODO: find a text in French
-        final String text = "";
-
-        // use the analyzer to process the text and print diagnostic information about each token
-        //consumeTokenStream(new FrenchAnalyzer(), text);
+        if (pdExample != null) {
+            System.out.println("--------- PARSED DOCUMENT ---------");
+            System.out.println(pdExample.getBody());
+            System.out.println("--------- ANALYZER RESULT ---------");
+            // use the analyzer to process the text and print diagnostic information about each token
+            consumeTokenStream(new FrenchAnalyzer(), pdExample.getBody(), false);
+        } else {
+            System.out.println("Error, could not retrieve document to apply analyzer");
+        }
     }
 }

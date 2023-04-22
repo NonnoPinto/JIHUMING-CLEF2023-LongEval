@@ -5,9 +5,14 @@ import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import parse.LongEvalParser;
+import parse.ParsedDocument;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+
+import static analyze.AnalyzerUtil.consumeTokenStream;
 
 /**
  * Lucene custom analyzer created for the English version of the documents.
@@ -52,22 +57,23 @@ public class EnglishAnalyzer extends Analyzer
      * @throws IOException if something goes wrong while processing the text.
      */
     public static void main(String[] args) throws IOException {
+        // Take one example (parsed) (English) document from the training set (pdExample)
+        final String FILE_NAME = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        Reader reader = new FileReader(
+                FILE_NAME);
+        LongEvalParser parser = new LongEvalParser(reader);
+        ParsedDocument pdExample = null;
+        if (parser.hasNext())
+            pdExample = parser.next();
 
-        // TODO: complete test main function
-        // text to analyze, taken from: https://www.opensourceshakespeare.org/views/plays/play_view.php?WorkID=hamlet&Act=5&Scene=2&Scope=scene
-
-        final String text = "An earnest conjuration from the King,\n" +
-                "As England was his faithful tributary,\n" +
-                "As love between them like the palm might flourish,\n" +
-                "As peace should still her wheaten garland wear\n" +
-                "And stand a comma 'tween their amities,\n" +
-                "And many such-like as's of great charge,\n" +
-                "That, on the view and knowing of these contents,\n" +
-                "Without debatement further, more or less,\n" +
-                "He should the bearers put to sudden death,\n" +
-                "Not shriving time allow'd. ";
-
-        // use the analyzer to process the text and print diagnostic information about each token
-        //consumeTokenStream(new EnglishAnalyzer(), text);
+        if (pdExample != null) {
+            System.out.println("--------- PARSED DOCUMENT ---------");
+            System.out.println(pdExample.getBody());
+            System.out.println("--------- ANALYZER RESULT ---------");
+            // use the analyzer to process the text and print diagnostic information about each token
+            consumeTokenStream(new EnglishAnalyzer(), pdExample.getBody(), false);
+        } else {
+            System.out.println("Error, could not retrieve document to apply analyzer");
+        }
     }
 }

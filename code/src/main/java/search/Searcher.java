@@ -298,16 +298,16 @@ public class Searcher {
         String docID = null;
 
         try {
-
             for (LongEvalTopic t : topics) {
 
                 System.out.printf("Searching for topic %s.%n", t.getNum());
 
                 bq = new BooleanQuery.Builder();
 
+                // Search the title in both English and French fields (independently of the title language)
                 bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                // Always in N_GRAM field
+                // Search the title in N-Gram field
                 bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
 
                 q = bq.build();
@@ -324,7 +324,6 @@ public class Searcher {
                 }
 
                 run.flush();
-
             }
         } finally {
             run.close();
@@ -354,7 +353,10 @@ public class Searcher {
 
         final String runPath = "runs";
 
-        final String runID = "first-run";
+        final String RUN_PREFIX = "seupd2223-JIHUMING-";
+        final String RUN_INFO = "first";
+        final String RUN_SUFFIX = ".txt";
+        final String runID = RUN_PREFIX+RUN_INFO+RUN_SUFFIX;
 
         final int maxDocsRetrieved = 100;
 

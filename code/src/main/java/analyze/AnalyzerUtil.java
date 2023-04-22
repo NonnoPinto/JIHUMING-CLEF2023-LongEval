@@ -33,7 +33,7 @@ public class AnalyzerUtil {
      *
      * @throws IOException if something goes wrong while processing the text.
      */
-    static void consumeTokenStream(final Analyzer a, final String t) throws IOException {
+    static void consumeTokenStream(final Analyzer a, final String t, boolean printTokenInfo) throws IOException {
 
         // the start time of the processing
         final long start = System.currentTimeMillis();
@@ -78,12 +78,15 @@ public class AnalyzerUtil {
             // Print all tokens until the stream is exhausted
             while (stream.incrementToken()) {
                 System.out.printf("+ token: %s%n", tokenTerm.toString());
-                System.out.printf("  - type: %s%n", tokenType.type());
-                System.out.printf("  - keyword: %b%n", tokenKeyword.isKeyword());
-                System.out.printf("  - position increment: %d%n", tokenPositionIncrement.getPositionIncrement());
-                System.out.printf("  - position length: %d%n", tokenPositionLength.getPositionLength());
-                System.out.printf("  - offset: [%d, %d]%n", tokenOffset.startOffset(), tokenOffset.endOffset());
-                System.out.printf("  - sentence index: %d%n", sentenceAttribute.getSentenceIndex());
+                if (printTokenInfo)
+                {
+                    System.out.printf("  - type: %s%n", tokenType.type());
+                    System.out.printf("  - keyword: %b%n", tokenKeyword.isKeyword());
+                    System.out.printf("  - position increment: %d%n", tokenPositionIncrement.getPositionIncrement());
+                    System.out.printf("  - position length: %d%n", tokenPositionLength.getPositionLength());
+                    System.out.printf("  - offset: [%d, %d]%n", tokenOffset.startOffset(), tokenOffset.endOffset());
+                    System.out.printf("  - sentence index: %d%n", sentenceAttribute.getSentenceIndex());
+                }
             }
 
             // Perform any end-of-stream operations
