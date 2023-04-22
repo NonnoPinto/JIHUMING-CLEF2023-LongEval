@@ -91,6 +91,8 @@
 \RequirePackage[svgnames,dvipsnames]{xcolor}
 \RequirePackage{iftex}
 \RequirePackage{microtype}
+\RequirePackage{hyperref}
+\RequirePackage{listings}
 
 %% PDF/A support
 
