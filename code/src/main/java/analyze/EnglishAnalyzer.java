@@ -6,6 +6,8 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
+import org.apache.lucene.analysis.en.PorterStemFilter;
+import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilter;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import parse.LongEvalParser;
@@ -45,16 +47,29 @@ public class EnglishAnalyzer extends Analyzer
         TokenStream tokens = new LowerCaseFilter(source);
 
         // Delete some estrange symbols found in documents
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[–“”…]+"), "", true);
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[·–“”…]+"), "", true);
 
-        // Delete punctuation marks at the beginning of tokens
+        // Delete punctuation marks at the beginning of words (text)
         tokens = new PatternReplaceFilter(tokens, Pattern.compile("^[\\p{Punct}]+"), "", true);
 
-        // Delete punctuation marks at the end of tokens
+        // Delete punctuation marks at the end of words (text)
         tokens = new PatternReplaceFilter(tokens, Pattern.compile("[\\p{Punct}]+$"), "", true);
+
+        // Apply WordDelimiterGraphFilter with the following options
+        tokens = new WordDelimiterGraphFilter(tokens,
+                WordDelimiterGraphFilter.GENERATE_WORD_PARTS // Ex: "PowerShot" => "Power" "Shot"
+                        //| WordDelimiterGraphFilter.GENERATE_NUMBER_PARTS // Ex: "500-42" => "500" "42"
+                        | WordDelimiterGraphFilter.PRESERVE_ORIGINAL // Ex: "500-42" => "500" "42" "500-42"
+                        | WordDelimiterGraphFilter.SPLIT_ON_CASE_CHANGE // Causes lowercase -> uppercase transition to start a new subword.
+                        //| WordDelimiterGraphFilter.SPLIT_ON_NUMERICS // If not set, causes numeric changes to be ignored (subwords will only be generated given SUBWORD_DELIM tokens).
+                        | WordDelimiterGraphFilter.STEM_ENGLISH_POSSESSIVE, // "O'Neil's" => "O", "Neil"
+                null);
 
         // Apply TERRIER stopword list
         tokens = new StopFilter(tokens, loadStopList("terrier.txt"));
+
+        // Remove tokens with empty text
+        tokens = new EmptyTokenFilter(tokens);
 
         return new TokenStreamComponents(source, tokens);
     }
