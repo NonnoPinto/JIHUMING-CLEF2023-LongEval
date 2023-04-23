@@ -4,6 +4,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.en.EnglishPossessiveFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import parse.LongEvalParser;
@@ -32,7 +33,7 @@ public class FrenchAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
-        final Tokenizer source = new StandardTokenizer();
+        final Tokenizer source = new WhitespaceTokenizer();
 
         TokenStream tokens = new LowerCaseFilter(source);
         // TODO: decide how are we going to process our French texts

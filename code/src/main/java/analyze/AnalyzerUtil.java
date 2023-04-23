@@ -1,11 +1,12 @@
 package analyze;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.WordlistLoader;
 import org.apache.lucene.analysis.tokenattributes.*;
 
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 
 /**
  * Helper class to load stop lists and <a href="http://opennlp.apache.org/" target="_blank">Apache OpenNLP</a> models
@@ -100,5 +101,45 @@ public class AnalyzerUtil {
         System.out.printf("%nElapsed time%n");
         System.out.printf("+ %d milliseconds%n", System.currentTimeMillis() - start);
         System.out.printf("####################################################################################%n");
+    }
+
+    /**
+     * Loads the required stop list among those available in the {@code resources} folder.
+     *
+     * @param stopFile the name of the file containing the stop list.
+     *
+     * @return the stop list
+     *
+     * @throws IllegalStateException if there is any issue while loading the stop list.
+     */
+    static CharArraySet loadStopList(final String stopFile) {
+
+        if (stopFile == null) {
+            throw new NullPointerException("Stop list file name cannot be null.");
+        }
+
+        if (stopFile.isEmpty()) {
+            throw new IllegalArgumentException("Stop list file name cannot be empty.");
+        }
+
+        // the stop list
+        CharArraySet stopList = null;
+
+        try {
+            // Get a reader for the file containing the stop list
+            Reader in = new BufferedReader(new InputStreamReader(CL.getResourceAsStream(stopFile)));
+
+            // Read the stop list
+            stopList = WordlistLoader.getWordSet(in);
+
+            // Close the file
+            in.close();
+
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                    String.format("Unable to load the stop list %s: %s", stopFile, e.getMessage()), e);
+        }
+
+        return stopList;
     }
 }

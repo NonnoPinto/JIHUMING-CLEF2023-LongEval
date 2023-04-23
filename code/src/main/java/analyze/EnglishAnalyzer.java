@@ -4,6 +4,9 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
+import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import parse.LongEvalParser;
 import parse.ParsedDocument;
@@ -11,8 +14,10 @@ import parse.ParsedDocument;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.regex.Pattern;
 
 import static analyze.AnalyzerUtil.consumeTokenStream;
+import static analyze.AnalyzerUtil.loadStopList;
 
 /**
  * Lucene custom analyzer created for the English version of the documents.
@@ -31,10 +36,20 @@ public class EnglishAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
-        final Tokenizer source = new StandardTokenizer();
-
-        TokenStream tokens = new LowerCaseFilter(source);
         // TODO: decide how are we going to process our English texts
+
+        // Whitespace tokenizer
+        final Tokenizer source = new WhitespaceTokenizer();
+
+        // Lowercase
+        TokenStream tokens = new LowerCaseFilter(source);
+
+        // Delete punctuation marks at the beginning/end of tokens
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("(?![a-zA-Z0-9]+)[|\"\\”\\“·():,.!?\\-]+"),
+                "", true);
+
+        // Apply TERRIER stopword list
+        tokens = new StopFilter(tokens, loadStopList("terrier.txt"));
 
         return new TokenStreamComponents(source, tokens);
     }

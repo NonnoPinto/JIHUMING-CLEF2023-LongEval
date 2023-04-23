@@ -38,7 +38,7 @@ public class NGramAnalyzer extends Analyzer
     protected TokenStreamComponents createComponents(String s) {
         // Delete whitespaces
         final Tokenizer source = new WhitespaceTokenizer();
-        // Lowercase all
+        // Lowercase
         TokenStream tokens = new LowerCaseFilter(source);
         // Delete real numbers
         tokens = new PatternReplaceFilter(tokens, Pattern.compile("^(?:-(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))|(?:0|(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))))(?:.\\d+|)$"),
