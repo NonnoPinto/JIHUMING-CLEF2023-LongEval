@@ -19,9 +19,25 @@ The whole parser is made by:
     \item \texttt{DocumentParser}: parses trec document
     \item \texttt{JsonDocument}: create a class for json doc
     \item \texttt{LongEvalParser}: counts the document and print out
-    \item \texttt{ParsedDocument}: document parsed has FIELDS including ID, %ENGLISH_BODY, and FRENCH_BODY TODO: for some reason, its an error
+    \item \texttt{ParsedDocument}: document parsed has FIELDS including ID,
+    ENGLISH\textunderscore BODY, and FRENCH\textunderscore BODY
 \end{itemize}
 \subsection{Analyzer}
+As basis for the analyzer we used the TokenStream class from Lucene, which 
+Consumes a TokenStream for the given text by using the provided
+Analyzer and prints diagnostic information about all the generated tokens and
+their Attributes.\\
+Streams are analyzed by applying these filters:
+\begin{itemize}
+    \item \texttt{WhitespaceTokenizer}: splits on and discards only
+    whitespace characters
+    \item \texttt{LowerCaseFilter}: converts all characters to lowercase
+    %TODO: are we checking for brand names?
+    \item \texttt{PatternReplaceFilter}: using RegExpr patter deletes puntactions
+    marks at the beginning and at the end of tokes
+    \item \texttt{StopFilter}: removes stop words applying terrier list\cite{stopword}
+    %TODO: french still not done
+\end{itemize}
 
 \subsection{Index}
 

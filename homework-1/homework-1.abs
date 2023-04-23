@@ -1,3 +1,7 @@
 Our group will propose an original and efficient information retrieval
-  system to handle canghes over time for the subject Search Engines,
-  University of Padova.
+  system for Longitudinal Evaluation of Model Performance (LongEval)
+  by CLEF2023\cite{LongEval}. Focus is on short term and long term
+  temporal persistence of the systems’ performance,
+  for both English and French documents. The aim is to find a model giving
+  good results for longitudinal evolving benchmarks,
+  for the subject Search Engines, University of Padova.

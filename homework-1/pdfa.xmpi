@@ -69,7 +69,7 @@
   <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/"> 
    <dc:format>application/pdf</dc:format> 
    <dc:type><rdf:Bag><rdf:li>journal</rdf:li></rdf:Bag></dc:type>
-   <dc:title><rdf:Alt><rdf:li xml:lang="x-default">SEUPD@CLEF: Team JIHUMING</rdf:li></rdf:Alt></dc:title>
+   <dc:title><rdf:Alt><rdf:li xml:lang="x-default">SEUPD@CLEF Task 1: Information retrieval for English and French documents: Team JIHUMING</rdf:li></rdf:Alt></dc:title>
    <dc:creator><rdf:Seq><rdf:li>Jesús Moncada Ramírez</rdf:li>
      <rdf:li>Isil Atabek</rdf:li>
      <rdf:li>Huimin Chen</rdf:li>
@@ -78,9 +78,12 @@
      <rdf:li>Giovanni Zago</rdf:li></rdf:Seq></dc:creator>
    <dc:rights><rdf:Alt><rdf:li xml:lang="x-default">© 2023 Copyright for this paper by its authors.\\ Use permitted under Creative Commons License Attribution 4.0 International (CC BY 4.0).</rdf:li></rdf:Alt></dc:rights>
    <dc:description><rdf:Alt><rdf:li xml:lang="x-default">CEUR Workshop Proceedings (CEUR-WS.org)</rdf:li></rdf:Alt></dc:description>
-   <dc:subject><rdf:Bag><rdf:li>Information retrieval </rdf:li>
-     <rdf:li>Times </rdf:li>
-     <rdf:li>Cahnges</rdf:li></rdf:Bag></dc:subject>
+   <dc:subject><rdf:Bag><rdf:li>CLEF 2023 </rdf:li>
+     <rdf:li>Information retrieval </rdf:li>
+     <rdf:li>LongEval </rdf:li>
+     <rdf:li>English </rdf:li>
+     <rdf:li>French </rdf:li>
+     <rdf:li>Search Engines</rdf:li></rdf:Bag></dc:subject>
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:prism="http://prismstandard.org/namespaces/basic/2.2/"> 
    <prism:aggregationType>journal</prism:aggregationType>
@@ -94,9 +97,9 @@
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/"> 
    <xmp:CreatorTool>LaTeX with hyperref</xmp:CreatorTool> 
-   <xmp:ModifyDate>2023-04-06T00:01:20+02:00</xmp:ModifyDate> 
-   <xmp:CreateDate>2023-04-06T00:01:20+02:00</xmp:CreateDate> 
-   <xmp:MetadataDate>2023-04-06T00:01:20+02:00</xmp:MetadataDate> 
+   <xmp:ModifyDate>2023-04-23T17:24:18+02:00</xmp:ModifyDate> 
+   <xmp:CreateDate>2023-04-23T17:24:18+02:00</xmp:CreateDate> 
+   <xmp:MetadataDate>2023-04-23T17:24:18+02:00</xmp:MetadataDate> 
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:xmpRights = "http://ns.adobe.com/xap/1.0/rights/"> 
    <xmpRights:Marked>True</xmpRights:Marked>
@@ -105,7 +108,7 @@
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/"> 
    <xmpMM:DocumentID>uuid:AED1DDBC-D24F-2551-4950-9F33EC0F2242</xmpMM:DocumentID> 
-   <xmpMM:InstanceID>uuid:D9706D83-6BB2-71E8-4198-1A1E523A0EC3</xmpMM:InstanceID> 
+   <xmpMM:InstanceID>uuid:40690245-EC4E-9335-C12B-F8B3A1A3A241</xmpMM:InstanceID> 
   </rdf:Description> 
  </rdf:RDF> 
 </x:xmpmeta> 
