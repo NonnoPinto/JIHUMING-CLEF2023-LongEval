@@ -19,6 +19,8 @@ import java.io.*;
  */
 public class AnalyzerUtil {
 
+    public static final String STRANGE_SYMBOLS_REGEX = "";
+
     /**
      * The class loader of this class. Needed for reading files from the {@code resource} directory.
      */

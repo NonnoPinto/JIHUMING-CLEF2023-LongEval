@@ -38,7 +38,6 @@ public class EnglishAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
-        // TODO: decide how are we going to process our English texts
 
         // Whitespace tokenizer
         final Tokenizer source = new WhitespaceTokenizer();
@@ -46,8 +45,9 @@ public class EnglishAnalyzer extends Analyzer
         // Lowercase
         TokenStream tokens = new LowerCaseFilter(source);
 
-        // Delete some estrange symbols found in documents
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[·–“”…]+"), "", true);
+        // Delete some strange symbols found in documents
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile(AnalyzerUtil.STRANGE_SYMBOLS_REGEX), "",
+                true);
 
         // Delete punctuation marks at the beginning of words (text)
         tokens = new PatternReplaceFilter(tokens, Pattern.compile("^[\\p{Punct}]+"), "", true);
@@ -58,7 +58,8 @@ public class EnglishAnalyzer extends Analyzer
         // Apply WordDelimiterGraphFilter with the following options
         tokens = new WordDelimiterGraphFilter(tokens,
                 WordDelimiterGraphFilter.GENERATE_WORD_PARTS // Ex: "PowerShot" => "Power" "Shot"
-                        //| WordDelimiterGraphFilter.GENERATE_NUMBER_PARTS // Ex: "500-42" => "500" "42"
+                        | WordDelimiterGraphFilter.GENERATE_NUMBER_PARTS // Ex: "500-42" => "500" "42"
+                        | WordDelimiterGraphFilter.CATENATE_NUMBERS // Ex: "500-42" => "50042"
                         | WordDelimiterGraphFilter.PRESERVE_ORIGINAL // Ex: "500-42" => "500" "42" "500-42"
                         | WordDelimiterGraphFilter.SPLIT_ON_CASE_CHANGE // Causes lowercase -> uppercase transition to start a new subword.
                         //| WordDelimiterGraphFilter.SPLIT_ON_NUMERICS // If not set, causes numeric changes to be ignored (subwords will only be generated given SUBWORD_DELIM tokens).

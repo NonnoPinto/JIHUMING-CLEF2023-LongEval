@@ -4,8 +4,11 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.en.EnglishPossessiveFilter;
+import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilter;
+import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import parse.LongEvalParser;
 import parse.ParsedDocument;
@@ -13,8 +16,10 @@ import parse.ParsedDocument;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.regex.Pattern;
 
 import static analyze.AnalyzerUtil.consumeTokenStream;
+import static analyze.AnalyzerUtil.loadStopList;
 
 /**
  * Lucene custom analyzer created for the French version of the documents.
@@ -33,10 +38,41 @@ public class FrenchAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
+        // Whitespace tokenizer
         final Tokenizer source = new WhitespaceTokenizer();
 
+        // Lowercase
         TokenStream tokens = new LowerCaseFilter(source);
-        // TODO: decide how are we going to process our French texts
+
+        // Delete some strange symbols found in documents
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile(AnalyzerUtil.STRANGE_SYMBOLS_REGEX), "",
+                true);
+
+        // Delete punctuation marks at the beginning of words (text)
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("^[\\p{Punct}]+"), "", true);
+
+        // Delete punctuation marks at the end of words (text)
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[\\p{Punct}]+$"), "", true);
+
+        // Apply WordDelimiterGraphFilter with the following options
+        tokens = new WordDelimiterGraphFilter(tokens,
+                WordDelimiterGraphFilter.GENERATE_WORD_PARTS // Ex: "PowerShot" => "Power" "Shot"
+                        | WordDelimiterGraphFilter.GENERATE_NUMBER_PARTS // Ex: "500-42" => "500" "42"
+                        | WordDelimiterGraphFilter.CATENATE_NUMBERS // Ex: "500-42" => "50042"
+                        | WordDelimiterGraphFilter.PRESERVE_ORIGINAL // Ex: "500-42" => "500" "42" "500-42"
+                        | WordDelimiterGraphFilter.SPLIT_ON_CASE_CHANGE, // Causes lowercase -> uppercase transition to start a new subword.
+                        //| WordDelimiterGraphFilter.SPLIT_ON_NUMERICS // If not set, causes numeric changes to be ignored (subwords will only be generated given SUBWORD_DELIM tokens).
+                        //| WordDelimiterGraphFilter.STEM_ENGLISH_POSSESSIVE, // "O'Neil's" => "O", "Neil"
+                null);
+
+        // TODO: take a look at the following methods
+        // tokens = FrenchMinimalStemFilter(tokens);
+        // tokens = FrenchLightStemFilter(tokens);
+
+        // TODO: find stopword list in French
+
+        // Remove tokens with empty text
+        tokens = new EmptyTokenFilter(tokens);
 
         return new TokenStreamComponents(source, tokens);
     }

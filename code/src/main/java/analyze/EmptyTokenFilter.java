@@ -24,9 +24,6 @@ public class EmptyTokenFilter extends FilteringTokenFilter {
     @Override
     protected boolean accept() throws IOException {
         final int length = termAtt.length();
-        if (length == 0)
-            return false;
-        else
-            return true;
+        return length != 0;
     }
 }
