@@ -44,9 +44,14 @@ public class EnglishAnalyzer extends Analyzer
         // Lowercase
         TokenStream tokens = new LowerCaseFilter(source);
 
-        // Delete punctuation marks at the beginning/end of tokens
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile("(?![a-zA-Z0-9]+)[|\"\\”\\“·():,.!?\\-]+"),
-                "", true);
+        // Delete some estrange symbols found in documents
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[–“”…]+"), "", true);
+
+        // Delete punctuation marks at the beginning of tokens
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("^[\\p{Punct}]+"), "", true);
+
+        // Delete punctuation marks at the end of tokens
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[\\p{Punct}]+$"), "", true);
 
         // Apply TERRIER stopword list
         tokens = new StopFilter(tokens, loadStopList("terrier.txt"));
