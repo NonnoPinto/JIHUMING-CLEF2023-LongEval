@@ -7,10 +7,8 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.en.EnglishMinimalStemFilter;
-import org.apache.lucene.analysis.en.PorterStemFilter;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilter;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 import parse.LongEvalParser;
 import parse.ParsedDocument;
 
@@ -23,7 +21,7 @@ import static analyze.AnalyzerUtil.consumeTokenStream;
 import static analyze.AnalyzerUtil.loadStopList;
 
 /**
- * Lucene custom analyzer created for the English version of the documents.
+ * Lucene custom {@link Analyzer} created for the English version of the LongEval documents.
  *
  * @version 1.0
  * @since 1.0
@@ -96,9 +94,11 @@ public class EnglishAnalyzer extends Analyzer
      */
     public static void main(String[] args) throws IOException {
         // Take one example (parsed) (English) document from the training set (pdExample)
-        final String FILE_NAME = "C:\\Users\\Lenovo\\Desktop\\seupd2223-jihuming\\code\\collector_kodicare_1.txt.json";
+        final String FILE_NAME_JMR = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME_NS = "C:\\Users\\Lenovo\\Desktop\\seupd2223-jihuming\\code\\collector_kodicare_1.txt.json";
+
         Reader reader = new FileReader(
-                FILE_NAME);
+                FILE_NAME_NS);
         LongEvalParser parser = new LongEvalParser(reader);
         ParsedDocument pdExample = null;
         if (parser.hasNext())

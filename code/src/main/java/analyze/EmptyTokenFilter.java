@@ -7,7 +7,8 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import java.io.IOException;
 
 /**
- * Lucene custom toke filter to remove tokens with empty text.
+ * Lucene custom {@link org.apache.lucene.analysis.TokenFilter} to remove tokens with empty text, this is, with length
+ * equals to 0.
  *
  * @version 1.0
  * @since 1.0
@@ -24,6 +25,7 @@ public class EmptyTokenFilter extends FilteringTokenFilter {
     @Override
     protected boolean accept() throws IOException {
         final int length = termAtt.length();
+        // length == 0 -> false; length != 0 -> true
         return length != 0;
     }
 }

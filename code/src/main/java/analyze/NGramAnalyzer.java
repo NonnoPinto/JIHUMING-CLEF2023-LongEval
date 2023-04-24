@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
 import static analyze.AnalyzerUtil.consumeTokenStream;
 
 /**
- * Lucene custom analyzer generating N-Grams for the English and French versions of the documents.
+ * Lucene custom {@link Analyzer} generating N-Grams for the English and French versions of the documents. Note that the
+ * parameter N must be manually coded in this class.
  *
  * @version 1.0
  * @since 1.0
@@ -43,7 +44,7 @@ public class NGramAnalyzer extends Analyzer
         // Lowercase
         TokenStream tokens = new LowerCaseFilter(source);
 
-        // Delete everything but letters (also French accent characters)
+        // Delete everything but letters (also maintain French accent characters)
         tokens = new PatternReplaceFilter(tokens, Pattern.compile("[^a-zéàèùçâêîôûëïü]+"), "", true);
 
         // Delete empty tokens
@@ -74,9 +75,11 @@ public class NGramAnalyzer extends Analyzer
      */
     public static void main(String[] args) throws IOException {
         // Take one example (parsed) (English) document from the training set (pdExample)
-        final String FILE_NAME = "C:\\longeval_train\\publish\\French\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME_JMR = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME_NS = "";
+
         Reader reader = new FileReader(
-                FILE_NAME);
+                FILE_NAME_NS);
         LongEvalParser parser = new LongEvalParser(reader);
         ParsedDocument pdExample = null;
         if (parser.hasNext())

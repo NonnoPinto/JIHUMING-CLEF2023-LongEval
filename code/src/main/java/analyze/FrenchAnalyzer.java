@@ -6,12 +6,9 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
-import org.apache.lucene.analysis.en.EnglishPossessiveFilter;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilter;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
 import org.apache.lucene.analysis.fr.FrenchMinimalStemFilter;
-import org.apache.lucene.analysis.fr.FrenchLightStemFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 import parse.LongEvalParser;
 import parse.ParsedDocument;
 
@@ -24,7 +21,7 @@ import static analyze.AnalyzerUtil.consumeTokenStream;
 import static analyze.AnalyzerUtil.loadStopList;
 
 /**
- * Lucene custom analyzer created for the French version of the documents.
+ * Lucene custom {@link Analyzer} created for the French version of the LongEval documents.
  *
  * @version 1.0
  * @since 1.0
@@ -40,6 +37,7 @@ public class FrenchAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
+
         // Whitespace tokenizer
         final Tokenizer source = new WhitespaceTokenizer();
 
@@ -68,11 +66,12 @@ public class FrenchAnalyzer extends Analyzer
                         //| WordDelimiterGraphFilter.STEM_ENGLISH_POSSESSIVE, // "O'Neil's" => "O", "Neil"
                 null);
 
-        //Applying French minimal stem filter
+        // Applying French minimal stem filter
         tokens = new FrenchMinimalStemFilter(tokens);
 
-        //Reading stopwords from stopwords list found at: https://github.com/stopwords-iso/stopwords-fr/blob/master/stopwords-fr.txt
+        // Reading stopwords from stopwords list found at: https://github.com/stopwords-iso/stopwords-fr/blob/master/stopwords-fr.txt
         tokens = new StopFilter(tokens, loadStopList("stopwords_fr.txt"));
+
         // Remove tokens with empty text
         tokens = new EmptyTokenFilter(tokens);
 
@@ -98,9 +97,11 @@ public class FrenchAnalyzer extends Analyzer
      */
     public static void main(String[] args) throws IOException {
         // Take one example (parsed) (French) document from the training set (pdExample)
-        final String FILE_NAME = "C:\\Users\\Lenovo\\Desktop\\seupd2223-jihuming\\code\\collector_kodicare_1.txt (1).json";
+        final String FILE_NAME_JMR = "C:\\longeval_train\\publish\\French\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME_NS = "C:\\Users\\Lenovo\\Desktop\\seupd2223-jihuming\\code\\collector_kodicare_1.txt (1).json";
+
         Reader reader = new FileReader(
-                FILE_NAME);
+                FILE_NAME_NS);
         LongEvalParser parser = new LongEvalParser(reader);
         ParsedDocument pdExample = null;
         if (parser.hasNext())

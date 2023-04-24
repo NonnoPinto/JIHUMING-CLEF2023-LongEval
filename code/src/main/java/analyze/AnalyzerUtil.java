@@ -10,8 +10,8 @@ import java.io.*;
 
 /**
  * Helper class to load stop lists and <a href="http://opennlp.apache.org/" target="_blank">Apache OpenNLP</a> models
- * from the {@code resource} directory as well as consume {@link org.apache.lucene.analysis.TokenStream}s and print
- * diagnostic information about them.
+ * from the {@code resource} directory as well as consume {@link TokenStream}s and print diagnostic information about
+ * them.
  *
  * @author Nicola Ferro
  * @version 1.0
@@ -19,7 +19,9 @@ import java.io.*;
  */
 public class AnalyzerUtil {
 
-    //Some strange symbols found in the documents
+    /**
+     * Some strage symbols found in LongEval documents.
+     */
     public static final String STRANGE_SYMBOLS_REGEX = "[·'’_…–-]";
 
     /**
@@ -28,9 +30,8 @@ public class AnalyzerUtil {
     private static final ClassLoader CL = AnalyzerUtil.class.getClassLoader();
 
     /**
-     * Consumes a {@link org.apache.lucene.analysis.TokenStream} for the given text by using the provided
-     * {@link org.apache.lucene.analysis.Analyzer} and prints diagnostic information about all the generated tokens and
-     * their {@link org.apache.lucene.util.Attribute}s.
+     * Consumes a {@link TokenStream} for the given text by using the provided {@link Analyzer} and prints diagnostic
+     * information about all the generated tokens and their {@link org.apache.lucene.util.Attribute}s.
      *
      * @param a the analyzer to use.
      * @param t the text to process.
@@ -68,7 +69,6 @@ public class AnalyzerUtil {
 
         // Optional flags a token can have
         final SentenceAttribute sentenceAttribute = stream.addAttribute(SentenceAttribute.class);
-
 
         System.out.printf("####################################################################################%n");
         System.out.printf("Text to be processed%n");

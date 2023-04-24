@@ -3,14 +3,9 @@ package index;
 import analyze.FrenchAnalyzer;
 import analyze.NGramAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
-import org.apache.lucene.analysis.core.StopFilterFactory;
-import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
-import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -455,10 +450,10 @@ public class MultilingualDirectoryIndexer {
         final int ramBuffer = 256;
         final String enDocsPath = "C:\\longeval_train\\publish\\English\\Documents\\Json";
         final String frDocsPath = "C:\\longeval_train\\publish\\French\\Documents\\Json";
-        final String indexPath = "created_indexes/22-04-2023-multilingual-stop-stem-ngram";
+        final String indexPath = "created_indexes/2023_04_24_multilingual_3gram";
 
         final String extension = "json";
-        final int expectedDocs = 33079;
+        final int expectedDocs = 1570734;
         final String charsetName = "ISO-8859-1";
 
         final EnglishAnalyzer enAn = new EnglishAnalyzer();
