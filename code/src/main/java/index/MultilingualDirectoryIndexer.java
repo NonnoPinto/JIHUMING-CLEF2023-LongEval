@@ -1,10 +1,12 @@
 package index;
 
+import analyze.FrenchAnalyzer;
 import analyze.NGramAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.StopFilterFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.en.PorterStemFilterFactory;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -459,18 +461,11 @@ public class MultilingualDirectoryIndexer {
         final int expectedDocs = 33079;
         final String charsetName = "ISO-8859-1";
 
-        // Default analyzer //TODO: remove when EnglishAnalyzer and FrenchAnalyzer ready
-        final Analyzer a = CustomAnalyzer.builder()
-                .withTokenizer(StandardTokenizerFactory.class)
-                .addTokenFilter(LowerCaseFilterFactory.class)
-                .addTokenFilter(StopFilterFactory.class)
-                .addTokenFilter(PorterStemFilterFactory.class).build();
-
-        // final EnglishAnalyzer enAn = new EnglishAnalyzer(); TODO: uncomment when EnglishAnalyzer ready
-        // final FrenchAnalyzer frAn = new FrenchAnalyzer(); TODO: uncomment when FrenchAnalyzer ready
+        final EnglishAnalyzer enAn = new EnglishAnalyzer();
+        final FrenchAnalyzer frAn = new FrenchAnalyzer();
         final NGramAnalyzer ngramAn = new NGramAnalyzer();
 
-        MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(a, a, ngramAn, new BM25Similarity(),
+        MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(enAn, frAn, ngramAn, new BM25Similarity(),
                 ramBuffer, indexPath, enDocsPath, frDocsPath, extension, charsetName, expectedDocs,
                 LongEvalParser.class);
 

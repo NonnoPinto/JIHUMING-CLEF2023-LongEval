@@ -36,16 +36,19 @@ public class NGramAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
-        // Delete whitespaces
+
+        // Whitespace tokenizer
         final Tokenizer source = new WhitespaceTokenizer();
+
         // Lowercase
         TokenStream tokens = new LowerCaseFilter(source);
-        // Delete real numbers
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile("^(?:-(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))|(?:0|(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))))(?:.\\d+|)$"),
-                "", true);
-        // Delete punctuation marks
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[,.!?\\-]"),
-                "", true);
+
+        // Delete everything but letters (also French accent characters)
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[^a-zéàèùçâêîôûëïü]+"), "", true);
+
+        // Delete empty tokens
+        tokens = new EmptyTokenFilter(tokens);
+
         // Create N-Gram
         tokens = new NGramTokenFilter(tokens, N);
 
@@ -71,7 +74,7 @@ public class NGramAnalyzer extends Analyzer
      */
     public static void main(String[] args) throws IOException {
         // Take one example (parsed) (English) document from the training set (pdExample)
-        final String FILE_NAME = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME = "C:\\longeval_train\\publish\\French\\Documents\\Json\\collector_kodicare_1.txt.json";
         Reader reader = new FileReader(
                 FILE_NAME);
         LongEvalParser parser = new LongEvalParser(reader);

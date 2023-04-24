@@ -372,20 +372,13 @@ public class Searcher {
 
         final int maxDocsRetrieved = 100;
 
-        //TODO: remove this analyzer in order to use the ones implemented
-        final Analyzer a = CustomAnalyzer.builder()
-                .withTokenizer(StandardTokenizerFactory.class)
-                .addTokenFilter(LowerCaseFilterFactory.class)
-                .addTokenFilter(StopFilterFactory.class)
-                .addTokenFilter(PorterStemFilterFactory.class).build();
-
         //All analyzers from analyze package
         final EnglishAnalyzer enAn = new EnglishAnalyzer();
         final FrenchAnalyzer frAn = new FrenchAnalyzer();
         final NGramAnalyzer ngramAn = new NGramAnalyzer();
 
-        Searcher s = new Searcher(a, a, ngramAn, new BM25Similarity(), indexPath, topics, 50,
-                runID, runPath, maxDocsRetrieved);
+        Searcher s = new Searcher(enAn, frAn, ngramAn, new BM25Similarity(), indexPath, topics, 50, runID,
+                runPath, maxDocsRetrieved);
 
         s.search();
     }
