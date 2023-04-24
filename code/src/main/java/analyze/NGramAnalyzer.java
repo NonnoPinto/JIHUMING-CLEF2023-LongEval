@@ -44,7 +44,7 @@ public class NGramAnalyzer extends Analyzer
         tokens = new PatternReplaceFilter(tokens, Pattern.compile("^(?:-(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))|(?:0|(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))))(?:.\\d+|)$"),
                 "", true);
         // Delete punctuation marks
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[.!?\\-]"),
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[,.!?\\-]"),
                 "", true);
         // Create N-Gram
         tokens = new NGramTokenFilter(tokens, N);

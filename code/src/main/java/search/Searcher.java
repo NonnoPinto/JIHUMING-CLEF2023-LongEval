@@ -338,6 +338,16 @@ public class Searcher {
         System.out.printf("#### Searching complete ####%n");
     }
 
+    /*
+     * RUN EXPERIMENTS IDEAS:
+     * (1): English topics - English + French + 3-gram
+     * (2): English topics - English + 3-gram
+     * (3): English topics - English
+     * (4): French topics - English + French + 3-gram
+     * (5): French topics - French + 3-gram
+     * (6): French topics - French
+     */
+
     /**
      * Main method of the class. Just for testing purposes.
      *
