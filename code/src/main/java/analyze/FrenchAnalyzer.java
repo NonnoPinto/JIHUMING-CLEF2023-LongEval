@@ -9,6 +9,8 @@ import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.en.EnglishPossessiveFilter;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilter;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
+import org.apache.lucene.analysis.fr.FrenchMinimalStemFilter;
+import org.apache.lucene.analysis.fr.FrenchLightStemFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import parse.LongEvalParser;
 import parse.ParsedDocument;
@@ -45,6 +47,7 @@ public class FrenchAnalyzer extends Analyzer
         TokenStream tokens = new LowerCaseFilter(source);
 
         // Delete some strange symbols found in documents
+
         tokens = new PatternReplaceFilter(tokens, Pattern.compile(AnalyzerUtil.STRANGE_SYMBOLS_REGEX), "",
                 true);
 
@@ -65,12 +68,11 @@ public class FrenchAnalyzer extends Analyzer
                         //| WordDelimiterGraphFilter.STEM_ENGLISH_POSSESSIVE, // "O'Neil's" => "O", "Neil"
                 null);
 
-        // TODO: take a look at the following methods
-        // tokens = FrenchMinimalStemFilter(tokens);
-        // tokens = FrenchLightStemFilter(tokens);
+        //Applying French minimal stem filter
+        tokens = new FrenchMinimalStemFilter(tokens);
 
-        // TODO: find stopword list in French
-
+        //Reading stopwords from stopwords list found at: https://github.com/stopwords-iso/stopwords-fr/blob/master/stopwords-fr.txt
+        tokens = new StopFilter(tokens, loadStopList("stopwords_fr.txt"));
         // Remove tokens with empty text
         tokens = new EmptyTokenFilter(tokens);
 
@@ -96,7 +98,7 @@ public class FrenchAnalyzer extends Analyzer
      */
     public static void main(String[] args) throws IOException {
         // Take one example (parsed) (French) document from the training set (pdExample)
-        final String FILE_NAME = "C:\\longeval_train\\publish\\French\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME = "C:\\Users\\Lenovo\\Desktop\\seupd2223-jihuming\\code\\collector_kodicare_1.txt (1).json";
         Reader reader = new FileReader(
                 FILE_NAME);
         LongEvalParser parser = new LongEvalParser(reader);

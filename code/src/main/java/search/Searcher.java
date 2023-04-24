@@ -1,5 +1,7 @@
 package search;
 
+import analyze.EnglishAnalyzer;
+import analyze.FrenchAnalyzer;
 import analyze.NGramAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
@@ -370,14 +372,16 @@ public class Searcher {
 
         final int maxDocsRetrieved = 100;
 
+        //TODO: remove this analyzer in order to use the ones implemented
         final Analyzer a = CustomAnalyzer.builder()
                 .withTokenizer(StandardTokenizerFactory.class)
                 .addTokenFilter(LowerCaseFilterFactory.class)
                 .addTokenFilter(StopFilterFactory.class)
                 .addTokenFilter(PorterStemFilterFactory.class).build();
 
-        // final EnglishAnalyzer enAn = new EnglishAnalyzer(); //TODO: uncomment when EnglishAnalyzer is ready
-        // final FrenchAnalyzer frAn = new FrenchAnalyzer(); //TODO: uncomment when FrenchAnalyzer is ready
+        //All analyzers from analyze package
+        final EnglishAnalyzer enAn = new EnglishAnalyzer();
+        final FrenchAnalyzer frAn = new FrenchAnalyzer();
         final NGramAnalyzer ngramAn = new NGramAnalyzer();
 
         Searcher s = new Searcher(a, a, ngramAn, new BM25Similarity(), indexPath, topics, 50,

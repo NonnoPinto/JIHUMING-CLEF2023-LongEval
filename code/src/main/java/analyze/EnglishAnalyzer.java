@@ -6,6 +6,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.StopFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
+import org.apache.lucene.analysis.en.EnglishMinimalStemFilter;
 import org.apache.lucene.analysis.en.PorterStemFilter;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilter;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
@@ -68,7 +69,8 @@ public class EnglishAnalyzer extends Analyzer
 
         // Apply TERRIER stopword list
         tokens = new StopFilter(tokens, loadStopList("terrier.txt"));
-
+        //applying English Minimal Stem Filter
+        tokens = new EnglishMinimalStemFilter(tokens);
         // Remove tokens with empty text
         tokens = new EmptyTokenFilter(tokens);
 
@@ -94,7 +96,7 @@ public class EnglishAnalyzer extends Analyzer
      */
     public static void main(String[] args) throws IOException {
         // Take one example (parsed) (English) document from the training set (pdExample)
-        final String FILE_NAME = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME = "C:\\Users\\Lenovo\\Desktop\\seupd2223-jihuming\\code\\collector_kodicare_1.txt.json";
         Reader reader = new FileReader(
                 FILE_NAME);
         LongEvalParser parser = new LongEvalParser(reader);

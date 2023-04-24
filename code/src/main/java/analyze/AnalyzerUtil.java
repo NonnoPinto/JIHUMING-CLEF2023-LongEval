@@ -19,7 +19,8 @@ import java.io.*;
  */
 public class AnalyzerUtil {
 
-    public static final String STRANGE_SYMBOLS_REGEX = "";
+    //Some strange symbols found in the documents
+    public static final String STRANGE_SYMBOLS_REGEX = "[·'’_…–-]";
 
     /**
      * The class loader of this class. Needed for reading files from the {@code resource} directory.
@@ -42,7 +43,7 @@ public class AnalyzerUtil {
         final long start = System.currentTimeMillis();
 
         // Create a new TokenStream for a dummy field
-        final TokenStream stream = a.tokenStream("field", new StringReader(t));
+        final TokenStream stream = a.tokenStream("body", new StringReader(t));
 
         // Lucene tokens are decorated with different attributes whose values contain information about the token,
         // e.g. the term represented by the token, the offset of the token, etc.
