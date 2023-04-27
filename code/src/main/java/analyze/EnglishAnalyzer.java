@@ -9,12 +9,15 @@ import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.en.EnglishMinimalStemFilter;
 import org.apache.lucene.analysis.miscellaneous.WordDelimiterGraphFilter;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
+import org.apache.lucene.wordnet.SynonymMap;
+import org.apache.lucene.wordnet.SynonymTokenFilter;
 import parse.LongEvalParser;
 import parse.ParsedDocument;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
 import static analyze.AnalyzerUtil.consumeTokenStream;
@@ -29,6 +32,11 @@ import static analyze.AnalyzerUtil.loadStopList;
 public class EnglishAnalyzer extends Analyzer
 {
     /**
+     * The class loader of this class. Needed for reading files from the {@code resource} directory.
+     */
+    private static final ClassLoader CL = AnalyzerUtil.class.getClassLoader();
+
+    /**
      * Creates a new instance of the analyzer.
      */
     public EnglishAnalyzer() {
@@ -37,6 +45,16 @@ public class EnglishAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
+
+        // Synonym map to use in SynonymTokenFilter
+        SynonymMap synMap;
+        try {
+            // Here we load the file wn_s.pl in the resources folder (Prolog version from: https://wordnet.princeton.edu/download/current-version)
+            synMap = new SynonymMap(CL.getResourceAsStream("prolog\\wn_s.pl"));
+        } catch (IOException  e) {
+            throw new IllegalArgumentException(
+                    String.format("Unable to find synonym file: %s.", e.getMessage()), e);
+        }
 
         // Whitespace tokenizer
         final Tokenizer source = new WhitespaceTokenizer();
@@ -67,6 +85,9 @@ public class EnglishAnalyzer extends Analyzer
 
         // Apply TERRIER stopword list
         tokens = new StopFilter(tokens, loadStopList("terrier.txt"));
+
+        // Apply query expansion with synonyms
+        tokens = new SynonymTokenFilter(tokens, synMap, 10);
 
         // Apply English Minimal Stem Filter
         tokens = new EnglishMinimalStemFilter(tokens);
