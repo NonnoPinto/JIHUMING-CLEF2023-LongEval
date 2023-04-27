@@ -40,6 +40,11 @@ appPass.txt
 *.synctex.gz
 *.bbl
 *.blg
+*.abs
+*.fdb_latexmk
+*.fls
+*.xmpdata
+*.xmpi
 
 # Matlab
 *.m~
