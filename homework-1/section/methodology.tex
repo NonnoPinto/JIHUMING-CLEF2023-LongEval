@@ -30,14 +30,35 @@ their Attributes.\\
 Streams are analyzed by applying these filters:
 \begin{itemize}
     \item \texttt{WhitespaceTokenizer}: splits on and discards only
-    whitespace characters
-    \item \texttt{LowerCaseFilter}: converts all characters to lowercase
-    %TODO: are we checking for brand names?
-    \item \texttt{PatternReplaceFilter}: using RegExpr patter deletes puntactions
-    marks at the beginning and at the end of tokes
+    whitespace characters %TODO: initizlized but never used
+    \item \texttt{PatternReplaceFilter}: it's applied twice. First time, using RegExpr patter deletes punctuations
+    marks at the beginning of tokens, second time it does the same but at the end of them
+    \item \texttt{WordDelimiterGraphFilter}: it splits words into subwords and performs optional transformations on subword groups.
+        In our case, we decided to use these filters:
+    \begin{lstlisting}[language=Java]
+WordDelimiterGraphFilter.GENERATE_WORD_PARTS
+                    // Ex: "PowerShot" => "Power" "Shot"
+| WordDelimiterGraphFilter.GENERATE_NUMBER_PARTS
+                    // Ex: "500-42" => "500" "42"
+| WordDelimiterGraphFilter.CATENATE_NUMBERS
+                    // Ex: "500-42" => "50042"
+| WordDelimiterGraphFilter.PRESERVE_ORIGINAL
+                    // Ex: "500-42" => "500" "42" "500-42"
+| WordDelimiterGraphFilter.SPLIT_ON_CASE_CHANGE
+                    // Causes lowercase -> uppercase transition to start a new subword.
+| WordDelimiterGraphFilter.STEM_ENGLISH_POSSESSIVE
+                    // "O'Neil's" => "O", "Neil"
+    \end{lstlisting}
+    \item \texttt{LowerCaseFilter}: converts all characters to lowercase %TODO: are we checking for BRAND names? (apple == Apple?)
     \item \texttt{StopFilter}: removes stop words applying terrier list\cite{stopword}
-    %TODO: french still not done
+    \item \texttt{SynonymTokenFilter}: only for English analyzer, it uses WordNet lexical database\cite{wordnet} to group words
+        interlinked by means of conceptual-semantic and lexical relations
+    \item \texttt{MinimalStemFilter}: implementing S-Stemmer from Harman article\cite{engStemFilter} for English language
+        and Savoy stemming procedure\cite{frStemFilter}, it divides words into stems
+    \item \texttt{EmptyTokenFilter}: removes tokens with length 0
 \end{itemize}
+    Lastly, the \texttt{NGramAnalyzer} is applied, trying tokens of one, two and three words. We decided to set the max at three,
+    but this number is heuristic and can be changed if results shows better numbers.\\
 
 \subsection{Index}
 We used the standard Lucene Indexer with the BM25\cite{BM25} similarity.\\

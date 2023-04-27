@@ -92,6 +92,16 @@
 \RequirePackage{iftex}
 \RequirePackage{microtype}
 \RequirePackage{hyperref}
+\RequirePackage{listings, xcolor}
+\lstset{
+showstringspaces = false, %% prevent space marking in strings, string is defined as the text that is generally printed directly to the console
+commentstyle = \color{gray}, %% set comment color
+keywordstyle = \color{blue}, %% set keyword color
+stringstyle = \color{red}, %% set string color
+rulecolor = \color{black}, %% set frame color to avoid being affected by text color
+basicstyle = \small \ttfamily , %% set listing font and size
+numberstyle = \tiny,
+}
 
 %% PDF/A support
 
