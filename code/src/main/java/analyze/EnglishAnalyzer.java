@@ -41,11 +41,8 @@ public class EnglishAnalyzer extends Analyzer
         // Whitespace tokenizer
         final Tokenizer source = new WhitespaceTokenizer();
 
-        // Lowercase
-        TokenStream tokens = new LowerCaseFilter(source);
-
         // Delete some strange symbols found in documents
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile(AnalyzerUtil.STRANGE_SYMBOLS_REGEX), "",
+        TokenStream tokens = new PatternReplaceFilter(source, Pattern.compile(AnalyzerUtil.STRANGE_SYMBOLS_REGEX), "",
                 true);
 
         // Delete punctuation marks at the beginning of words (text)
@@ -61,14 +58,19 @@ public class EnglishAnalyzer extends Analyzer
                         | WordDelimiterGraphFilter.CATENATE_NUMBERS // Ex: "500-42" => "50042"
                         | WordDelimiterGraphFilter.PRESERVE_ORIGINAL // Ex: "500-42" => "500" "42" "500-42"
                         | WordDelimiterGraphFilter.SPLIT_ON_CASE_CHANGE // Causes lowercase -> uppercase transition to start a new subword.
-                        //| WordDelimiterGraphFilter.SPLIT_ON_NUMERICS // If not set, causes numeric changes to be ignored (subwords will only be generated given SUBWORD_DELIM tokens).
+                        // | WordDelimiterGraphFilter.SPLIT_ON_NUMERICS // If not set, causes numeric changes to be ignored (subwords will only be generated given SUBWORD_DELIM tokens).
                         | WordDelimiterGraphFilter.STEM_ENGLISH_POSSESSIVE, // "O'Neil's" => "O", "Neil"
                 null);
 
+        // Lowercase
+        tokens = new LowerCaseFilter(tokens);
+
         // Apply TERRIER stopword list
         tokens = new StopFilter(tokens, loadStopList("terrier.txt"));
-        //applying English Minimal Stem Filter
+
+        // Apply English Minimal Stem Filter
         tokens = new EnglishMinimalStemFilter(tokens);
+
         // Remove tokens with empty text
         tokens = new EmptyTokenFilter(tokens);
 
@@ -98,7 +100,7 @@ public class EnglishAnalyzer extends Analyzer
         final String FILE_NAME_NS = "C:\\Users\\Lenovo\\Desktop\\seupd2223-jihuming\\code\\collector_kodicare_1.txt.json";
 
         Reader reader = new FileReader(
-                FILE_NAME_NS);
+                FILE_NAME_JMR);
         LongEvalParser parser = new LongEvalParser(reader);
         ParsedDocument pdExample = null;
         if (parser.hasNext())

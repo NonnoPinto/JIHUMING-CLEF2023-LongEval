@@ -41,13 +41,9 @@ public class FrenchAnalyzer extends Analyzer
         // Whitespace tokenizer
         final Tokenizer source = new WhitespaceTokenizer();
 
-        // Lowercase
-        TokenStream tokens = new LowerCaseFilter(source);
-
         // Delete some strange symbols found in documents
-
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile(AnalyzerUtil.STRANGE_SYMBOLS_REGEX), "",
-                true);
+        TokenStream tokens = new PatternReplaceFilter(source, Pattern.compile(AnalyzerUtil.STRANGE_SYMBOLS_REGEX),
+                "", true);
 
         // Delete punctuation marks at the beginning of words (text)
         tokens = new PatternReplaceFilter(tokens, Pattern.compile("^[\\p{Punct}]+"), "", true);
@@ -66,11 +62,14 @@ public class FrenchAnalyzer extends Analyzer
                         //| WordDelimiterGraphFilter.STEM_ENGLISH_POSSESSIVE, // "O'Neil's" => "O", "Neil"
                 null);
 
-        // Applying French minimal stem filter
-        tokens = new FrenchMinimalStemFilter(tokens);
+        // Lowercase
+        tokens = new LowerCaseFilter(tokens);
 
         // Reading stopwords from stopwords list found at: https://github.com/stopwords-iso/stopwords-fr/blob/master/stopwords-fr.txt
         tokens = new StopFilter(tokens, loadStopList("stopwords_fr.txt"));
+
+        // Apply French minimal stem filter
+        tokens = new FrenchMinimalStemFilter(tokens);
 
         // Remove tokens with empty text
         tokens = new EmptyTokenFilter(tokens);
@@ -101,7 +100,7 @@ public class FrenchAnalyzer extends Analyzer
         final String FILE_NAME_NS = "C:\\Users\\Lenovo\\Desktop\\seupd2223-jihuming\\code\\collector_kodicare_1.txt (1).json";
 
         Reader reader = new FileReader(
-                FILE_NAME_NS);
+                FILE_NAME_JMR);
         LongEvalParser parser = new LongEvalParser(reader);
         ParsedDocument pdExample = null;
         if (parser.hasNext())
