@@ -49,7 +49,8 @@ public class EnglishAnalyzer extends Analyzer
         // Synonym map to use in SynonymTokenFilter
         SynonymMap synMap;
         try {
-            // Here we load the file wn_s.pl in the resources folder (Prolog version from: https://wordnet.princeton.edu/download/current-version)
+            // Load wordnet synonym map
+            // Load file wn_s.pl (in resources/) (Prolog version from: https://wordnet.princeton.edu/download/current-version)
             synMap = new SynonymMap(CL.getResourceAsStream("prolog\\wn_s.pl"));
         } catch (IOException  e) {
             throw new IllegalArgumentException(
