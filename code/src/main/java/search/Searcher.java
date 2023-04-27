@@ -1,14 +1,9 @@
 package search;
 
+import analyze.EnglishAnalyzer;
+import analyze.FrenchAnalyzer;
 import analyze.NGramAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
-import org.apache.lucene.analysis.core.StopFilterFactory;
-import org.apache.lucene.analysis.custom.CustomAnalyzer;
-import org.apache.lucene.analysis.en.PorterStemFilterFactory;
-import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
-import org.apache.lucene.benchmark.quality.QualityQuery;
-import org.apache.lucene.benchmark.quality.trec.TrecTopicsReader;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -23,7 +18,6 @@ import parse.ParsedDocument;
 import topic.LongEvalTopic;
 import topic.LongEvalTopicReader;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -338,6 +332,16 @@ public class Searcher {
         System.out.printf("#### Searching complete ####%n");
     }
 
+    /*
+     * RUN EXPERIMENTS IDEAS:
+     * (1): English topics - English + French + 3-gram
+     * (2): English topics - English + 3-gram
+     * (3): English topics - English
+     * (4): French topics - English + French + 3-gram
+     * (5): French topics - French + 3-gram
+     * (6): French topics - French
+     */
+
     /**
      * Main method of the class. Just for testing purposes.
      *
@@ -358,20 +362,15 @@ public class Searcher {
         final String RUN_SUFFIX = ".txt";
         final String runID = RUN_PREFIX+RUN_INFO+RUN_SUFFIX;
 
-        final int maxDocsRetrieved = 100;
+        final int maxDocsRetrieved = 1000;
 
-        final Analyzer a = CustomAnalyzer.builder()
-                .withTokenizer(StandardTokenizerFactory.class)
-                .addTokenFilter(LowerCaseFilterFactory.class)
-                .addTokenFilter(StopFilterFactory.class)
-                .addTokenFilter(PorterStemFilterFactory.class).build();
-
-        // final EnglishAnalyzer enAn = new EnglishAnalyzer(); //TODO: uncomment when EnglishAnalyzer is ready
-        // final FrenchAnalyzer frAn = new FrenchAnalyzer(); //TODO: uncomment when FrenchAnalyzer is ready
+        //All analyzers from analyze package
+        final EnglishAnalyzer enAn = new EnglishAnalyzer();
+        final FrenchAnalyzer frAn = new FrenchAnalyzer();
         final NGramAnalyzer ngramAn = new NGramAnalyzer();
 
-        Searcher s = new Searcher(a, a, ngramAn, new BM25Similarity(), indexPath, topics, 50,
-                runID, runPath, maxDocsRetrieved);
+        Searcher s = new Searcher(enAn, frAn, ngramAn, new BM25Similarity(), indexPath, topics, 50, runID,
+                runPath, maxDocsRetrieved);
 
         s.search();
     }

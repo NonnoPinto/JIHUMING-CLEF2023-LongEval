@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
 import static analyze.AnalyzerUtil.consumeTokenStream;
 
 /**
- * Lucene custom analyzer generating N-Grams for the English and French versions of the documents.
+ * Lucene custom {@link Analyzer} generating N-Grams for the English and French versions of the documents. Note that the
+ * parameter N must be manually coded in this class.
  *
  * @version 1.0
  * @since 1.0
@@ -36,16 +37,19 @@ public class NGramAnalyzer extends Analyzer
 
     @Override
     protected TokenStreamComponents createComponents(String s) {
-        // Delete whitespaces
+
+        // Whitespace tokenizer
         final Tokenizer source = new WhitespaceTokenizer();
+
         // Lowercase
         TokenStream tokens = new LowerCaseFilter(source);
-        // Delete real numbers
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile("^(?:-(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))|(?:0|(?:[1-9](?:\\d{0,2}(?:,\\d{3})+|\\d*))))(?:.\\d+|)$"),
-                "", true);
-        // Delete punctuation marks
-        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[.!?\\-]"),
-                "", true);
+
+        // Delete everything but letters (also maintain French accent characters)
+        tokens = new PatternReplaceFilter(tokens, Pattern.compile("[^a-zéàèùçâêîôûëïü]+"), "", true);
+
+        // Delete empty tokens
+        tokens = new EmptyTokenFilter(tokens);
+
         // Create N-Gram
         tokens = new NGramTokenFilter(tokens, N);
 
@@ -71,9 +75,11 @@ public class NGramAnalyzer extends Analyzer
      */
     public static void main(String[] args) throws IOException {
         // Take one example (parsed) (English) document from the training set (pdExample)
-        final String FILE_NAME = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME_JMR = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME_NS = "";
+
         Reader reader = new FileReader(
-                FILE_NAME);
+                FILE_NAME_NS);
         LongEvalParser parser = new LongEvalParser(reader);
         ParsedDocument pdExample = null;
         if (parser.hasNext())
