@@ -262,7 +262,7 @@ public class MultilingualDirectoryIndexer {
      *
      * @throws IOException if something goes wrong while indexing.
      */
-    public void index() throws IOException {
+    public void index(int expectedDocs) throws IOException {
 
         System.out.printf("%n#### Start indexing ####%n");
 
@@ -285,6 +285,8 @@ public class MultilingualDirectoryIndexer {
         } else {
             throw new RuntimeException("List of files in French documents directory is null");
         }
+
+        long elapsedTime;
 
         while (enFileIterator.hasNext() && frFileIterator.hasNext()) {
             Path enFile = enFileIterator.next().toPath();
@@ -334,9 +336,15 @@ public class MultilingualDirectoryIndexer {
 
                 // print progress every 10000 indexed documents
                 if (docsCount % 10000 == 0) {
+                    elapsedTime = (System.currentTimeMillis() - start) / 1000;
+
                     System.out.printf("%d document(s) in both languages (%d files, %d Mbytes) indexed in %d seconds.%n",
                             docsCount, filesCount, bytesCount / MBYTE,
-                            (System.currentTimeMillis() - start) / 1000);
+                            elapsedTime);
+
+                    System.out.printf("\tEstimated remaining time (%d/%d processed): %d seconds.%n",
+                            docsCount, expectedDocs,
+                            (long)((double)expectedDocs * elapsedTime / (double)docsCount) - elapsedTime);
                 }
             }
         }
@@ -450,7 +458,7 @@ public class MultilingualDirectoryIndexer {
         final int ramBuffer = 256;
         final String enDocsPath = "C:\\longeval_train\\publish\\English\\Documents\\Json";
         final String frDocsPath = "C:\\longeval_train\\publish\\French\\Documents\\Json";
-        final String indexPath = "created_indexes/2023_04_24_multilingual_3gram";
+        final String indexPath = "created_indexes/2023_04_29_multilingual_3gram_synonym";
 
         final String extension = "json";
         final int expectedDocs = 1570734;
@@ -464,7 +472,7 @@ public class MultilingualDirectoryIndexer {
                 ramBuffer, indexPath, enDocsPath, frDocsPath, extension, charsetName, expectedDocs,
                 LongEvalParser.class);
 
-        i.index();
+        i.index(expectedDocs);
 
         i.printVocabularyStatistics(10);
     }
