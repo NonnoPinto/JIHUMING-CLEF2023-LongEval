@@ -22,7 +22,7 @@ public class LongEvalParser extends DocumentParser {
     private static final int BODY_SIZE = 1024 * 8;
 
     /**
-     * The currently parsed document
+     * The currently parsed document.
      */
     private ParsedDocument document = null;
 
@@ -51,7 +51,7 @@ public class LongEvalParser extends DocumentParser {
 
     @Override
     public boolean hasNext() {
-        // JSON stream reading taken from https://www.amitph.com/java-parse-large-json-files/
+        // JSON stream reading taken from: https://www.amitph.com/java-parse-large-json-files/
         try {
             if (in_json.hasNext()) {
                 JsonDocument jdoc = new Gson().fromJson(in_json, JsonDocument.class);
@@ -84,7 +84,7 @@ public class LongEvalParser extends DocumentParser {
      */
     public static void main(String[] args) throws Exception {
 
-        final String FILE_NAME = "G:\\我的云端硬盘\\06-Compuer Engineering\\1-2-SEARCH ENGINES\\longeval-train-v2\\longeval-train-v2\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
         Reader reader = new FileReader(
                 FILE_NAME);
 
@@ -94,7 +94,7 @@ public class LongEvalParser extends DocumentParser {
         int count = 0;
         for (ParsedDocument d : p) {
             //System.out.printf("%n%n------------------------------------%n%s%n%n%n", d.toString());
-            System.out.printf("Parsed document with id=%s %n", d.getIdentifier());
+            //System.out.printf("Parsed document with id=%s %n", d.getIdentifier());
             count++;
         }
         System.out.printf("Number of parsed documents: %d", count);

@@ -1,12 +1,9 @@
 package search;
 
+import analyze.EnglishAnalyzer;
+import analyze.FrenchAnalyzer;
+import analyze.NGramAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
-import org.apache.lucene.analysis.core.StopFilterFactory;
-import org.apache.lucene.analysis.custom.CustomAnalyzer;
-import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
-import org.apache.lucene.benchmark.quality.QualityQuery;
-import org.apache.lucene.benchmark.quality.trec.TrecTopicsReader;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -18,8 +15,9 @@ import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.FSDirectory;
 
 import parse.ParsedDocument;
+import topic.LongEvalTopic;
+import topic.LongEvalTopicReader;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -27,29 +25,32 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
+/**
+ * Searches a document collection.
+ *
+ * @author Nicola Ferro
+ * @version 1.00
+ * @since 1.00
+ */
 public class Searcher {
-     private static final class TOPIC_FIELDS {
+
+    /**
+     * Fiends of our topics/queries. Note that LongEval only provides a query title.
+     */
+    private static final class TOPIC_FIELDS {
+
+        /**
+         * The number of a topic
+         */
+        private static final String NUM = "num";
 
         /**
          * The title of a topic.
          */
         public static final String TITLE = "title";
-
-        /**
-         * The description of a topic.
-         */
-        public static final String DESCRIPTION = "description";
-
-        /**
-         * The narrative of a topic.
-         */
-        public static final String NARRATIVE = "narrative";
     }
-
 
     /**
      * The identifier of the run
@@ -72,14 +73,24 @@ public class Searcher {
     private final IndexSearcher searcher;
 
     /**
-     * The topics to be searched
+     * The topics to be searched.
      */
-    private final QualityQuery[] topics;
+    private final List<LongEvalTopic> topics;
 
     /**
-     * The query parser
+     * Query parser for English queries.
      */
-    private final QueryParser qp;
+    private final QueryParser enQp;
+
+    /**
+     * Query parser for French queries.
+     */
+    private final QueryParser frQp;
+
+    /**
+     * Query parser to generate N-Grams for both English and French queries.
+     */
+    private final QueryParser ngramQp;
 
     /**
      * The maximum number of documents to retrieve
@@ -95,7 +106,9 @@ public class Searcher {
     /**
      * Creates a new searcher.
      *
-     * @param analyzer         the {@code Analyzer} to be used.
+     * @param enAnalyzer      the {@code Analyzer} used for the English documents.
+     * @param frAnalyzer      the {@code Analyzer} used for the French documents.
+     * @param ngramAnalyzer   the {@code Analyzer} used for N-Gram field of documents.
      * @param similarity       the {@code Similarity} to be used.
      * @param indexPath        the directory where containing the index to be searched.
      * @param topicsFile       the file containing the topics to search for.
@@ -106,22 +119,33 @@ public class Searcher {
      * @throws NullPointerException     if any of the parameters is {@code null}.
      * @throws IllegalArgumentException if any of the parameters assumes invalid values.
      */
-    public Searcher(final Analyzer analyzer, final Similarity similarity, final String indexPath,
-                    final String topicsFile, final int expectedTopics, final String runID, final String runPath,
-                    final int maxDocsRetrieved) {
-
-        if (analyzer == null) {
-            throw new NullPointerException("Analyzer cannot be null.");
+    public Searcher(final Analyzer enAnalyzer, final Analyzer frAnalyzer, final Analyzer ngramAnalyzer,
+                    final Similarity similarity, final String indexPath, final String topicsFile,
+                    final int expectedTopics, final String runID, final String runPath, final int maxDocsRetrieved) {
+        // enAnalyzer
+        if (enAnalyzer == null) {
+            throw new NullPointerException("English analyzer cannot be null.");
         }
 
+        // frAnalyzer
+        if (frAnalyzer == null) {
+            throw new NullPointerException("French analyzer cannot be null.");
+        }
+
+        // nAnalyzer
+        if (ngramAnalyzer == null) {
+            throw new NullPointerException("N-Gram analyzer cannot be null.");
+        }
+
+        // similarity
         if (similarity == null) {
             throw new NullPointerException("Similarity cannot be null.");
         }
 
+        // indexPath
         if (indexPath == null) {
             throw new NullPointerException("Index path cannot be null.");
         }
-
         if (indexPath.isEmpty()) {
             throw new IllegalArgumentException("Index path cannot be empty.");
         }
@@ -147,38 +171,47 @@ public class Searcher {
         searcher = new IndexSearcher(reader);
         searcher.setSimilarity(similarity);
 
+        // topicsFile
         if (topicsFile == null) {
             throw new NullPointerException("Topics file cannot be null.");
         }
-
         if (topicsFile.isEmpty()) {
             throw new IllegalArgumentException("Topics file cannot be empty.");
         }
 
         try {
-            BufferedReader in = Files.newBufferedReader(Paths.get(topicsFile), StandardCharsets.UTF_8);
+            // Create the topic reader
+            LongEvalTopicReader tReader = new LongEvalTopicReader(Paths.get(topicsFile));
 
-            topics = new TrecTopicsReader().readQueries(in);
-
-            in.close();
+            // Retrieve all the topics from the reader
+            topics = tReader.read();
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     String.format("Unable to process topic file %s: %s.", topicsFile, e.getMessage()), e);
         }
 
+        // expectedTopics
         if (expectedTopics <= 0) {
             throw new IllegalArgumentException(
                     "The expected number of topics to be searched cannot be less than or equal to zero.");
         }
 
-        if (topics.length != expectedTopics) {
+        if (topics.size() != expectedTopics) {
             System.out.printf("Expected to search for %s topics; %s topics found instead.", expectedTopics,
-                              topics.length);
+                              topics.size());
         }
 
-        qp = new QueryParser(ParsedDocument.FIELDS.ENGLISH_BODY, analyzer);
-
-        //qp = new QueryParser(ParsedDocument.FIELDS.FRENCH_BODY, analyzer);
+        /*
+            A query parser contains information about:
+                - The document field to search the query.
+                - The analyzer to process the query before searching.
+         */
+        // English query parser
+        enQp = new QueryParser(ParsedDocument.FIELDS.ENGLISH_BODY, enAnalyzer);
+        // French query parser
+        frQp = new QueryParser(ParsedDocument.FIELDS.FRENCH_BODY, frAnalyzer);
+        // N-Gram query parser
+        ngramQp = new QueryParser(ParsedDocument.FIELDS.N_GRAM, ngramAnalyzer);
 
         if (runID == null) {
             throw new NullPointerException("Run identifier cannot be null.");
@@ -190,11 +223,10 @@ public class Searcher {
 
         this.runID = runID;
 
-
+        // runPath
         if (runPath == null) {
             throw new NullPointerException("Run path cannot be null.");
         }
-
         if (runPath.isEmpty()) {
             throw new IllegalArgumentException("Run path cannot be empty.");
         }
@@ -220,11 +252,11 @@ public class Searcher {
                     String.format("Unable to open run file %s: %s.", runFile.toAbsolutePath(), e.getMessage()), e);
         }
 
+        // maxDocsRetrieved
         if (maxDocsRetrieved <= 0) {
             throw new IllegalArgumentException(
                     "The maximum number of documents to be retrieved cannot be less than or equal to zero.");
         }
-
         this.maxDocsRetrieved = maxDocsRetrieved;
     }
 
@@ -260,15 +292,17 @@ public class Searcher {
         String docID = null;
 
         try {
-            for (QualityQuery t : topics) {
+            for (LongEvalTopic t : topics) {
 
-                System.out.printf("Searching for topic %s.%n", t.getQueryID());
+                System.out.printf("Searching for topic %s.%n", t.getNum());
 
                 bq = new BooleanQuery.Builder();
 
-                bq.add(qp.parse(QueryParserBase.escape(t.getValue(TOPIC_FIELDS.TITLE))), BooleanClause.Occur.SHOULD);
-                bq.add(qp.parse(QueryParserBase.escape(t.getValue(TOPIC_FIELDS.DESCRIPTION))),
-                       BooleanClause.Occur.SHOULD);
+                // Search the title in both English and French fields (independently of the title language)
+                bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // Search the title in N-Gram field
+                bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
 
                 q = bq.build();
 
@@ -279,12 +313,11 @@ public class Searcher {
                 for (int i = 0, n = sd.length; i < n; i++) {
                     docID = reader.document(sd[i].doc, idField).get(ParsedDocument.FIELDS.ID);
 
-                    run.printf(Locale.ENGLISH, "%s\tQ0\t%s\t%d\t%.6f\t%s%n", t.getQueryID(), docID, i, sd[i].score,
+                    run.printf(Locale.ENGLISH, "%s\tQ0\t%s\t%d\t%.6f\t%s%n", t.getNum(), docID, i, sd[i].score,
                                runID);
                 }
 
                 run.flush();
-
             }
         } finally {
             run.close();
@@ -294,10 +327,20 @@ public class Searcher {
 
         elapsedTime = System.currentTimeMillis() - start;
 
-        System.out.printf("%d topic(s) searched in %d seconds.%n", topics.length, elapsedTime / 1000);
+        System.out.printf("%d topic(s) searched in %d seconds.%n", topics.size(), elapsedTime / 1000);
 
         System.out.printf("#### Searching complete ####%n");
     }
+
+    /*
+     * RUN EXPERIMENTS IDEAS:
+     * (1): English topics - English + French + 3-gram
+     * (2): English topics - English + 3-gram
+     * (3): English topics - English
+     * (4): French topics - English + French + 3-gram
+     * (5): French topics - French + 3-gram
+     * (6): French topics - French
+     */
 
     /**
      * Main method of the class. Just for testing purposes.
@@ -308,23 +351,27 @@ public class Searcher {
     public static void main(String[] args) throws Exception {
 
         //all paths to write
-        final String topics = "";
+        final String topics = "C:\\longeval_train\\publish\\English\\Queries\\heldout.trec";
 
-        final String indexPath = "";
+        final String indexPath = "created_indexes/multilingual-index-stop-stem";
 
-        final String runPath = "";
+        final String runPath = "runs";
 
-        final String runID = "";
+        final String RUN_PREFIX = "seupd2223-JIHUMING-";
+        final String RUN_INFO = "first";
+        final String RUN_SUFFIX = ".txt";
+        final String runID = RUN_PREFIX+RUN_INFO+RUN_SUFFIX;
 
         final int maxDocsRetrieved = 1000;
 
-        final Analyzer a = CustomAnalyzer.builder().withTokenizer(StandardTokenizerFactory.class).addTokenFilter(
-                LowerCaseFilterFactory.class).addTokenFilter(StopFilterFactory.class).build();
+        //All analyzers from analyze package
+        final EnglishAnalyzer enAn = new EnglishAnalyzer();
+        final FrenchAnalyzer frAn = new FrenchAnalyzer();
+        final NGramAnalyzer ngramAn = new NGramAnalyzer();
 
-        Searcher s = new Searcher(a, new BM25Similarity(), indexPath, topics, 50, runID, runPath, maxDocsRetrieved);
+        Searcher s = new Searcher(enAn, frAn, ngramAn, new BM25Similarity(), indexPath, topics, 50, runID,
+                runPath, maxDocsRetrieved);
 
         s.search();
-
-
     }
 }

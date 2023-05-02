@@ -44,6 +44,6 @@ public class FrenchBodyField extends Field
      * @param value the contents of the French body of a document.
      */
     public FrenchBodyField(final String value) {
-        super(ParsedDocument.FIELDS.ENGLISH_BODY, value, FRENCH_BODY_TYPE);
+        super(ParsedDocument.FIELDS.FRENCH_BODY, value, FRENCH_BODY_TYPE);
     }
 }

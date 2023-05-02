@@ -22,19 +22,24 @@ public class ParsedDocument {
     public final static class FIELDS {
 
         /**
-         * The document identifier
+         * The document identifier.
          */
         public static final String ID = "id";
 
         /**
-         * The document English body
+         * The document English body.
          */
         public static final String ENGLISH_BODY = "english_body";
 
         /**
-         * The document French body
+         * The document French body.
          */
         public static final String FRENCH_BODY = "french_body";
+
+        /**
+         * The character N-Gram of the English and French bodies of documents.
+         */
+        public static final String N_GRAM = "n_gram";
     }
 
 
@@ -82,9 +87,6 @@ public class ParsedDocument {
 
         this.body = body;
     }
-
-
-
 
     /**
      * Returns the unique document identifier.
