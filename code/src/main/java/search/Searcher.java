@@ -2,7 +2,9 @@ package search;
 
 import analyze.EnglishAnalyzer;
 import analyze.FrenchAnalyzer;
+import analyze.NERAnalyzer;
 import analyze.NGramAnalyzer;
+import opennlp.tools.parser.Parse;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -93,6 +95,11 @@ public class Searcher {
     private final QueryParser ngramQp;
 
     /**
+     * Query parser to generate NER information for queries.
+     */
+    private final QueryParser nerQp;
+
+    /**
      * The maximum number of documents to retrieve
      */
     private final int maxDocsRetrieved;
@@ -109,6 +116,7 @@ public class Searcher {
      * @param enAnalyzer      the {@code Analyzer} used for the English documents.
      * @param frAnalyzer      the {@code Analyzer} used for the French documents.
      * @param ngramAnalyzer   the {@code Analyzer} used for N-Gram field of documents.
+     * @param nerAnalyzer     the {@code Analyzer} to be used for NER extracted information from documents.
      * @param similarity       the {@code Similarity} to be used.
      * @param indexPath        the directory where containing the index to be searched.
      * @param topicsFile       the file containing the topics to search for.
@@ -120,6 +128,7 @@ public class Searcher {
      * @throws IllegalArgumentException if any of the parameters assumes invalid values.
      */
     public Searcher(final Analyzer enAnalyzer, final Analyzer frAnalyzer, final Analyzer ngramAnalyzer,
+                    final Analyzer nerAnalyzer,
                     final Similarity similarity, final String indexPath, final String topicsFile,
                     final int expectedTopics, final String runID, final String runPath, final int maxDocsRetrieved) {
         // enAnalyzer
@@ -135,6 +144,11 @@ public class Searcher {
         // nAnalyzer
         if (ngramAnalyzer == null) {
             throw new NullPointerException("N-Gram analyzer cannot be null.");
+        }
+
+        // nerAnalyzer
+        if (nerAnalyzer == null) {
+            throw new NullPointerException("NER analyzer cannot be null.");
         }
 
         // similarity
@@ -213,6 +227,8 @@ public class Searcher {
         frQp = new QueryParser(ParsedDocument.FIELDS.FRENCH_BODY, frAnalyzer);
         // N-Gram query parser
         ngramQp = new QueryParser(ParsedDocument.FIELDS.N_GRAM, ngramAnalyzer);
+        // NER query parser
+        nerQp = new QueryParser(ParsedDocument.FIELDS.NER, nerAnalyzer);
 
         if (runID == null) {
             throw new NullPointerException("Run identifier cannot be null.");
@@ -299,11 +315,14 @@ public class Searcher {
 
                 bq = new BooleanQuery.Builder();
 
-                // Search the title in both English and French fields (independently of the title language)
+                // Search the title in the English body field
                 bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // Search the title in the French body field
                 bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 // Search the title in N-Gram field
                 bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // Search the title in NER field
+                bq.add(nerQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
 
                 q = bq.build();
 
@@ -335,12 +354,19 @@ public class Searcher {
 
     /*
      * RUN EXPERIMENTS IDEAS:
-     * (1): English topics - English + French + 3-gram
-     * (2): English topics - English + 3-gram
-     * (3): English topics - English
-     * (4): French topics - English + French + 3-gram
-     * (5): French topics - French + 3-gram
-     * (6): French topics - French
+     * (1): English topics - English
+     * (2): English topics - English + 4-gram
+     * (3): English topics - English + French + 3-gram
+     * (4): English topics - English + French + 4-gram
+     * (5): English topics - English + French + 5-gram
+     * (6): English topics - English + French + 4-gram + NER
+     *
+     * (7): French topics - French
+     * (8): French topics - French + 3-gram
+     * (9): French topics - English + French + 3-gram
+     * (10): French topics - English + French + 4-gram
+     * (11): French topics - English + French + 5-gram
+     * (12): French topics - English + French + 4-gram + NER
      */
 
     /**
@@ -369,8 +395,9 @@ public class Searcher {
         final EnglishAnalyzer enAn = new EnglishAnalyzer();
         final FrenchAnalyzer frAn = new FrenchAnalyzer();
         final NGramAnalyzer ngramAn = new NGramAnalyzer();
+        final NERAnalyzer nerAn = new NERAnalyzer();
 
-        Searcher s = new Searcher(enAn, frAn, ngramAn, new BM25Similarity(), indexPath, topics, 50, runID,
+        Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(), indexPath, topics, 50, runID,
                 runPath, maxDocsRetrieved);
 
         s.search();

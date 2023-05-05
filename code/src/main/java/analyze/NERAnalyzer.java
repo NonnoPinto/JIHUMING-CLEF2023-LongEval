@@ -4,11 +4,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.core.WhitespaceTokenizer;
-import org.apache.lucene.analysis.miscellaneous.TypeAsSynonymFilter;
-import org.apache.lucene.analysis.ngram.NGramTokenFilter;
-import org.apache.lucene.analysis.opennlp.OpenNLPPOSFilter;
-import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 import parse.LongEvalParser;
 import parse.ParsedDocument;
 
@@ -17,9 +13,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.regex.Pattern;
 
-import static analyze.AnalyzerUtil.consumeTokenStream;
-import static analyze.AnalyzerUtil.loadPosTaggerModel;
-import static analyze.AnalyzerUtil.loadLNerTaggerModel;
+import static analyze.AnalyzerUtil.*;
 
 /**
  * TODO
@@ -39,22 +33,21 @@ public class NERAnalyzer extends Analyzer
     @Override
     protected TokenStreamComponents createComponents(String s) {
 
-        // Whitespace tokenizer
-        final Tokenizer source = new WhitespaceTokenizer();
+        // Apply a standard tokenizer
+        final Tokenizer source = new StandardTokenizer();
 
-        // Apply NER
-        TokenStream tokens = new OpenNLPPOSFilter(source, loadPosTaggerModel("en-pos-maxent.bin"));
-        tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-location.bin"));
+        // Apply NER (locations)
+        TokenStream tokens = new OpenNLPNERFilter(source, loadLNerTaggerModel("en-ner-location.bin"));
+
+        // Apply NER (persons)
         tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-person.bin"));
-        tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-organization.bin"));
-        //tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-money.bin"));
-        //tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-date.bin"));
-        //tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-time.bin"));
 
-        // Unfortunately the TypeAttribute is not stored in the index, so we need to work around this by adding the type
-        // as a synonym token, which is also convenient at search time - see e.g.
-        // https://fabian-kostadinov.github.io/2018/10/01/introduction-to-lucene-opennlp-part2/]
-        //tokens = new TypeAsSynonymFilter(tokens, "<nlp>");
+        // Apply NER (organizations)
+        tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-organization.bin"));
+
+        // tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-money.bin"));
+        // tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-date.bin"));
+        // tokens = new OpenNLPNERFilter(tokens, loadLNerTaggerModel("en-ner-time.bin"));
 
         return new TokenStreamComponents(source, tokens);
     }
@@ -78,7 +71,7 @@ public class NERAnalyzer extends Analyzer
      */
     public static void main(String[] args) throws IOException {
         // Take one example (parsed) (English) document from the training set (pdExample)
-        final String FILE_NAME_JMR = "C:\\longeval_train\\publish\\English\\Documents\\Json\\collector_kodicare_1.txt.json";
+        final String FILE_NAME_JMR = "C:\\longeval_train\\publish\\French\\Documents\\Json\\collector_kodicare_1.txt.json";
         final String FILE_NAME_NS = "";
 
         Reader reader = new FileReader(

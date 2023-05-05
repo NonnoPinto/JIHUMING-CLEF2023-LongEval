@@ -54,6 +54,9 @@ public final class OpenNLPNERFilter extends TokenFilter {
     private final PositionLengthAttribute posLenAtt = addAttribute(PositionLengthAttribute.class);
     private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
     private final SentenceAttribute sentenceAtt = addAttribute(SentenceAttribute.class);
+    // Added to avoid the error:
+    // This AttributeSource contains AttributeImpl of type KeywordAttributeImpl that is not in the target
+    private final KeywordAttribute keywordAttr = addAttribute(KeywordAttribute.class);
 
     /**
      * The list of the actual attribute values for the tokens in the current sentence

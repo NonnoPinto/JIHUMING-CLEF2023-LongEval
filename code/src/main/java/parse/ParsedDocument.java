@@ -40,6 +40,11 @@ public class ParsedDocument {
          * The character N-Gram of the English and French bodies of documents.
          */
         public static final String N_GRAM = "n_gram";
+
+        /**
+         * The extracted NER information from documents.
+         */
+        public static final String NER = "ner";
     }
 
 
