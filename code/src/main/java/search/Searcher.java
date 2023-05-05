@@ -185,6 +185,7 @@ public class Searcher {
 
             // Retrieve all the topics from the reader
             topics = tReader.read();
+            // TODO: include control of expected topics (and warning)
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     String.format("Unable to process topic file %s: %s.", topicsFile, e.getMessage()), e);

@@ -262,7 +262,7 @@ public class MultilingualDirectoryIndexer {
      *
      * @throws IOException if something goes wrong while indexing.
      */
-    public void index(int expectedDocs) throws IOException {
+    public void index() throws IOException {
 
         System.out.printf("%n#### Start indexing ####%n");
 
@@ -342,7 +342,7 @@ public class MultilingualDirectoryIndexer {
                             docsCount, filesCount, bytesCount / MBYTE,
                             elapsedTime);
 
-                    System.out.printf("\tEstimated remaining time (%d/%d processed): %d seconds.%n",
+                    System.out.printf("\tEstimated remaining time (%d/%d processed): %d second(s).%n",
                             docsCount, expectedDocs,
                             (long)((double)expectedDocs * elapsedTime / (double)docsCount) - elapsedTime);
                 }
@@ -458,7 +458,7 @@ public class MultilingualDirectoryIndexer {
         final int ramBuffer = 256;
         final String enDocsPath = "C:\\longeval_train\\publish\\English\\Documents\\Json";
         final String frDocsPath = "C:\\longeval_train\\publish\\French\\Documents\\Json";
-        final String indexPath = "created_indexes/2023_04_29_multilingual_3gram_synonym";
+        final String indexPath = "created_indexes/2023_05_01_multilingual_5gram_synonym";
 
         final String extension = "json";
         final int expectedDocs = 1570734;
@@ -472,7 +472,7 @@ public class MultilingualDirectoryIndexer {
                 ramBuffer, indexPath, enDocsPath, frDocsPath, extension, charsetName, expectedDocs,
                 LongEvalParser.class);
 
-        i.index(expectedDocs);
+        i.index();
 
         i.printVocabularyStatistics(10);
     }

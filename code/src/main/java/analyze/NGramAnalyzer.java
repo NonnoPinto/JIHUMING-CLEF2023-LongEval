@@ -26,7 +26,9 @@ public class NGramAnalyzer extends Analyzer
     /**
      * N parameter of the N-Gram.
      */
-    private final Integer N = 3;
+    //private final Integer N = 3;
+    //private final Integer N = 4;
+    private final Integer N = 5;
 
     /**
      * Creates a new instance of the analyzer.
