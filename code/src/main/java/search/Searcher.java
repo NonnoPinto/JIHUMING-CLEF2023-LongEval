@@ -316,13 +316,13 @@ public class Searcher {
                 bq = new BooleanQuery.Builder();
 
                 // Search the title in the English body field
-                bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 // Search the title in the French body field
                 bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 // Search the title in N-Gram field
-                bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 // Search the title in NER field
-                bq.add(nerQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // bq.add(nerQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
 
                 q = bq.build();
 
@@ -378,14 +378,14 @@ public class Searcher {
     public static void main(String[] args) throws Exception {
 
         //all paths to write
-        final String topics = "C:\\longeval_train\\publish\\English\\Queries\\heldout.trec";
+        final String topics = "C:\\longeval_train\\publish\\French\\Queries\\train.trec";
 
-        final String indexPath = "created_indexes/multilingual-index-stop-stem";
+        final String indexPath = "created_indexes/2023_04_24_multilingual_3gram";
 
         final String runPath = "runs";
 
         final String RUN_PREFIX = "seupd2223-JIHUMING-";
-        final String RUN_INFO = "first";
+        final String RUN_INFO = "7_fr";
         final String RUN_SUFFIX = ".txt";
         final String runID = RUN_PREFIX+RUN_INFO+RUN_SUFFIX;
 
