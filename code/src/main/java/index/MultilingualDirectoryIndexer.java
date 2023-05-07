@@ -347,7 +347,7 @@ public class MultilingualDirectoryIndexer {
 
                 docsCount++;
 
-                // print progress every 10000 indexed documents
+                // print progress every 1000 indexed documents
                 if (docsCount % 1000 == 0) {
                     elapsedTime = (System.currentTimeMillis() - start) / 1000;
 
@@ -471,7 +471,7 @@ public class MultilingualDirectoryIndexer {
         final int ramBuffer = 256;
         final String enDocsPath = "C:\\longeval_train\\publish\\English\\Documents\\Json";
         final String frDocsPath = "C:\\longeval_train\\publish\\French\\Documents\\Json";
-        final String indexPath = "created_indexes/2023_05_01_multilingual_4gram_synonym_ner";
+        final String indexPath = "created_indexes/2023_05_05_multilingual_4gram_synonym_ner";
 
         final String extension = "json";
         final int expectedDocs = 1570734;
