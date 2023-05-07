@@ -95,3 +95,6 @@ code/runs/
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# LaTeX outputs
+homework-1/out/

@@ -1,27 +1,32 @@
 \section{Methodology}
 \label{sec:methodology}
-In this section we address how the system was developed starting from the source code of
-HelloTipster\cite{tipser} repository developed by Professor Nicola Ferro
-and presented to us during the Search Engine course.
-Furthermore, we will present main methodology and approaches
-using the same structure of the repository\cite{jihuming}.
+In this section, we address how the system was developed in Java using the library Lucene.
+Some parts of the code we are going to present are inspired by the repositories developed by Professor Nicola Ferro and
+presented to us during the Search Engine course. \\
+Furthermore, we will present the main methodology and approaches using the structure in the repository\cite{jihuming}.
 
 \subsection{Parsing}
-We had a huge collection of documents in English and French. First thing
-was to manually examine document to understand how to read them. As described
-\href{https://github.com/joaopalotti/trectools}{in his GitHub repository},
-documents use a particular format, which includes a DOCNO and a DOCID.
-The DOCNO is the id of the document and the DOCID is the id of the collection.\\
-JSON, on the other side, follows the mouch more standard
-\href{https://github.com/castorini/anserini/issues/1111}{following structure}.\\
-The whole parser is made by:
+Participating in the LongEval CLEF Lab 2023 we are provided with a collection of French (original) and English
+(translated from French) documents.
+To generate an index based on them, first, we have to parse them;
+this is, get their text into Java data structures.
+All this parser package has been developed following the instructions provided in the dataset downloaded.\\
+We decided to use the \textbf{JSON} version of the documents because they can easily be manipulated and queried using a
+variety of tools and libraries.
+Additionally, because of the large number of documents we are working with, we had to create a \textbf{steam} parser,
+allocating into the main memory one document at a time.
+Thus, our parser is based on the Java library \textttt{Gson}, especially in the stream and JSON functions and classes.\\
+The whole parser is made up of:
 \begin{itemize}
-    \item \texttt{DocumentParser}: parses trec document
-    \item \texttt{JsonDocument}: create a class for json doc
-    \item \texttt{LongEvalParser}: counts the document and print out
-    \item \texttt{ParsedDocument}: document parsed has FIELDS including ID,
-    ENGLISH\textunderscore BODY, and FRENCH\textunderscore BODY
+    \item \texttt{DocumentParser}: an abstract class representing a stream parser for documents in a collection.
+    \item \texttt{JsonDocument}: a Java POJO used in the deserialization of JSON documents.
+    \item \texttt{ParsedDocument}: Java object that represents a document already parsed.
+Note that this object contains an identifier and a body.
+    \item \texttt{LongEvalParser}: real parser implementing the class \texttt{DocumentParser}.
+Here is where the stream logic is implemented.
+Objects of this class can be used as iterators returning parsed documents.
 \end{itemize}
+
 \subsection{Analyzer}
 As basis for the analyzer we used the TokenStream class from Lucene, which 
 Consumes a TokenStream for the given text by using the provided
