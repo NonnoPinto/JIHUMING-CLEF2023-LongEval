@@ -1,7 +1,7 @@
 package parse;
 
 /**
- * A java POJO needed to convert JSON strings into Java objects.
+ * A java POJO needed to deserialize JSON documents into Java objects.
  *
  * @version 1.00
  * @since 1.00

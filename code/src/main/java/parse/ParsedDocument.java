@@ -15,7 +15,6 @@ public class ParsedDocument {
     /**
      * The names of the {@link Field}s within the index.
      *
-     * @author Nicola Ferro
      * @version 1.00
      * @since 1.00
      */
@@ -40,6 +39,11 @@ public class ParsedDocument {
          * The character N-Gram of the English and French bodies of documents.
          */
         public static final String N_GRAM = "n_gram";
+
+        /**
+         * The extracted NER information from documents.
+         */
+        public static final String NER = "ner";
     }
 
 
@@ -52,10 +56,6 @@ public class ParsedDocument {
      * The body of the document.
      */
     private final String body;
-
-    //TODO: we could use DocT5Query expansion
-
-
 
     /**
      * Creates a new parsed document
@@ -115,16 +115,9 @@ public class ParsedDocument {
         return tsb.toString();
     }
 
-    /**
-     * Equality function defined for this class.
-     *
-     * Two ParsedDocuments are equal if their id is the same.
-     *
-     * @param o the other parsed document to check equality.
-     * @return true if they are equal; false otherwise.
-     */
     @Override
     public final boolean equals(Object o) {
+        // Two ParsedDocuments are equal if their ids have the same value
         return (this == o) || ((o instanceof ParsedDocument) && id.equals(((ParsedDocument) o).id));
     }
 

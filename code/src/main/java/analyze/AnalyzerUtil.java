@@ -1,9 +1,17 @@
 package analyze;
 
+import opennlp.tools.namefind.TokenNameFinderModel;
+import opennlp.tools.postag.POSModel;
+import opennlp.tools.sentdetect.SentenceModel;
+import opennlp.tools.tokenize.TokenizerModel;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.WordlistLoader;
+import org.apache.lucene.analysis.opennlp.tools.NLPNERTaggerOp;
+import org.apache.lucene.analysis.opennlp.tools.NLPPOSTaggerOp;
+import org.apache.lucene.analysis.opennlp.tools.NLPSentenceDetectorOp;
+import org.apache.lucene.analysis.opennlp.tools.NLPTokenizerOp;
 import org.apache.lucene.analysis.tokenattributes.*;
 
 import java.io.*;
@@ -144,5 +152,169 @@ public class AnalyzerUtil {
         }
 
         return stopList;
+    }
+
+    /**
+     * Loads the required Apache OpenNLP POS tagger model among those available in the {@code resources} folder.
+     *
+     * @param modelFile the name of the file containing the model.
+     *
+     * @return the required Apache OpenNLP model.
+     *
+     * @throws IllegalStateException if there is any issue while loading the model.
+     */
+    static NLPPOSTaggerOp loadPosTaggerModel(final String modelFile) {
+
+        if (modelFile == null) {
+            throw new NullPointerException("Model file name cannot be null.");
+        }
+
+        if (modelFile.isEmpty()) {
+            throw new IllegalArgumentException("Model file name cannot be empty.");
+        }
+
+        // the model
+        NLPPOSTaggerOp model = null;
+
+        try {
+
+            // Get an input stream for the file containing the model
+            InputStream in = new BufferedInputStream(CL.getResourceAsStream(modelFile));
+
+            // Load the model
+            model = new NLPPOSTaggerOp(new POSModel(in));
+
+            // Close the file
+            in.close();
+
+        } catch (IOException e) {
+            throw new IllegalStateException(String.format("Unable to load the model %s: %s", modelFile, e.getMessage()),
+                    e);
+        }
+
+        return model;
+    }
+
+    /**
+     * Loads the required Apache OpenNLP NER tagger model among those available in the {@code resources} folder.
+     *
+     * @param modelFile the name of the file containing the model.
+     *
+     * @return the required Apache OpenNLP model.
+     *
+     * @throws IllegalStateException if there is any issue while loading the model.
+     */
+    static NLPNERTaggerOp loadLNerTaggerModel(final String modelFile) {
+
+        if (modelFile == null) {
+            throw new NullPointerException("Model file name cannot be null.");
+        }
+
+        if (modelFile.isEmpty()) {
+            throw new IllegalArgumentException("Model file name cannot be empty.");
+        }
+
+        // the model
+        NLPNERTaggerOp model = null;
+
+        try {
+
+            // Get an input stream for the file containing the model
+            InputStream in = new BufferedInputStream(CL.getResourceAsStream(modelFile));
+
+            // Load the model
+            model = new NLPNERTaggerOp(new TokenNameFinderModel(in));
+
+            // Close the file
+            in.close();
+
+        } catch (IOException e) {
+            throw new IllegalStateException(String.format("Unable to load the model %s: %s", modelFile, e.getMessage()),
+                    e);
+        }
+
+        return model;
+    }
+
+    /**
+     * Loads the required Apache OpenNLP sentence detector model among those available in the {@code resources} folder.
+     *
+     * @param modelFile the name of the file containing the model.
+     *
+     * @return the required Apache OpenNLP model.
+     *
+     * @throws IllegalStateException if there is any issue while loading the model.
+     */
+    static NLPSentenceDetectorOp loadSentenceDetectorModel(final String modelFile) {
+
+        if (modelFile == null) {
+            throw new NullPointerException("Model file name cannot be null.");
+        }
+
+        if (modelFile.isEmpty()) {
+            throw new IllegalArgumentException("Model file name cannot be empty.");
+        }
+
+        // the model
+        NLPSentenceDetectorOp model = null;
+
+        try {
+
+            // Get an input stream for the file containing the model
+            InputStream in = new BufferedInputStream(CL.getResourceAsStream(modelFile));
+
+            // Load the model
+            model = new NLPSentenceDetectorOp(new SentenceModel(in));
+
+            // Close the file
+            in.close();
+
+        } catch (IOException e) {
+            throw new IllegalStateException(String.format("Unable to load the model %s: %s", modelFile, e.getMessage()),
+                    e);
+        }
+
+        return model;
+    }
+
+    /**
+     * Loads the required Apache OpenNLP tokenizer model among those available in the {@code resources} folder.
+     *
+     * @param modelFile the name of the file containing the model.
+     *
+     * @return the required Apache OpenNLP model.
+     *
+     * @throws IllegalStateException if there is any issue while loading the model.
+     */
+    static NLPTokenizerOp loadTokenizerModel(final String modelFile) {
+
+        if (modelFile == null) {
+            throw new NullPointerException("Model file name cannot be null.");
+        }
+
+        if (modelFile.isEmpty()) {
+            throw new IllegalArgumentException("Model file name cannot be empty.");
+        }
+
+        // the model
+        NLPTokenizerOp model = null;
+
+        try {
+
+            // Get an input stream for the file containing the model
+            InputStream in = new BufferedInputStream(CL.getResourceAsStream(modelFile));
+
+            // Load the model
+            model = new NLPTokenizerOp(new TokenizerModel(in));
+
+            // Close the file
+            in.close();
+
+        } catch (IOException e) {
+            throw new IllegalStateException(String.format("Unable to load the model %s: %s", modelFile, e.getMessage()),
+                    e);
+        }
+
+        return model;
     }
 }
