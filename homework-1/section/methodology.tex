@@ -33,11 +33,13 @@ All of them follow the typical workflow: apply a list of \texttt{TokenFilter} to
 The final version of the project creates an index with four fields for each document: (1) English version, (2) French
 version, (3) character N-grams of both versions concatenated, and (4) NER extracted information.
 Because of this, we had to create \textbf{four different analyzers}.
-Note that we are not taking into account the first field which is the id, to which no processing is applied.
+Note that we are not taking into account the first field which is the id, to which no processing is applied.\\
+All the following described analyzers use some functionalities from the helper class \texttt{AnalyzerUtil} developed by
+Nicola Ferro.
 We will explain them independently.
 
 \subsubsection{English body field}
-The processing applied to the English version of the documents is the following:
+The processing applied to the English version of the documents (in \texttt{EnglishAnalyzer}) is the following:
 \begin{enumerate}
     \item Tokenize based on whitespaces.
     \item Eliminate some strange characters found in the documents.
@@ -68,8 +70,8 @@ The processing applied to the English version of the documents is the following:
 \end{enumerate}
 
 \subsubsection{French body field}
-The processing of French documents is identical to the processing of English documents in the first 5 points (excluding
-the English possessives' removal in 4.d).
+The processing of French documents (in \texttt{FrenchAnalyzer}) is identical to the processing of English documents in
+the first 5 points (excluding the English possessives' removal in 4.d).
 For this point on, we apply:
 \begin{enumerate}[start=6]
     \item Apply a French stopword list. %TODO: inclue link to the stopword
@@ -78,7 +80,7 @@ For this point on, we apply:
 \end{enumerate}
 
 \subsubsection{Character N-grams}
-Character N-grams are created in an analyzer that performs the following operations:
+Character N-grams are created in the analyzer \texttt{NGramAnalyzer}, that performs the following operations:
 \begin{enumerate}
     \item Tokenize based on whitespaces.
     \item Lowercase all the tokens.
@@ -96,7 +98,7 @@ The NER information has been extracted using the Apache OpenNLP %TODO: include l
 library.
 As Lucene does not include these functionalities directly, we have used modified version of a token filter developed by
 Nicola Ferro based on the mentioned library (\texttt{OpenNLPNERFilter}).
-The processing of the tokens in this analyzer is the following:
+The processing of the tokens in this analyzer (\texttt{NERAnalyzer}) is the following:
 \begin{enumerate}
     \item Tokenize using a standard tokenizer, \texttt{StandardTokenizer} from Lucene.
     \item Apply NER using a tagger model for locations.

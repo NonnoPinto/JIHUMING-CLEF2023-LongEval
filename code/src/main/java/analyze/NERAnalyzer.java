@@ -11,12 +11,11 @@ import parse.ParsedDocument;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.regex.Pattern;
 
 import static analyze.AnalyzerUtil.*;
 
 /**
- * TODO
+ * Lucene custom {@link Analyzer} created for applying NER (Named Entity Recognition) to the French documents.
  *
  * @version 1.0
  * @since 1.0

@@ -15,12 +15,9 @@
  */
 package analyze;
 
-
-import opennlp.tools.formats.ad.ADSentenceStream;
 import opennlp.tools.util.Span;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.opennlp.OpenNLPTokenizer;
 import org.apache.lucene.analysis.opennlp.tools.NLPNERTaggerOp;
 import org.apache.lucene.analysis.tokenattributes.*;
 import org.apache.lucene.util.AttributeSource;
@@ -54,8 +51,9 @@ public final class OpenNLPNERFilter extends TokenFilter {
     private final PositionLengthAttribute posLenAtt = addAttribute(PositionLengthAttribute.class);
     private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
     private final SentenceAttribute sentenceAtt = addAttribute(SentenceAttribute.class);
+
     // Added to avoid the error:
-    // This AttributeSource contains AttributeImpl of type KeywordAttributeImpl that is not in the target
+    // "This AttributeSource contains AttributeImpl of type KeywordAttributeImpl that is not in the target"
     private final KeywordAttribute keywordAttr = addAttribute(KeywordAttribute.class);
 
     /**
