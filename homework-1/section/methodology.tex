@@ -1,14 +1,11 @@
 \section{Methodology}\label{sec:methodology}
 In this section, we address the technical aspects of how our system was developed.
-We have use Java and the library Lucene.
 Some parts of the code we are going to present are inspired in the repositories developed by Professor Nicola Ferro and
 presented to us during the Search Engine course. \\
 Furthermore, we will present the main methodology and approaches using the structure in the repository\cite{jihuming}.
 
 \subsection{Parsing}\label{subsec:parsing}
-Participating in the LongEval CLEF Lab 2023 we are provided with a collection of French (original) and English
-(translated from French) documents.
-To generate an index based on them, first, we have to parse them;
+To generate an index based on the provided documents, first, we have to parse them;
 this is, get their text into Java data structures.
 All this parser package has been developed following the instructions provided by the organizers.\\
 We decided to use the \textbf{JSON} version of the documents because they can easily be manipulated and queried using a
