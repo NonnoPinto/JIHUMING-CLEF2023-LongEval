@@ -109,28 +109,31 @@ public class Searcher {
      */
     private long elapsedTime = Long.MIN_VALUE;
 
-
     /**
      * Creates a new searcher.
      *
-     * @param enAnalyzer      the {@code Analyzer} used for the English documents.
-     * @param frAnalyzer      the {@code Analyzer} used for the French documents.
-     * @param ngramAnalyzer   the {@code Analyzer} used for N-Gram field of documents.
-     * @param nerAnalyzer     the {@code Analyzer} to be used for NER extracted information from documents.
+     * @param enAnalyzer       the {@code Analyzer} used for the English documents.
+     * @param frAnalyzer       the {@code Analyzer} used for the French documents.
+     * @param ngramAnalyzer    the {@code Analyzer} used for N-Gram field of
+     *                         documents.
+     * @param nerAnalyzer      the {@code Analyzer} to be used for NER extracted
+     *                         information from documents.
      * @param similarity       the {@code Similarity} to be used.
-     * @param indexPath        the directory where containing the index to be searched.
+     * @param indexPath        the directory where containing the index to be
+     *                         searched.
      * @param topicsFile       the file containing the topics to search for.
      * @param expectedTopics   the total number of topics expected to be searched.
      * @param runID            the identifier of the run to be created.
      * @param runPath          the path where to store the run.
      * @param maxDocsRetrieved the maximum number of documents to be retrieved.
      * @throws NullPointerException     if any of the parameters is {@code null}.
-     * @throws IllegalArgumentException if any of the parameters assumes invalid values.
+     * @throws IllegalArgumentException if any of the parameters assumes invalid
+     *                                  values.
      */
     public Searcher(final Analyzer enAnalyzer, final Analyzer frAnalyzer, final Analyzer ngramAnalyzer,
-                    final Analyzer nerAnalyzer,
-                    final Similarity similarity, final String indexPath, final String topicsFile,
-                    final int expectedTopics, final String runID, final String runPath, final int maxDocsRetrieved) {
+            final Analyzer nerAnalyzer,
+            final Similarity similarity, final String indexPath, final String topicsFile,
+            final int expectedTopics, final String runID, final String runPath, final int maxDocsRetrieved) {
         // enAnalyzer
         if (enAnalyzer == null) {
             throw new NullPointerException("English analyzer cannot be null.");
@@ -172,14 +175,14 @@ public class Searcher {
 
         if (!Files.isDirectory(indexDir)) {
             throw new IllegalArgumentException(String.format("%s expected to be a directory where to search the index.",
-                                                             indexDir.toAbsolutePath().toString()));
+                    indexDir.toAbsolutePath().toString()));
         }
 
         try {
             reader = DirectoryReader.open(FSDirectory.open(indexDir));
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format("Unable to create the index reader for directory %s: %s.",
-                                                             indexDir.toAbsolutePath().toString(), e.getMessage()), e);
+                    indexDir.toAbsolutePath().toString(), e.getMessage()), e);
         }
 
         searcher = new IndexSearcher(reader);
@@ -213,13 +216,13 @@ public class Searcher {
 
         if (topics.size() != expectedTopics) {
             System.out.printf("Expected to search for %s topics; %s topics found instead.", expectedTopics,
-                              topics.size());
+                    topics.size());
         }
 
         /*
-            A query parser contains information about:
-                - The document field to search the query.
-                - The analyzer to process the query before searching.
+         * A query parser contains information about:
+         * - The document field to search the query.
+         * - The analyzer to process the query before searching.
          */
         // English query parser
         enQp = new QueryParser(ParsedDocument.FIELDS.ENGLISH_BODY, enAnalyzer);
@@ -256,14 +259,14 @@ public class Searcher {
 
         if (!Files.isDirectory(runDir)) {
             throw new IllegalArgumentException(String.format("%s expected to be a directory where to write the run.",
-                                                             runDir.toAbsolutePath().toString()));
+                    runDir.toAbsolutePath().toString()));
         }
 
         Path runFile = runDir.resolve(runID + ".txt");
         try {
             run = new PrintWriter(Files.newBufferedWriter(runFile, StandardCharsets.UTF_8, StandardOpenOption.CREATE,
-                                                          StandardOpenOption.TRUNCATE_EXISTING,
-                                                          StandardOpenOption.WRITE));
+                    StandardOpenOption.TRUNCATE_EXISTING,
+                    StandardOpenOption.WRITE));
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     String.format("Unable to open run file %s: %s.", runFile.toAbsolutePath(), e.getMessage()), e);
@@ -289,7 +292,8 @@ public class Searcher {
     /**
      * /** Searches for the specified topics.
      *
-     * @param runNumber run number that controls in which fields the search must be done following the scheme.
+     * @param runNumber run number that controls in which fields the search must be
+     *                  done following the scheme.
      *                  See experimental evaluation in the report.
      *
      * @throws IOException    if something goes wrong while searching.
@@ -319,31 +323,57 @@ public class Searcher {
                 bq = new BooleanQuery.Builder();
 
                 // Control in which fields to search based on runNumber
-                if (runNumber == 1) {
+                switch (runNumber) {
+
+                case 1:
                     bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                } else if (runNumber == 7) {
+                    break;
+                case 2:
+                    //TODO: add your code here
+                    break;
+                case 3:
+                    //TODO: add your code here
+                    break;
+                case 4:
+                    //TODO: add your code here
+                    break;
+                case 5:
+                    //TODO: add your code here
+                    break;
+                case 6:
+                    //TODO: add your code hereD);
+                    break;
+                case 7:
                     bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                } else if (runNumber == 8) {
+                    break;
+                case 8:
                     bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                     bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                } else if (runNumber == 9) {
+                    break;
+                case 9:
                     bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                     bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                     bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                    // TODO: code the rest of runs
-                } else {
-                    System.out.printf("Cannot create run with id=%d%n", runNumber);
-                    return;
+                    break;
+                case 10:
+                    //TODO: add your code here
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid run number.");
                 }
 
                 // Search the title in the English body field
-                // bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())),
+                // BooleanClause.Occur.SHOULD);
                 // Search the title in the French body field
-                // bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())),
+                // BooleanClause.Occur.SHOULD);
                 // Search the title in N-Gram field
-                // bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())),
+                // BooleanClause.Occur.SHOULD);
                 // Search the title in NER field
-                // bq.add(nerQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // bq.add(nerQp.parse(QueryParserBase.escape(t.getTitle())),
+                // BooleanClause.Occur.SHOULD);
 
                 q = bq.build();
 
@@ -355,7 +385,7 @@ public class Searcher {
                     docID = reader.document(sd[i].doc, idField).get(ParsedDocument.FIELDS.ID);
 
                     run.printf(Locale.ENGLISH, "%s\tQ0\t%s\t%d\t%.6f\t%s%n", t.getNum(), docID, i, sd[i].score,
-                               runID);
+                            runID);
                 }
 
                 run.flush();
@@ -400,75 +430,164 @@ public class Searcher {
         final String runInfo;
         final int MAX_DOCS_RETRIEVED = 1000;
 
-        /*
-         * Consider the following EXPERIMENTS:
-         *
-         * (1): English topics - English
-         * (2): English topics - English + 4-gram
-         * (3): English topics - English + French + 3-gram
-         * (4): English topics - English + French + 4-gram
-         * (5): English topics - English + French + 5-gram
-         * (6): English topics - English + French + 4-gram + NER
-         *
-         * (7): French topics - French
-         * (8): French topics - French + 4-gram
-         * (9): French topics - English + French + 3-gram
-         * (10): French topics - English + French + 4-gram
-         * (11): French topics - English + French + 5-gram
-         * (12): French topics - English + French + 4-gram + NER
-         */
+        Scanner input = new Scanner(System.in);
 
-        Integer runId = 9;
+        System.out.print("Chose searcher:\n" +
+                "1. English topics - English\n" +
+                "2. English topics - English + 4-gram\n" +
+                "3. English topics - English + French + 3-gram\n" +
+                "4. English topics - English + French + 4-gram\n" +
+                "5. English topics - English + French + 5-gram\n" +
+                "6. English topics - English + French + 4-gram + NER\n" +
+                "7. French topics - French\n" +
+                "8. French topics - French + 4-gram\n" +
+                "9. French topics - English + French + 3-gram\n" +
+                "10. French topics - English + French + 4-gram\n" +
+                "11. French topics - English + French + 5-gram\n" +
+                "12. French topics - English + French + 4-gram + NER\n" +
+                "Enter your choice: ");
+
+        int runId = input.nextInt();
+
+        while (runId < 1 || runId > 12) {
+            System.out.println("Invalid choice. Please enter a number between 1 and 12.\n");
+            runId = input.nextInt();
+        }
+
+        input.close();
 
         // Analyzers
         final EnglishAnalyzer enAn = new EnglishAnalyzer();
         final FrenchAnalyzer frAn = new FrenchAnalyzer();
         final NERAnalyzer nerAn = new NERAnalyzer();
 
-        if (runId == 1) {
-            final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
+        NGramAnalyzer ngramAn;
+        Searcher s;
 
-            runInfo = "01_en_en";
+        switch (runId) {
+            case 1:
+                System.out.println("You entered 1: English topics - English");
+                runInfo = "01_en_en";
+                ngramAn = new NGramAnalyzer(3);
 
-            Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                    INDEX_MUL_3GRAM_P, TOPICS_EN_P, 50,
-                    RUN_PREFIX+runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_3GRAM_P, TOPICS_EN_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 2:
+                System.out.println("You entered 2: English topics - English + 4-gram");
+                runInfo = "02_en_en_4gram";
+                ngramAn = new NGramAnalyzer(4);
 
-            s.search(runId);
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_4GRAM_SYN_P, TOPICS_EN_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 3:
+                System.out.println("You entered 3: English topics - English + French + 3-gram");
+                runInfo = "03_en_en_fr_3gram";
+                ngramAn = new NGramAnalyzer(3);
 
-        } else if (runId == 7) {
-            final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_3GRAM_P, TOPICS_EN_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 4:
+                System.out.println("You entered 4: English topics - English + French + 4-gram");
+                runInfo = "04_en_en_fr_4gram";
+                ngramAn = new NGramAnalyzer(4);
 
-            runInfo = "07_fr_fr";
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_4GRAM_SYN_P, TOPICS_EN_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 5:
+                System.out.println("You entered 5: English topics - English + French + 5-gram");
+                runInfo = "05_en_en_fr_5gram";
+                ngramAn = new NGramAnalyzer(5);
 
-            Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                    INDEX_MUL_3GRAM_P, TOPICS_FR_P, 50,
-                    RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_5GRAM_SYN_P, TOPICS_EN_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 6:
+                System.out.println("You entered 6: English topics - English + French + 4-gram + NER");
+                runInfo = "06_en_en_fr_4gram_ner";
+                ngramAn = new NGramAnalyzer(4);
 
-            s.search(runId);
-        } else if (runId == 8) {
-            final NGramAnalyzer ngramAn = new NGramAnalyzer(4);
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_4GRAM_SYN_P, TOPICS_EN_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 7:
+                System.out.println("You entered 7: French topics - French");
+                ngramAn = new NGramAnalyzer(3);
+                runInfo = "07_fr_fr";
 
-            runInfo = "08_fr_fr_4gram";
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_3GRAM_P, TOPICS_FR_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 8:
+                System.out.println("You entered 8: French topics - French + 4-gram");
+                ngramAn = new NGramAnalyzer(4);
+                runInfo = "08_fr_fr_4gram";
 
-            Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                    INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, 50,
-                    RUN_PREFIX+runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 9:
+                System.out.println("You entered 9: French topics - English + French + 3-gram");
+                ngramAn = new NGramAnalyzer(3);
+                runInfo = "09_fr_en_fr_3gram";
 
-            s.search(runId);
-        } else if (runId == 9) {
-            final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_3GRAM_P, TOPICS_FR_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 10:
+                System.out.println("You entered 10: French topics - English + French + 4-gram");
+                runInfo = "10_fr_en_fr_4gram";
+                ngramAn = new NGramAnalyzer(4);
 
-            runInfo = "09_fr_en_fr_3gram";
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 11:
+                System.out.println("You entered 11: French topics - English + French + 5-gram");
+                runInfo = "11_fr_en_fr_5gram";
+                ngramAn = new NGramAnalyzer(5);
 
-            Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                    INDEX_MUL_3GRAM_P, TOPICS_FR_P, 50,
-                    RUN_PREFIX+runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_5GRAM_SYN_P, TOPICS_FR_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            case 12:
+                System.out.println("You entered 12: French topics - English + French + 4-gram + NER");
+                runInfo = "12_fr_en_fr_4gram_ner";
+                ngramAn = new NGramAnalyzer(4);
 
-            s.search(runId);
-            // TODO: code the rest of runs
-        }else {
-            System.out.printf("Cannot create run with id=%d%n", runId);
+                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                        INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, 50,
+                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                s.search(runId);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid run number.");
         }
+        System.out.println("Done.");
     }
 }
