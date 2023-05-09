@@ -59,8 +59,9 @@ The processing applied to the English version of the documents (in \texttt{Engli
         Example: the tokens "PowerShot", "500-42", and "O'Neil's" will be maintained.
     \end{enumerate}
     \item Lowercase all the tokens.
-    \item Apply the Terrier stopword list. %TODO: include Terrier link
-    \item Apply query expansion with synonyms using \texttt{SynonymTokenFilter} from Lucene. %TODO: include link to library used
+    \item Apply the Terrier\cite{OunisEtAl2006} stopword list.
+    \item Apply query expansion with synonyms using \texttt{SynonymTokenFilter} from Lucene, which is based on the
+    WordNet synonym map\cite{wordnet}.
     \item Apply a minimal stemming process using \texttt{EnglishMinimalStemFilter} from Lucene.
     \item Delete tokens that may have been left empty because of the previous filters.
     For this, we created a custom token filter, \texttt{EmptyTokenFilter}.
@@ -71,7 +72,7 @@ The processing of French documents (in \texttt{FrenchAnalyzer}) is identical to 
 the first 5 points (excluding the English possessives' removal in 4.d).
 For this point on, we apply:
 \begin{enumerate}[start=6]
-    \item Apply a French stopword list. %TODO: inclue link to the stopword
+    \item Apply a French stopword list\cite{stopword_french}.
     \item Apply a minimal stemming process (in French) using \texttt{FrenchMinimalStemFilter} from Lucene.
     \item Delete empty tokens (\texttt{EmptyTokenFilter}).
 \end{enumerate}
@@ -91,8 +92,7 @@ We have not fixed the value of N, we have left it open in order to be able to ge
 See Section~\ref{sec:setup} for more details.
 
 \subsubsection{NER extracted information}
-The NER information has been extracted using the Apache OpenNLP %TODO: include link
-library.
+The NER information has been extracted using the Apache OpenNLP\cite{ApacheOpenNLP} library.
 As Lucene does not include these functionalities directly, we have used modified version of a token filter developed by
 Nicola Ferro based on the mentioned library (\texttt{OpenNLPNERFilter}).
 The processing of the tokens in this analyzer (\texttt{NERAnalyzer}) is the following:
@@ -128,7 +128,7 @@ Thus:
     \item \texttt{LongEvalTopic} is a simple Java POJO representing each query provided by LongEval.
     Each query has a number (\texttt{<num>}) and a title (\texttt{<title>}).
     It is the equivalent to \texttt{QualityQuery} when working with \textbf{TrecTopicsReader}.
-    \item \texttt{LongEvalTopicReader} is the query parser we made.
+    \item \texttt{LongEvalTopicReader} is the query reader we developed.
     It considers the queries file as an XML file and parses it using a Java XML library.
 \end{itemize}
 
