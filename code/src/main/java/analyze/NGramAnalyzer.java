@@ -16,7 +16,6 @@ import static analyze.AnalyzerUtil.consumeTokenStream;
 
 /**
  * Lucene custom {@link Analyzer} generating character N-Grams for the English and French versions of the documents.
- * Note that the parameter N must be manually coded in this class.
  *
  * @version 1.0
  * @since 1.0
@@ -24,17 +23,18 @@ import static analyze.AnalyzerUtil.consumeTokenStream;
 public class NGramAnalyzer extends Analyzer
 {
     /**
-     * N parameter of the N-Gram.
+     * N parameter of the character N-Grams.
      */
-    //private final Integer N = 3;
-    private final Integer N = 4;
-    //private final Integer N = 5;
+    private final Integer N;
 
     /**
      * Creates a new instance of the analyzer.
+     *
+     * @param N N parameter of character N-Grams.
      */
-    public NGramAnalyzer() {
+    public NGramAnalyzer(Integer N) {
         super();
+        this.N = N;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class NGramAnalyzer extends Analyzer
             System.out.println(pdExample.getBody());
             System.out.println("--------- ANALYZER RESULT ---------");
             // use the analyzer to process the text and print diagnostic information about each token
-            consumeTokenStream(new NGramAnalyzer(), pdExample.getBody(), false);
+            consumeTokenStream(new NGramAnalyzer(4), pdExample.getBody(), false);
         } else {
             System.out.println("Error, could not retrieve document to apply analyzer");
         }

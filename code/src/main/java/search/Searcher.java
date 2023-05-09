@@ -289,10 +289,13 @@ public class Searcher {
     /**
      * /** Searches for the specified topics.
      *
+     * @param runNumber run number that controls in which fields the search must be done following the scheme.
+     *                  See experimental evaluation in the report.
+     *
      * @throws IOException    if something goes wrong while searching.
      * @throws ParseException if something goes wrong while parsing topics.
      */
-    public void search() throws IOException, ParseException {
+    public void search(Integer runNumber) throws IOException, ParseException {
 
         System.out.printf("%n#### Start searching ####%n");
 
@@ -315,10 +318,28 @@ public class Searcher {
 
                 bq = new BooleanQuery.Builder();
 
+                // Control in which fields to search based on runNumber
+                if (runNumber == 1) {
+                    bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                } else if (runNumber == 7) {
+                    bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                } else if (runNumber == 8) {
+                    bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                    bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                } else if (runNumber == 9) {
+                    bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                    bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                    bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                    // TODO: code the rest of runs
+                } else {
+                    System.out.printf("Cannot create run with id=%d%n", runNumber);
+                    return;
+                }
+
                 // Search the title in the English body field
                 // bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 // Search the title in the French body field
-                bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                // bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 // Search the title in N-Gram field
                 // bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                 // Search the title in NER field
@@ -348,26 +369,9 @@ public class Searcher {
         elapsedTime = System.currentTimeMillis() - start;
 
         System.out.printf("%d topic(s) searched in %d seconds.%n", topics.size(), elapsedTime / 1000);
-
+        System.out.printf("Created file: %s.txt", runID);
         System.out.printf("#### Searching complete ####%n");
     }
-
-    /*
-     * RUN EXPERIMENTS IDEAS:
-     * (1): English topics - English
-     * (2): English topics - English + 4-gram
-     * (3): English topics - English + French + 3-gram
-     * (4): English topics - English + French + 4-gram
-     * (5): English topics - English + French + 5-gram
-     * (6): English topics - English + French + 4-gram + NER
-     *
-     * (7): French topics - French
-     * (8): French topics - French + 3-gram
-     * (9): French topics - English + French + 3-gram
-     * (10): French topics - English + French + 4-gram
-     * (11): French topics - English + French + 5-gram
-     * (12): French topics - English + French + 4-gram + NER
-     */
 
     /**
      * Main method of the class. Just for testing purposes.
@@ -377,29 +381,94 @@ public class Searcher {
      */
     public static void main(String[] args) throws Exception {
 
-        //all paths to write
-        final String topics = "C:\\longeval_train\\publish\\French\\Queries\\train.trec";
+        // Topics path
+        final String TOPICS_EN_P = "C:\\longeval_train\\publish\\English\\Queries\\train.trec";
+        final String TOPICS_FR_P = "C:\\longeval_train\\publish\\French\\Queries\\train.trec";
 
-        final String indexPath = "created_indexes/2023_04_24_multilingual_3gram";
+        // Indexes path
+        final String INDEX_MUL_3GRAM_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_04_24_multilingual_3gram";
+        final String INDEX_MUL_3GRAM_SYN_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_04_29_multilingual_3gram_synonym";
+        final String INDEX_MUL_4GRAM_SYN_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_05_01_multilingual_4gram_synonym";
+        final String INDEX_MUL_5GRAM_SYN_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_05_01_multilingual_5gram_synonym";
+        final String INDEX_MUL_4GRAM_SYN_NER_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_05_05_multilingual_4gram_synonym_ner";
 
-        final String runPath = "runs";
+        // Runs path
+        final String RUN_P = "runs";
 
+        // Run info
         final String RUN_PREFIX = "seupd2223-JIHUMING-";
-        final String RUN_INFO = "7_fr";
-        final String RUN_SUFFIX = ".txt";
-        final String runID = RUN_PREFIX+RUN_INFO+RUN_SUFFIX;
+        final String runInfo;
+        final int MAX_DOCS_RETRIEVED = 1000;
 
-        final int maxDocsRetrieved = 1000;
+        /*
+         * Consider the following EXPERIMENTS:
+         *
+         * (1): English topics - English
+         * (2): English topics - English + 4-gram
+         * (3): English topics - English + French + 3-gram
+         * (4): English topics - English + French + 4-gram
+         * (5): English topics - English + French + 5-gram
+         * (6): English topics - English + French + 4-gram + NER
+         *
+         * (7): French topics - French
+         * (8): French topics - French + 4-gram
+         * (9): French topics - English + French + 3-gram
+         * (10): French topics - English + French + 4-gram
+         * (11): French topics - English + French + 5-gram
+         * (12): French topics - English + French + 4-gram + NER
+         */
 
-        //All analyzers from analyze package
+        Integer runId = 9;
+
+        // Analyzers
         final EnglishAnalyzer enAn = new EnglishAnalyzer();
         final FrenchAnalyzer frAn = new FrenchAnalyzer();
-        final NGramAnalyzer ngramAn = new NGramAnalyzer();
         final NERAnalyzer nerAn = new NERAnalyzer();
 
-        Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(), indexPath, topics, 50, runID,
-                runPath, maxDocsRetrieved);
+        if (runId == 1) {
+            final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
 
-        s.search();
+            runInfo = "01_en_en";
+
+            Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                    INDEX_MUL_3GRAM_P, TOPICS_EN_P, 50,
+                    RUN_PREFIX+runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+
+            s.search(runId);
+
+        } else if (runId == 7) {
+            final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
+
+            runInfo = "07_fr_fr";
+
+            Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                    INDEX_MUL_3GRAM_P, TOPICS_FR_P, 50,
+                    RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+
+            s.search(runId);
+        } else if (runId == 8) {
+            final NGramAnalyzer ngramAn = new NGramAnalyzer(4);
+
+            runInfo = "08_fr_fr_4gram";
+
+            Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                    INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, 50,
+                    RUN_PREFIX+runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+
+            s.search(runId);
+        } else if (runId == 9) {
+            final NGramAnalyzer ngramAn = new NGramAnalyzer(3);
+
+            runInfo = "09_fr_en_fr_3gram";
+
+            Searcher s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                    INDEX_MUL_3GRAM_P, TOPICS_FR_P, 50,
+                    RUN_PREFIX+runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+
+            s.search(runId);
+            // TODO: code the rest of runs
+        }else {
+            System.out.printf("Cannot create run with id=%d%n", runId);
+        }
     }
 }
