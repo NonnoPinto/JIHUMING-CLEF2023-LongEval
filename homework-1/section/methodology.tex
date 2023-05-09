@@ -117,12 +117,18 @@ not stored, in order to minimize space occupation.\\
 \subsection{Search}\label{subsec:search}
 
 \subsection{Topic}\label{subsec:topic}
-The search engine's collections are sourced from the CLEF, which gathered queries from Qwant users
- based on trending topics related to their daily lives. The data collection period was June 2022, 
- and the dataset consists of 672 training queries, 9656 corresponding assignments from the Qwant 
- click model, and 98 heldout queries. The queries are available in both French and English, with 
- the French queries translated using the CUBBITT system. The training queries are categorized into 
- twenty topics, including car-related, antivirus-related, employment-related, energy-related, 
- recipe-related, rental car-related, video-related, war-related, gateau-related, police-related, 
- tax-related, solar panel-related, water-related, elderberry-related, curtain-related, land-related, 
- retirement-related, coronavirus-related, beauty-related, and miscellaneous queries.
+To read the queries (in TREC format) we couldn't use the class \textbf{TrecTopicsReader} already included in Lucene.
+This class expects queries to be in a more specific format than thee one provided by the organizers.
+Thus, we developed our own LongEval topic reader in the package \texttt{topic}, containing the classes
+\texttt{LongEvalTopic} and \texttt{LongEvalTopicReader}.
+Note that we kept the name "TopicReader", but what our \texttt{LongEvalTopicReader} is actually doing is reading
+all the queries, not the topics. \\
+Thus:
+\begin{itemize}
+    \item \texttt{LongEvalTopic} is a simple Java POJO representing each query provided by LongEval.
+    Each query has a number (\texttt{<num>}) and a title (\texttt{<title>}).
+    It is the equivalent to \texttt{QualityQuery} when working with \textbf{TrecTopicsReader}.
+    \item \texttt{LongEvalTopicReader} is the query parser we made.
+    It considers the queries file as an XML file and parses it using a Java XML library.
+\end{itemize}
+
