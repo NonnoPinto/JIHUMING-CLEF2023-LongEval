@@ -474,6 +474,10 @@ public class Searcher {
                         INDEX_MUL_3GRAM_P, TOPICS_EN_P, 50,
                         RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
                 s.search(runId);
+                //TODO: close analyzers?
+                /* enAn.close();
+                frAn.close();
+                nerAn.close(); */
                 break;
             case 2:
                 System.out.println("You entered 2: English topics - English + 4-gram");
