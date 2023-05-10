@@ -1,0 +1,3 @@
+[submodule "runs\\experiments/trec_eval"]
+	path = runs\\experiments/trec_eval
+	url = https://github.com/bobTabor25/trec_eval.exe.git
