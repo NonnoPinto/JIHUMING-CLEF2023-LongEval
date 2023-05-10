@@ -352,6 +352,7 @@ public class Searcher {
                         bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                         bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                         bq.add(nerQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        break;
                     default:
                         throw new IllegalArgumentException("Invalid run number.");
                 }
@@ -393,18 +394,18 @@ public class Searcher {
     public static void main(String[] args) throws Exception {
 
         // Topics path
-        final String TOPICS_EN_P = "C:\\longeval_train\\publish\\English\\Queries\\train.trec";
-        final String TOPICS_FR_P = "C:\\longeval_train\\publish\\French\\Queries\\train.trec";
+        final String TOPICS_EN_P = "D:\\longeval_train\\publish\\English\\Queries\\train.trec";
+        final String TOPICS_FR_P = "D:\\longeval_train\\publish\\French\\Queries\\train.trec";
 
         // Indexes path
-        final String INDEX_MUL_3GRAM_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_04_24_multilingual_3gram";
-        final String INDEX_MUL_3GRAM_SYN_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_04_29_multilingual_3gram_synonym";
-        final String INDEX_MUL_4GRAM_SYN_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_05_01_multilingual_4gram_synonym";
-        final String INDEX_MUL_5GRAM_SYN_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_05_01_multilingual_5gram_synonym";
-        final String INDEX_MUL_4GRAM_SYN_NER_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_05_05_multilingual_4gram_synonym_ner";
+        final String INDEX_MUL_3GRAM_P = "D:\\created_indexes\\2023_04_24_multilingual_3gram";
+        final String INDEX_MUL_3GRAM_SYN_P = "D:\\created_indexes\\2023_04_29_multilingual_3gram_synonym";
+        final String INDEX_MUL_4GRAM_SYN_P = "D:\\created_indexes\\2023_05_01_multilingual_4gram_synonym";
+        final String INDEX_MUL_5GRAM_SYN_P = "D:\\created_indexes\\2023_05_01_multilingual_5gram_synonym";
+        final String INDEX_MUL_4GRAM_SYN_NER_P = "D:\\created_indexes\\2023_05_05_multilingual_4gram_synonym_ner";
 
         // Topics/Queries
-        final Integer EXPECTED_TOPICS = 672;
+        final int EXPECTED_TOPICS = 672;
 
         // Runs path
         final String RUN_P = "runs";
