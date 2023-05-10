@@ -30,7 +30,7 @@ import java.nio.file.attribute.BasicFileAttributes;
  *
  * @deprecated this is a DEPRECATED directory indexer in our project. In a first version of the project, it was used
  * to test a simple indexing over the documents, but now it has been substituted by
- * {@link MultilingualDirectoryIndexer()}.
+ * {@link MultilingualDirectoryIndexer}.
  * @version 1.00
  * @since 1.00
  */
