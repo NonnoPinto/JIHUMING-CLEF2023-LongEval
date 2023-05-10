@@ -1,7 +1,12 @@
+# This pip script runs trec_eval all in all 12 experiments and save the output to a text file
+# The output of the trec_eval is saved in runs/experiments/scores folder
+# It also saves, for each run, map score in runs/experiments/scores/all_maps.txt
+
 # trec_eval executable have to me in ../trec_eval-9.0.7 folder
 
 import subprocess
 
+# trec_eval all_trec commands
 script1 = "../trec_eval-9.0.7/trec_eval -m all_trec runs/experiments/qrels.txt runs/experiments/seupd2223-JIHUMING-01_en_en.txt"
 script2 = "../trec_eval-9.0.7/trec_eval -m all_trec runs/experiments/qrels.txt runs/experiments/seupd2223-JIHUMING-02_en_en_3gram.txt"
 script3 = "../trec_eval-9.0.7/trec_eval -m all_trec runs/experiments/qrels.txt runs/experiments/seupd2223-JIHUMING-03_en_en_4gram.txt"
@@ -16,18 +21,19 @@ script11 = "../trec_eval-9.0.7/trec_eval -m all_trec runs/experiments/qrels.txt 
 script12 = "../trec_eval-9.0.7/trec_eval -m all_trec runs/experiments/qrels.txt runs/experiments/seupd2223-JIHUMING-12_fr_fr_4gram_ner.txt"
 
 # Clear maps score file
-with open('runs/experiments/trec_eval/all_maps.txt', 'w') as f:
+with open('runs/experiments/scores/all_maps.txt', 'w') as f:
     pass
 
 for i in range(1, 13):
     script = eval('script' + str(i))
     result = subprocess.run(script, shell=True, capture_output=True, text=True)
-    with open('runs/experiments/trec_eval/output' + str(i) + '.txt', 'w') as f:
+    with open('runs/experiments/scores/output' + str(i) + '.txt', 'w') as f:
         f.write(result.stdout)
     # Get the first and 6th lines of the output
     first_line = result.stdout.split('\n')[0]
     sixth_line = result.stdout.split('\n')[5]
+    ndcg_line = result.stdout.split('\n')[55]
 
     # Save the line to a text file
-    with open('runs/experiments/trec_eval/all_maps.txt', 'a') as f:
-        f.write(f"{first_line}\n{sixth_line}\n")
+    with open('runs/experiments/scores/all_maps.txt', 'a') as f:
+        f.write(f"{first_line}\n{sixth_line}\n{ndcg_line}\n")
