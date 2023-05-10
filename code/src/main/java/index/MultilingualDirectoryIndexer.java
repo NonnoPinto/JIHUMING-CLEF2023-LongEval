@@ -479,7 +479,7 @@ public class MultilingualDirectoryIndexer {
 
         final EnglishAnalyzer enAn = new EnglishAnalyzer();
         final FrenchAnalyzer frAn = new FrenchAnalyzer();
-        final NGramAnalyzer ngramAn = new NGramAnalyzer();
+        final NGramAnalyzer ngramAn = new NGramAnalyzer(4);
         final NERAnalyzer nerAnalyzer = new NERAnalyzer();
 
         MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(enAn, frAn, ngramAn, nerAnalyzer, new BM25Similarity(),

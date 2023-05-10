@@ -12,10 +12,16 @@ The LongEval collection\cite{traindata} relies on a large set of data provided b
 search engine that was launched in France in 2013). %TODO: link to Qwant
 Their idea regarding the dataset was to reflect changes of the Web across time, providing evolving document and query
 sets.
-The collection's documents were chosen based on queries using the Qwant click model, in addition to random selection of
-documents from the Qwant index.
+The data was collected in June 2022.
+The dataset consists of 672 training \textbf{queries}, 9656 corresponding evaluation assignments, and 98 heldout queries.
+The collection's \textbf{documents} were chosen based on queries using the Qwant click model, in addition to random
+selection of documents from the Qwant index.
+The training queries are categorized into twenty \textbf{topics}, including car-related, antivirus-related,
+employment-related, energy-related, recipe-related, rental car-related, video-related, war-related, gateau-related,
+police-related, tax-related, solar panel-related, water-related, elderberry-related, curtain-related, land-related,
+retirement-related, coronavirus-related, beauty-related, and miscellaneous queries.
 In addition to the original French versions, the collection also includes English translations of the webpages and
-queries.\\
+queries using the CUBBITT system.\\
 % Our approach
 Our approach considers both the English and French versions of the documents.
 We generate character N-grams to identify common word structures (as prefixes or suffixes) repeated over documents.

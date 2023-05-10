@@ -59,8 +59,9 @@ The processing applied to the English version of the documents (in \texttt{Engli
         Example: the tokens "PowerShot", "500-42", and "O'Neil's" will be maintained.
     \end{enumerate}
     \item Lowercase all the tokens.
-    \item Apply the Terrier stopword list. %TODO: include Terrier link
-    \item Apply query expansion with synonyms using \texttt{SynonymTokenFilter} from Lucene. %TODO: include link to library used
+    \item Apply the Terrier\cite{OunisEtAl2006} stopword list.
+    \item Apply query expansion with synonyms using \texttt{SynonymTokenFilter} from Lucene, which is based on the
+    WordNet synonym map\cite{wordnet}.
     \item Apply a minimal stemming process using \texttt{EnglishMinimalStemFilter} from Lucene.
     \item Delete tokens that may have been left empty because of the previous filters.
     For this, we created a custom token filter, \texttt{EmptyTokenFilter}.
@@ -71,7 +72,7 @@ The processing of French documents (in \texttt{FrenchAnalyzer}) is identical to 
 the first 5 points (excluding the English possessives' removal in 4.d).
 For this point on, we apply:
 \begin{enumerate}[start=6]
-    \item Apply a French stopword list. %TODO: inclue link to the stopword
+    \item Apply a French stopword list\cite{stopword_french}.
     \item Apply a minimal stemming process (in French) using \texttt{FrenchMinimalStemFilter} from Lucene.
     \item Delete empty tokens (\texttt{EmptyTokenFilter}).
 \end{enumerate}
@@ -91,8 +92,7 @@ We have not fixed the value of N, we have left it open in order to be able to ge
 See Section~\ref{sec:setup} for more details.
 
 \subsubsection{NER extracted information}
-The NER information has been extracted using the Apache OpenNLP %TODO: include link
-library.
+The NER information has been extracted using the Apache OpenNLP\cite{ApacheOpenNLP} library.
 As Lucene does not include these functionalities directly, we have used modified version of a token filter developed by
 Nicola Ferro based on the mentioned library (\texttt{OpenNLPNERFilter}).
 The processing of the tokens in this analyzer (\texttt{NERAnalyzer}) is the following:
@@ -115,14 +115,32 @@ not stored, in order to minimize space occupation.\\
 %TODO: still lot to write
 
 \subsection{Search}\label{subsec:search}
+There's need to be a searcher in order to look for topics/titles desired. The searcher uses the analyzers developed for
+the different queries: english, french, N-gram and NER analyzers. It also requires the similarity function developed for
+checking topics and queries that might be similar.
+The first thing required for the searcher is a directory in which the index can be looked into, in order to make this
+happen we include an parameter named indexPath.
+When a query is requested a parser determines which document field and analyzer shall be used. There could be queries
+requesting multiples documents and involving different combination of analyzers, so every case must be available for the
+search.
+We provide the searcher with an input txt file where the topics to be searched are written, also the number of topics
+expected to be searched need to be specified.
+When the run is completed the searcher creates an output txt file providing all the information regarding the run made,
+such as runID, documentsID, elapsed time.
 
 \subsection{Topic}\label{subsec:topic}
-The search engine's collections are sourced from the CLEF, which gathered queries from Qwant users
- based on trending topics related to their daily lives. The data collection period was June 2022, 
- and the dataset consists of 672 training queries, 9656 corresponding assignments from the Qwant 
- click model, and 98 heldout queries. The queries are available in both French and English, with 
- the French queries translated using the CUBBITT system. The training queries are categorized into 
- twenty topics, including car-related, antivirus-related, employment-related, energy-related, 
- recipe-related, rental car-related, video-related, war-related, gateau-related, police-related, 
- tax-related, solar panel-related, water-related, elderberry-related, curtain-related, land-related, 
- retirement-related, coronavirus-related, beauty-related, and miscellaneous queries.
+To read the queries (in TREC format) we couldn't use the class \textbf{TrecTopicsReader} already included in Lucene.
+This class expects queries to be in a more specific format than thee one provided by the organizers.
+Thus, we developed our own LongEval topic reader in the package \texttt{topic}, containing the classes
+\texttt{LongEvalTopic} and \texttt{LongEvalTopicReader}.
+Note that we kept the name "TopicReader", but what our \texttt{LongEvalTopicReader} is actually doing is reading
+all the queries, not the topics. \\
+Thus:
+\begin{itemize}
+    \item \texttt{LongEvalTopic} is a simple Java POJO representing each query provided by LongEval.
+    Each query has a number (\texttt{<num>}) and a title (\texttt{<title>}).
+    It is the equivalent to \texttt{QualityQuery} when working with \textbf{TrecTopicsReader}.
+    \item \texttt{LongEvalTopicReader} is the query reader we developed.
+    It considers the queries file as an XML file and parses it using a Java XML library.
+\end{itemize}
+
