@@ -115,6 +115,18 @@ not stored, in order to minimize space occupation.\\
 %TODO: still lot to write
 
 \subsection{Search}\label{subsec:search}
+There's need to be a searcher in order to look for topics/titles desired. The searcher uses the analyzers developed for
+the different queries: english, french, N-gram and NER analyzers. It also requires the similarity function developed for
+checking topics and queries that might be similar.
+The first thing required for the searcher is a directory in which the index can be looked into, in order to make this
+happen we include an parameter named indexPath.
+When a query is requested a parser determines which document field and analyzer shall be used. There could be queries
+requesting multiples documents and involving different combination of analyzers, so every case must be available for the
+search.
+We provide the searcher with an input txt file where the topics to be searched are written, also the number of topics
+expected to be searched need to be specified.
+When the run is completed the searcher creates an output txt file providing all the information regarding the run made,
+such as runID, documentsID, elapsed time.
 
 \subsection{Topic}\label{subsec:topic}
 To read the queries (in TREC format) we couldn't use the class \textbf{TrecTopicsReader} already included in Lucene.
