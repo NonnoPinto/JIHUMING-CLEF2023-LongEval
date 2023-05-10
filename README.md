@@ -31,7 +31,7 @@ The repository is organised as follows:
 - Giovanni Zago
 
 ## Scoring runs with trec_eval ##
-In order to evaluate all runs in an easy way, a pip script can be used. Just ensure your trec_eval directory is in ../trec_eval-9.0.7 and run
+In order to evaluate all runs in an easy way, a linux based pip script can be used. Just ensure your trec_eval directory is in ../trec_eval-9.0.7 and run
 ```sh
 python3 runTrecEval.py
 ```

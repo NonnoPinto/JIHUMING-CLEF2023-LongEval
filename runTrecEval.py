@@ -6,6 +6,7 @@
 
 import subprocess
 
+# trec_eval all_trec commands
 script1 = "../trec_eval-9.0.7/trec_eval -m all_trec runs/experiments/qrels.txt runs/experiments/seupd2223-JIHUMING-01_en_en.txt"
 script2 = "../trec_eval-9.0.7/trec_eval -m all_trec runs/experiments/qrels.txt runs/experiments/seupd2223-JIHUMING-02_en_en_3gram.txt"
 script3 = "../trec_eval-9.0.7/trec_eval -m all_trec runs/experiments/qrels.txt runs/experiments/seupd2223-JIHUMING-03_en_en_4gram.txt"
@@ -31,7 +32,8 @@ for i in range(1, 13):
     # Get the first and 6th lines of the output
     first_line = result.stdout.split('\n')[0]
     sixth_line = result.stdout.split('\n')[5]
+    ndcg_line = result.stdout.split('\n')[55]
 
     # Save the line to a text file
     with open('runs/experiments/scores/all_maps.txt', 'a') as f:
-        f.write(f"{first_line}\n{sixth_line}\n")
+        f.write(f"{first_line}\n{sixth_line}\n{ndcg_line}\n")
