@@ -52,5 +52,5 @@ Here a chart ranking of five best scores, there are indexes that has been presen
 	\caption{Best MAP and NDCG scores}
 	\label{fig:scores}
 \end{figure}
-It's interesting to notice that a cross-language approach (fr\_en\_fr\_5gram) is one of the best performing indexes, even though it's not the best one. %TODO: how is it possibile that a cross language is better than only english??
+It's interesting to notice that a cross-language approach (fr\_en\_fr\_5gram) is one of the best performing indexes, even though it's not the best one. We suppose this is due to the fact that most of the score comes from the French queries, which are the most relevant ones.\\
 In general, we focus more on trying multiple approaches, this is why our score has such a big space for improvement. As already said, French queries with bigger n-gram size perform better: likely queries weren't made by single word match, but the more context was given, the better the results were.\\
