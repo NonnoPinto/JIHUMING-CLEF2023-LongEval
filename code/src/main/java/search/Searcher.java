@@ -38,22 +38,6 @@ import java.util.*;
 public class Searcher {
 
     /**
-     * Fiends of our topics/queries. Note that LongEval only provides a query title.
-     */
-    private static final class TOPIC_FIELDS {
-
-        /**
-         * The number of a topic
-         */
-        private static final String NUM = "num";
-
-        /**
-         * The title of a topic.
-         */
-        public static final String TITLE = "title";
-    }
-
-    /**
      * The identifier of the run
      */
     private final String runID;
