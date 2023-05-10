@@ -4,7 +4,6 @@ import analyze.EnglishAnalyzer;
 import analyze.FrenchAnalyzer;
 import analyze.NERAnalyzer;
 import analyze.NGramAnalyzer;
-import opennlp.tools.parser.Parse;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -318,62 +317,51 @@ public class Searcher {
         try {
             for (LongEvalTopic t : topics) {
 
-                System.out.printf("Searching for topic %s.%n", t.getNum());
+                //System.out.printf("Searching for topic %s.%n", t.getNum());
 
                 bq = new BooleanQuery.Builder();
 
                 // Control in which fields to search based on runNumber
                 switch (runNumber) {
 
-                case 1:
-                    bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                    break;
-                case 2:
-                    //TODO: add your code here
-                    break;
-                case 3:
-                    //TODO: add your code here
-                    break;
-                case 4:
-                    //TODO: add your code here
-                    break;
-                case 5:
-                    //TODO: add your code here
-                    break;
-                case 6:
-                    //TODO: add your code hereD);
-                    break;
-                case 7:
-                    bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                    break;
-                case 8:
-                    bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                    bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                    break;
-                case 9:
-                    bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                    bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                    bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
-                    break;
-                case 10:
-                    //TODO: add your code here
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid run number.");
+                    case 1:
+                        // Search the title in the English body field
+                        bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        break;
+                    case 2:
+                        bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        // Search the title in N-Gram field
+                        bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 9:
+                    case 10:
+                    case 11:
+                        bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        // Search the title in the French body field
+                        bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        break;
+                    case 6:
+                    case 12:
+                        bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        // Search the title in NER field
+                        bq.add(nerQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        break;
+                    case 7:
+                        bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        break;
+                    case 8:
+                        bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid run number.");
                 }
-
-                // Search the title in the English body field
-                // bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())),
-                // BooleanClause.Occur.SHOULD);
-                // Search the title in the French body field
-                // bq.add(frQp.parse(QueryParserBase.escape(t.getTitle())),
-                // BooleanClause.Occur.SHOULD);
-                // Search the title in N-Gram field
-                // bq.add(ngramQp.parse(QueryParserBase.escape(t.getTitle())),
-                // BooleanClause.Occur.SHOULD);
-                // Search the title in NER field
-                // bq.add(nerQp.parse(QueryParserBase.escape(t.getTitle())),
-                // BooleanClause.Occur.SHOULD);
 
                 q = bq.build();
 
@@ -399,7 +387,7 @@ public class Searcher {
         elapsedTime = System.currentTimeMillis() - start;
 
         System.out.printf("%d topic(s) searched in %d seconds.%n", topics.size(), elapsedTime / 1000);
-        System.out.printf("Created file: %s.txt", runID);
+        System.out.printf("Created file: %s.txt%n", runID);
         System.out.printf("#### Searching complete ####%n");
     }
 
@@ -422,176 +410,207 @@ public class Searcher {
         final String INDEX_MUL_5GRAM_SYN_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_05_01_multilingual_5gram_synonym";
         final String INDEX_MUL_4GRAM_SYN_NER_P = "C:\\Users\\jemon\\IdeaProjects\\seupd2223-jihuming\\code\\created_indexes\\2023_05_05_multilingual_4gram_synonym_ner";
 
+        // Topics/Queries
+        final Integer EXPECTED_TOPICS = 672;
+
         // Runs path
         final String RUN_P = "runs";
 
         // Run info
         final String RUN_PREFIX = "seupd2223-JIHUMING-";
-        final String runInfo;
+        String runInfo;
         final int MAX_DOCS_RETRIEVED = 1000;
 
         Scanner input = new Scanner(System.in);
+        while (true)
+        {
+            System.out.print("Choose run:\n" +
+                    "\t1. English topics - English.\n" +
+                    "\t2. English topics - English (qe) + 4-gram.\n" +
+                    "\t3. English topics - English (qe) + French + 3-gram.\n" +
+                    "\t4. English topics - English (qe) + French + 4-gram.\n" +
+                    "\t5. English topics - English (qe) + French + 5-gram.\n" +
+                    "\t6. English topics - English (qe) + French + 4-gram + NER.\n" +
+                    "\t7. French topics - French.\n" +
+                    "\t8. French topics - French + 4-gram.\n" +
+                    "\t9. French topics - English (qe) + French + 3-gram.\n" +
+                    "\t10. French topics - English (qe) + French + 4-gram.\n" +
+                    "\t11. French topics - English (qe) + French + 5-gram.\n" +
+                    "\t12. French topics - English (qe) + French + 4-gram + NER.\n" +
+                    "\t-1. Exit.\n" +
+                    "Enter your choice: ");
 
-        System.out.print("Chose searcher:\n" +
-                "1. English topics - English\n" +
-                "2. English topics - English + 4-gram\n" +
-                "3. English topics - English + French + 3-gram\n" +
-                "4. English topics - English + French + 4-gram\n" +
-                "5. English topics - English + French + 5-gram\n" +
-                "6. English topics - English + French + 4-gram + NER\n" +
-                "7. French topics - French\n" +
-                "8. French topics - French + 4-gram\n" +
-                "9. French topics - English + French + 3-gram\n" +
-                "10. French topics - English + French + 4-gram\n" +
-                "11. French topics - English + French + 5-gram\n" +
-                "12. French topics - English + French + 4-gram + NER\n" +
-                "Enter your choice: ");
+            int runId = input.nextInt();
+            while ((runId < 1 || runId > 12) && runId != -1) {
+                System.out.println("Invalid choice. Please enter a number between 1 and 12.\n");
+                runId = input.nextInt();
+            }
 
-        int runId = input.nextInt();
+            if (runId == -1)
+                break;
 
-        while (runId < 1 || runId > 12) {
-            System.out.println("Invalid choice. Please enter a number between 1 and 12.\n");
-            runId = input.nextInt();
+            // Common analyzers
+            final EnglishAnalyzer enAn = new EnglishAnalyzer();
+            final FrenchAnalyzer frAn = new FrenchAnalyzer();
+            final NERAnalyzer nerAn = new NERAnalyzer();
+
+            NGramAnalyzer ngramAn;
+            Searcher s;
+
+            switch (runId) {
+                case 1:
+                    System.out.println("You entered 1: English topics - English");
+                    runInfo = "01_en_en";
+                    ngramAn = new NGramAnalyzer(3);
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_3GRAM_P, TOPICS_EN_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 2:
+                    System.out.println("You entered 2: English topics - English + 4-gram");
+                    runInfo = "02_en_en_4gram";
+                    ngramAn = new NGramAnalyzer(4);
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_4GRAM_SYN_P, TOPICS_EN_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 3:
+                    System.out.println("You entered 3: English topics - English + French + 3-gram");
+                    runInfo = "03_en_en_fr_3gram";
+                    ngramAn = new NGramAnalyzer(3);
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_3GRAM_SYN_P, TOPICS_EN_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 4:
+                    System.out.println("You entered 4: English topics - English + French + 4-gram");
+                    runInfo = "04_en_en_fr_4gram";
+                    ngramAn = new NGramAnalyzer(4);
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_4GRAM_SYN_P, TOPICS_EN_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 5:
+                    System.out.println("You entered 5: English topics - English + French + 5-gram");
+                    runInfo = "05_en_en_fr_5gram";
+                    ngramAn = new NGramAnalyzer(5);
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_5GRAM_SYN_P, TOPICS_EN_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 6:
+                    System.out.println("You entered 6: English topics - English + French + 4-gram + NER");
+                    runInfo = "06_en_en_fr_4gram_ner";
+                    ngramAn = new NGramAnalyzer(4);
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_4GRAM_SYN_NER_P, TOPICS_EN_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 7:
+                    System.out.println("You entered 7: French topics - French");
+                    ngramAn = new NGramAnalyzer(3);
+                    runInfo = "07_fr_fr";
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_3GRAM_P, TOPICS_FR_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 8:
+                    System.out.println("You entered 8: French topics - French + 4-gram");
+                    ngramAn = new NGramAnalyzer(4);
+                    runInfo = "08_fr_fr_4gram";
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 9:
+                    System.out.println("You entered 9: French topics - English + French + 3-gram");
+                    ngramAn = new NGramAnalyzer(3);
+                    runInfo = "09_fr_en_fr_3gram";
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_3GRAM_SYN_P, TOPICS_FR_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 10:
+                    System.out.println("You entered 10: French topics - English + French + 4-gram");
+                    runInfo = "10_fr_en_fr_4gram";
+                    ngramAn = new NGramAnalyzer(4);
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 11:
+                    System.out.println("You entered 11: French topics - English + French + 5-gram");
+                    runInfo = "11_fr_en_fr_5gram";
+                    ngramAn = new NGramAnalyzer(5);
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_5GRAM_SYN_P, TOPICS_FR_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                case 12:
+                    System.out.println("You entered 12: French topics - English + French + 4-gram + NER");
+                    runInfo = "12_fr_en_fr_4gram_ner";
+                    ngramAn = new NGramAnalyzer(4);
+
+                    s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
+                            INDEX_MUL_4GRAM_SYN_NER_P, TOPICS_FR_P, EXPECTED_TOPICS,
+                            RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
+                    s.search(runId);
+
+                    ngramAn.close();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid run number.");
+            }
+
+            enAn.close();
+            frAn.close();
+            nerAn.close();
+            System.out.println("Done.");
         }
-
         input.close();
-
-        // Analyzers
-        final EnglishAnalyzer enAn = new EnglishAnalyzer();
-        final FrenchAnalyzer frAn = new FrenchAnalyzer();
-        final NERAnalyzer nerAn = new NERAnalyzer();
-
-        NGramAnalyzer ngramAn;
-        Searcher s;
-
-        switch (runId) {
-            case 1:
-                System.out.println("You entered 1: English topics - English");
-                runInfo = "01_en_en";
-                ngramAn = new NGramAnalyzer(3);
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_3GRAM_P, TOPICS_EN_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                //TODO: close analyzers?
-                /* enAn.close();
-                frAn.close();
-                nerAn.close(); */
-                break;
-            case 2:
-                System.out.println("You entered 2: English topics - English + 4-gram");
-                runInfo = "02_en_en_4gram";
-                ngramAn = new NGramAnalyzer(4);
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_4GRAM_SYN_P, TOPICS_EN_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 3:
-                System.out.println("You entered 3: English topics - English + French + 3-gram");
-                runInfo = "03_en_en_fr_3gram";
-                ngramAn = new NGramAnalyzer(3);
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_3GRAM_P, TOPICS_EN_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 4:
-                System.out.println("You entered 4: English topics - English + French + 4-gram");
-                runInfo = "04_en_en_fr_4gram";
-                ngramAn = new NGramAnalyzer(4);
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_4GRAM_SYN_P, TOPICS_EN_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 5:
-                System.out.println("You entered 5: English topics - English + French + 5-gram");
-                runInfo = "05_en_en_fr_5gram";
-                ngramAn = new NGramAnalyzer(5);
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_5GRAM_SYN_P, TOPICS_EN_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 6:
-                System.out.println("You entered 6: English topics - English + French + 4-gram + NER");
-                runInfo = "06_en_en_fr_4gram_ner";
-                ngramAn = new NGramAnalyzer(4);
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_4GRAM_SYN_P, TOPICS_EN_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 7:
-                System.out.println("You entered 7: French topics - French");
-                ngramAn = new NGramAnalyzer(3);
-                runInfo = "07_fr_fr";
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_3GRAM_P, TOPICS_FR_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 8:
-                System.out.println("You entered 8: French topics - French + 4-gram");
-                ngramAn = new NGramAnalyzer(4);
-                runInfo = "08_fr_fr_4gram";
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 9:
-                System.out.println("You entered 9: French topics - English + French + 3-gram");
-                ngramAn = new NGramAnalyzer(3);
-                runInfo = "09_fr_en_fr_3gram";
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_3GRAM_P, TOPICS_FR_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 10:
-                System.out.println("You entered 10: French topics - English + French + 4-gram");
-                runInfo = "10_fr_en_fr_4gram";
-                ngramAn = new NGramAnalyzer(4);
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 11:
-                System.out.println("You entered 11: French topics - English + French + 5-gram");
-                runInfo = "11_fr_en_fr_5gram";
-                ngramAn = new NGramAnalyzer(5);
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_5GRAM_SYN_P, TOPICS_FR_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            case 12:
-                System.out.println("You entered 12: French topics - English + French + 4-gram + NER");
-                runInfo = "12_fr_en_fr_4gram_ner";
-                ngramAn = new NGramAnalyzer(4);
-
-                s = new Searcher(enAn, frAn, ngramAn, nerAn, new BM25Similarity(),
-                        INDEX_MUL_4GRAM_SYN_P, TOPICS_FR_P, 50,
-                        RUN_PREFIX + runInfo, RUN_P, MAX_DOCS_RETRIEVED);
-                s.search(runId);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid run number.");
-        }
-        System.out.println("Done.");
     }
 }
