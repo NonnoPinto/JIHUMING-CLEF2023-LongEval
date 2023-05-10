@@ -5,9 +5,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
@@ -34,6 +36,8 @@ public class LongEvalTopicReader {
      *
      * @param topicsFile path of the topics file.
      * @throws NullPointerException if {@code topicsFile} is {@code null}.
+     * @throws IOException if {@code topicsFile} cannot be read as a String.
+     * @throws RuntimeException if there are errors parsing (as XML) the topics file.
      */
     public LongEvalTopicReader (Path topicsFile) throws IOException {
 
@@ -81,8 +85,8 @@ public class LongEvalTopicReader {
                     this.topics.add(newTopic);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ParserConfigurationException | SAXException e) {
+            throw new RuntimeException("Error parsing topics file %s%n", e);
         }
     }
 

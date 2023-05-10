@@ -322,6 +322,7 @@ public class Searcher {
                     case 1:
                         bq.add(enQp.parse(QueryParserBase.escape(t.getTitle())), BooleanClause.Occur.SHOULD);
                         break;
+                        // TODO: explain
                     case 2:
                     case 3:
                     case 4:

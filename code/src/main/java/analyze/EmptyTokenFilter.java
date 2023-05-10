@@ -18,6 +18,11 @@ public class EmptyTokenFilter extends FilteringTokenFilter {
     private final CharTermAttribute termAtt =
             addAttribute(CharTermAttribute.class);
 
+    /**
+     * Creates an instance of this token filter
+     *
+     * @param input input token stream
+     */
     protected EmptyTokenFilter(TokenStream input) {
         super(input);
     }
