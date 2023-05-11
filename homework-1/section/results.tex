@@ -4,33 +4,33 @@
 %TODO: check, at the very end, if chars are in the right place
 
 \begin{center}
-    \begin{tabular}{ |c||c|c| } 
+    \begin{tabular}{ |c|c||c|c| } 
         \hline
-        \textbf{Index} & \textbf{Map Score} & \textbf{NCDG Score}\\
+        \textbf{Index} & \textbf{Run} & \textbf{Map Score} & \textbf{NCDG Score}\\
         \hline\hline
-        en\_en & 0.0700 & 0.1614 \\
+        01 & en\_en & \cellcolor{red!30!white}0.0700 & \cellcolor{red!30!white}0.1614 \\
         \hline
-        en\_en\_en\_3gram & 0.0704 & 0.1661 \\
+        02 & en\_en\_en\_3gram & 0.0704 & 0.1661 \\
         \hline
-        en\_en\_4gram & 0.0874 & 0.2025 \\
+        03 & en\_en\_4gram & 0.0874 & 0.2025 \\
         \hline
-        en\_en\_5gram & 0.1028 & 0.2288 \\
+        04 & en\_en\_5gram & 0.1028 & 0.2288 \\
         \hline
-        en\_en\_fr\_5gram & 0.0669 & 0.1525 \\
+        05 & en\_en\_fr\_5gram & \cellcolor{red!60!white}0.0669 & \cellcolor{red!60!white}0.1525 \\
         \hline
-        en\_en\_4gram\_ner & 0.0360 & 0.1098 \\
+        06 & en\_en\_4gram\_ner & \cellcolor{red}0.0360 & \cellcolor{red}0.1098 \\
         \hline
-        fr\_fr & 0.1656 & 0.3135 \\
+        07 & fr\_fr & 0.1656 & 0.3135 \\
         \hline
-        fr\_fr\_3gram & 0.1698 & 0.3208 \\
+        08 & fr\_fr\_3gram & \cellcolor{green!30!white}0.1698 & \cellcolor{green!30!white}0.3208 \\
         \hline
-        fr\_fr\_4gram & 0.1737 & 0.3269 \\
+        09 & fr\_fr\_4gram & \cellcolor{green!60!white}0.1737 & \cellcolor{green!60!white}0.3269 \\
         \hline
-        fr\_fr\_5gram & 0.1748 & 0.3285 \\
+        10 & fr\_fr\_5gram & \cellcolor{green}0.1748 & \cellcolor{green}0.3285 \\
         \hline
-        fr\_en\_fr\_5gram & 0.1288 & 0.2797 \\
+        11 & fr\_en\_fr\_5gram & 0.1288 & 0.2797 \\
         \hline
-        fr\_fr\_4gram\_ner & 0.1362 & 0.2881 \\
+        12 & fr\_fr\_4gram\_ner & 0.1362 & 0.2881 \\
         \hline
     \end{tabular}
 \end{center}
@@ -52,5 +52,6 @@ Here a chart ranking of five best scores, there are indexes that has been presen
 	\caption{Best MAP and NDCG scores}
 	\label{fig:scores}
 \end{figure}
-It's interesting to notice that a cross-language approach (fr\_en\_fr\_5gram) is one of the best performing indexes, even though it's not the best one. We suppose this is due to the fact that most of the score comes from the French queries, which are the most relevant ones.\\
-In general, we focus more on trying multiple approaches, this is why our score has such a big space for improvement. As already said, French queries with bigger n-gram size perform better: likely queries weren't made by single word match, but the more context was given, the better the results were.\\
+It's interesting to notice that a cross-language approach (fr\_en\_fr\_5gram) is just out of the five bests performing indexes, even though it has english indexes. We suppose this is due to the fact that most of the score comes from the French queries, which are the most relevant ones.\\
+On the other hand, the worst performing index is the one with named entity recognition (en\_en\_4gram\_ner): it combines translated queries and named entity recognition, which appears to be the two worst performing approaches.\\
+In general, we focus more on trying multiple approaches, this is why our score has such a big space for improvement. As already said, French queries with bigger n-gram size perform better: queries weren't made by single word match, instead the more context was given, the better the results were.\\

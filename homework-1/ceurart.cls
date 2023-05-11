@@ -92,7 +92,7 @@
 \RequirePackage{iftex}
 \RequirePackage{microtype}
 \RequirePackage{hyperref}
-\RequirePackage{listings, xcolor}
+\RequirePackage{listings}
 \lstset{
 showstringspaces = false, %% prevent space marking in strings, string is defined as the text that is generally printed directly to the console
 commentstyle = \color{gray}, %% set comment color
