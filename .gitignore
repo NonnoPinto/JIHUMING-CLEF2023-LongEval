@@ -71,6 +71,7 @@ tomcat-logs/
 *.zip
 *.tar.gz
 *.rar
+*.html
 
 
 # OSX
