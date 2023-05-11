@@ -1,4 +1,19 @@
 \section{Methodology}\label{sec:methodology}
-
-%TODO: write the methodology as Nicola Ferro said
-
+In the index, we decided to include four fields: (1) the English version of the documents, (2) the French version, (3)
+character N-grams of both versions concatenated, and (4) some NER information extracted using NLP techniques.
+As similarity function we have used BM25 as it takes into account both term frequency and document length.
+See See Section~\ref{subsec:index} for more details.\\
+To generate all these fields, we have developed four different analyzers.
+The English analyzer is based on whitespace tokenization, breaking of words and numbers based on special characters,
+lowercasing, applying the TERRIER stopword list, query expansion with synonyms, and stemming.
+The French analyer is based on whitespace tokenization, breaking of words and numbers based on special characters,
+lowercasing, applying a French stopword list and stemming.
+To generate the character N-grams we consider only the letters of the documents (i.e. discarding numbers and
+punctuation).
+To perform NER we apply NLP techniques (based on Apache OpenNLP\cite{ApacheOpenNLP}) to the original (French) version of
+the documents.
+See Section~\ref{subsec:analyzer} for more details.\\
+To generate the runs we have done some experiments, i.e., we have tried different combinations of the explained
+techniques during the development of the project.
+Thus, our searcher will always use BM25, but the rest of characteristic depend on the run it is generating.
+See Section~\ref{sec:setup} for more details.
