@@ -68,7 +68,7 @@ tomcat-logs/
 *.jar
 *.war
 *.ear
-*.zip
+# *.zip # We need them to upload the runs
 *.tar.gz
 *.rar
 *.html
