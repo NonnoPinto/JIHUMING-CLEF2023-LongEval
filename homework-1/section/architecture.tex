@@ -114,7 +114,19 @@ not stored, in order to minimize space occupation.\\
 %TODO: still lot to write
 
 \subsection{Search}\label{subsec:search}
-There's a need to be a searcher in order to look for topics/titles desired. The searcher uses the analyzers developed for the different queries: English, French, N-gram and NER analyzers. It also requires the similarity function developed for checking topics and queries that might be similar. The first thing required for the searcher is a directory in which the index can be looked into, in order to make this happen we include an parameter named indexPath. When a query is requested a parser determines which document field and analyzer shall be used. There could be queries requesting multiple documents and involving different combinations of analyzers, so every case must be available for the search. We provide the searcher with an input txt file where the topics to be searched are written, also the number of topics expected to be searched needs to be specified. When the run is completed the searcher creates an output txt file providing all the information regarding the run made, such as runID, documentsID and elapsed time.
+The searcher package (only made up of the class \texttt{Searcher}) in our project is in charge of doing the effective
+search, i.e., search in the created indexes for the topics/queries specified.
+In our case we will search the queries provided from LongEval\cite{traindata}.\\
+The searcher will first apply the explained analyzers to the query title, in order to generate a text that can be
+matched in the corresponding index fields (See Section~\ref{sec:setup} for more details).
+This process is performed by relying on the \texttt{QueryParser} class from Lucene.
+After this, the selected document fields are searched in the index using the similarity function BM25\cite{BM25}.\\
+To perform a query, we must specify: the path of the index, the path of the topics file, the number of expected topics,
+a run descriptor, and the maximum number of documents retrieved (1000).\\
+In order to perform all the experiments in an easier way we have created a menu where, having specified all the required
+paths and parameters, a user can select the desired run to execute.
+This will determine which document fields and analyzers shall be used, depending on the run identifier.
+It also allow to distinguish between train and test data.\\
 
 \subsection{Topic}\label{subsec:topic}
 To read the queries (in TREC format) we couldn't use the class \textbf{TrecTopicsReader} already included in Lucene. This class expects queries to be in a more specific format than the one provided by the organizers.

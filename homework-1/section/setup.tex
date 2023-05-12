@@ -3,22 +3,59 @@
 
 Our work was initiated based on the experimental setups outlined below.
 \begin{itemize}
-	\item Evaluation measures: MAP (Mean Average Precision) and NDCG (Normalized Discounted Cumulative Gain) scores
-	\item \citep[Repository]{jihuming}
-	\item During the development and the experimentation, personal computers were used
-	\item Java JDK version 17, Apache version 2, Lucene version 9.5, Maven
+	\item Evaluation measures: MAP (Mean Average Precision) and NDCG (Normalized Discounted Cumulative Gain) scores.
+	\item \citep[Repository]{jihuming}.
+	\item During the development and the experimentation, personal computers were used.
+	\item Java JDK version 17, Apache version 2, Lucene version 9.5, and Maven.
 \end{itemize}
-Our team has created several indexes from the collection which was provided by LongEval. Indexes were created to be used in experiments with the runs, and they were created in order to enable fast and effective search and retrieval. 
-All of the created indexes are multilingual. Which gives the ability to use, understand, communicate in more than one language since we have two languages in our project to work with.  In other words they are proficient in multiple languages. 
-Additionally indexes were created with different implementations of character 3-grams,  character 4-grams and character 5-grams in order to capture different aspects of the language. Indexes which implementation of character 3-grams are based on groups of three consecutive characters in each document allowing for some contextual understanding of word variations and misspellings. 4-gram indexes capture four consecutive characters and additional information about word and phrase structure. They were used to provide even greater context around words and to improve query performance and precision. 5-gram indexes, which use groups of five consecutive characters were used to capture even more context around words to aim further improvements in query performance. 
-Additional functionality of some of the indexes is having query expansion with synonyms, which provides the improvement of the search results by including related words or phrases that are equivalent in meaning to the user's original query. 
-One index(2023\_05\_05\_multilingual\_4gram\_synonym\_ner) uses Named Entity Recognition which provides not only the search for keywords but also identifying and extracting specific named entities. By implementing this to the index, the accuracy and relevance is improved.
+In order to do different run experiments our team has created several indexes from the provided collection during the
+development of the final version of the project.
+In other words, the first created indexes only include several characteristics explained in this report, while the last
+indexes correspond to the final version of the project.\\
+All the created indexes are \textbf{multilingual}, which allows us to take full advantage of the (bilingual) data
+collection.
+Additionally, we did some experiments with character N-grams generating different versions of indexes with 3-grams,
+4-grams and 5-grams.
+Our motivation for experimenting with this was to compare how the size of different character N-grams affect to the
+effectiveness of our system.
+3-grams are able to collecting more specific information about our documents, while 4-grams and 5-grams are more open
+to the context.
+An additional functionality of some indexes is query expansion, but as commented, this is only applied to the English
+body.
+One index uses Named Entity Recognition which provides not only the search for keywords but also identifying and
+extracting specific named entities.
 The subsequent indexes are:
 \begin{itemize}
-	\item 2023\_04\_24\_multilingual\_3gram
-	\item 2023\_04\_29\_multilingual\_3gram\_synonym
-	\item 2023\_05\_01\_multilingual\_4gram\_synonym
-	\item 2023\_05\_01\_multilingual\_5gram\_synonym
-	\item 2023\_05\_05\_multilingual\_4gram\_synonym\_ner
+	\item \texttt{2023\_04\_24\_multilingual\_3gram}: both languages of documents, using character 3-grams.
+	\item \texttt{2023\_04\_29\_multilingual\_3gram\_synonym}: both languages, character 3-grams, (English) query expansion with synonyms.
+	\item \texttt{2023\_05\_01\_multilingual\_4gram\_synonym}: both languages, character 4-grams, (English) query expansion with synonyms.
+	\item \texttt{2023\_05\_01\_multilingual\_5gram\_synonym}: both languages, character 5-grams, (English) query expansion with synonyms.
+	\item \texttt{2023\_05\_05\_multilingual\_4gram\_synonym\_ner}: both languages, character 3-grams, (English) query expansion with synonyms, NER techniques.
 \end{itemize}
-The indexes also can be found in the following Google Drive \href{https://drive.google.com/drive/folders/1CK_kLeZ5Us3VJe8hiG1vhwPrDs94cLvU?usp=share_link}{folder}.
+
+The indexes also can be found in the following
+\href{https://drive.google.com/drive/folders/1CK_kLeZ5Us3VJe8hiG1vhwPrDs94cLvU?usp=share_link}{Google Drive folder}.
+
+After creating indexes, we conducted multiple runs to evaluate the effectiveness of our system. 
+These runs enabled us to compare and analyze different aspects of our system's performance, such as precision and recall. 
+We then computed the MAP and NDCG scores for each run, which allowed us to further evaluate the performance of our 
+system across multiple evaluation metrics.
+The results will be commented in the following section[].
+Additionally, we conducted tests using both English and French queries to ensure that our system can effectively retrieve 
+relevant documents for queries in different languages. 
+Runs can be found in the following:
+\begin{itemize}
+	\item seupd2223\-JIHUMING\-01\_en\_en
+	\item seupd2223\-JIHUMING\-02\_en\_en\_3gram
+	\item seupd2223\-JIHUMING\-03\_en\_en\_4gram
+	\item seupd2223\-JIHUMING\-04\_en\_en\_5gram
+	\item seupd2223\-JIHUMING\-05\_en\_en\_fr\_5gram
+	\item seupd2223\-JIHUMING\-06\_en\_en\_4gram\_ner
+	\item seupd2223\-JIHUMING\-07\_fr\_fr
+	\item seupd2223\-JIHUMING\-08\_fr\_fr\_3gram
+	\item seupd2223\-JIHUMING\-09\_fr\_fr\_4gram
+	\item seupd2223\-JIHUMING\-10\_fr\_fr\_5gram
+	\item seupd2223\-JIHUMING\-11\_fr\_en\_fr\_5gram
+	\item seupd2223\-JIHUMING\-12\_fr\_fr\_4gram\_ner
+	
+\end{itemize}
