@@ -12,7 +12,7 @@
             \hline\hline
             01 & en\_en & \cellcolor{red!30!white}0.0700 & \cellcolor{red!30!white}0.1614 \\
             \hline
-            02 & en\_en\_en\_3gram & 0.0704 & 0.1661 \\
+            02 & en\_en\_3gram & 0.0704 & 0.1661 \\
             \hline
             03 & en\_en\_4gram & 0.0874 & 0.2025 \\
             \hline
@@ -42,19 +42,49 @@
 	\centering
 	\includegraphics[width=0.7\textwidth]{figure/allScores.png}
 	\caption{All scores sorted by MAP score}
-	\label{fig:sorted scores}
+	\label{fig:sorted_scores}
 \end{figure}
-The dataset comprises MAP and NDCG scores for twelve runs of an Information Retrieval (IR) system with different language models and n-gram sizes for indexing. MAP measures how effectively the IR system returns relevant results for a given query, while NDCG indicates the ranking quality of the results.\\
-The analysis shows that the highest MAP score (0.1748) is achieved by fr\_fr\_5gram, followed fr\_fr\_4gram (0.1737) and fr\_fr\_3gram (0.698), while the lowest MAP score (0.0360) is obtained by en\_en\_4gram\_ner. Similarly, the highest NDCG score (0.3208) belongs to fr\_fr\_4gram\_ner, followed by fr\_fr\_5gram (0.3285) and fr\_fr\_4gram (0.3269), whereas the lowest NDCG score (0.1098) corresponds to en\_en\_4gram\_ner.\\
-Results suggest that French queries perform better than their English counterparts, possibly due to the training data's origin in
-French and later translation into English. Moreover, the IR system's effectiveness generally increases with a larger n-gram size, as indicated by the higher scores of en\_en\_5gram and fr\_fr\_5gram. Conversely, the inclusion of named entity recognition (ner) in the indexing process seems to have a negative impact on the scores, as shown by the lower scores of en\_en\_4gram\_ner and fr\_fr\_4gram\_ner.\\
-Here is a chart ranking of the five best scores, there are indexes that have been presented at CLEF:
+
+%The dataset comprises MAP and NDCG scores for twelve runs of an Information Retrieval (IR) system with different
+%language models and n-gram sizes for indexing.
+%MAP measures how effectively the IR system returns relevant results for a given query, while NDCG indicates the ranking
+%quality of the results.\\
+The analysis shows that the highest MAP score (0.1748) is achieved by \texttt{fr\_fr\_5gram},
+followed by \texttt{fr\_fr\_4gram} (0.1737) and \texttt{fr\_fr\_3gram} (0.698), while the lowest MAP score (0.0360) is
+obtained by \texttt{en\_en\_4gram\_ner}.
+Similarly, the highest NDCG score (0.3208) belongs to \texttt{fr\_fr\_4gram\_ner}, followed by \texttt{fr\_fr\_5gram}
+(0.3285) and \texttt{fr\_fr\_4gram} (0.3269), whereas the lowest NDCG score (0.1098) corresponds to
+\texttt{en\_en\_4gram\_ner}.\\
+
+Results suggest that French queries perform better than their English counterparts, possibly due to the training data's
+French origin and later translation into English.
+Moreover, the IR system's effectiveness generally increases with a larger N-gram size, as indicated by the higher scores
+of \texttt{en\_en\_5gram} and \texttt{fr\_fr\_5gram}.
+Conversely, the inclusion of NER in the indexing process seems to have a negative impact on the scores, as shown by the
+lower scores of \texttt{en\_en\_4gram\_ner} and \texttt{fr\_fr\_4gram\_ner}.
+The use of query expansion with synonyms in English does not seem to improve the search results to any great extent.\\
+
+Here we can see a chart ranking of the five best scores, they are the runs that have been presented at CLEF:
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figure/bestScores.png}
 	\caption{Best MAP and NDCG scores}
-	\label{fig:scores}
+	\label{fig:best_scores}
 \end{figure}
-It's interesting to notice that a cross-language approach (fr\_en\_fr\_5gram) is just out of the five bests performing indexes, even though it has English indexes. We suppose this is due to the fact that most of the score comes from the French queries, which are the most relevant ones.\\
-On the other hand, the worst-performing index is the one with named entity recognition (en\_en\_4gram\_ner): it combines translated queries and named entity recognition, which appears to be the two worst-performing approaches.\\
-In general, we focus more on trying multiple approaches, this is why our score has such a big space for improvement. As already said, French queries with bigger n-gram sizes perform better: queries weren't made by single word match, instead the more context was given, the better the results were.\\
+
+It's interesting to notice that the cross-language approaches (\texttt{en\_en\_fr\_5gram} and
+\texttt{fr\_en\_fr\_5gram}) are out of the five bests systems.
+It turns out that searching for English words in French documents and vice versa messes up the search, lowering the
+score.
+Another interesting aspect is that the worst-performing index is the one with named entity recognition in English
+(\texttt{en\_en\_4gram\_ner}): it combines translated queries and NER, which appears to be the two worst-performing
+approaches.\\
+
+In general, we focus more on trying multiple approaches, this is why our score has such a big space for improvement.
+As already said, French queries with bigger N-gram sizes perform better.
+Instead of relying on single-word matches, the queries could take place with more context, resulting in better search
+results.\\
+
+Following the competition workflow, we created the indexes based on the test data and re-executed the top five
+runs(see Figure~\ref{fig:best_scores}).
+These runs will be the ones delivered to CLEF\@.
