@@ -70,6 +70,7 @@ The processing applied to the English version of the documents (in the class \te
     \item Apply the Terrier~\cite{OunisEtAl2006} stopword list.
     \item Apply query expansion with synonyms using \texttt{SynonymTokenFilter} from Lucene, which is based on the
     WordNet synonym map~\cite{wordnet}.
+    A maximum of 10 synonyms can be added to each term.
     \item Apply a minimal stemming process using \texttt{EnglishMinimalStemFilter} from Lucene.
     \item Delete tokens that may have been left empty because of the previous filters.
     For this, we created a custom token filter, \texttt{EmptyTokenFilter} implementing \texttt{FilteringTokenFilter}.
