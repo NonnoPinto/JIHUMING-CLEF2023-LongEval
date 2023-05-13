@@ -1,6 +1,7 @@
 # Search Engines (SE) - Repository Template
+[TOC]
 
-This repository is a template repository for the homeworks to be developed in the [Search Engines](https://iiia.dei.unipd.it/education/search-engines/) course.
+This repository is a template repository for the homework to be developed in the [Search Engines](https://iiia.dei.unipd.it/education/search-engines/) course.
 
 The homeworks are carried out by groups of students and consists in participating to one of the labs organized yearly by [CLEF](https://www.clef-initiative.eu/) (Conference and Labs of the Evaluation Forum).
 
@@ -11,16 +12,39 @@ The homeworks are carried out by groups of students and consists in participatin
 
 *Search Engines* is part of the teaching activities of the [Intelligent Interactive Information Access (IIIA) Hub](http://iiia.dei.unipd.it/).
 
-### Organisation of the repository ###
+## Project Description ##
+The project considers both English and French documents and queries from [TrecEval dataset](https://clef-longeval.github.io/tasks/).  
+We generate character N-grams to identify common word structures (as prefixes or suffixes) repeated over documents.  
+We also use query expansion with synonyms (in English) and the Natural Language Processing (NLP) technique of Named Entity Recognition (NER) to further refine our system. Our system was developed in Java, mainly using the library Lucene.
+### Repository organization ###
 
-The repository is organised as follows:
-
-* `code`: this folder contains the source code of the developed system.
-* `runs`: this folder contains the runs produced by the developed system.
-* `results`: this folder contains the performance scores of the runs.
-* `homework-1`: this folder contains the report describing the techniques applied and insights gained.
-* `homework-2`: this folder contains the final paper submitted to CLEF.
-* `slides`: this folder contains the slides used for presenting the conducted project.
+The repository is organized as follows (only main dir exposed):
+```bash
+├───code
+│   ├───src
+│   │   └───main
+│   │       ├───java
+│   │       │   ├───analyze
+│   │       │   ├───index
+│   │       │   ├───parse
+│   │       │   ├───search
+│   │       │   └───topic
+│   └───target
+│       ├───classes
+│       │   ├───analyze
+│       │   ├───index
+│       │   ├───parse
+│       │   ├───prolog
+│       │   ├───search
+│       │   └───topic
+├───homework-1
+├───homework-2
+├───results
+├───runs
+│   └───experiments
+│       └───scores
+└───slides
+```
 
 ### Group memebers ###
 - Jesús Moncada Ramírez  
@@ -31,9 +55,13 @@ The repository is organised as follows:
 - Giovanni Zago
 
 ## Scoring runs with trec_eval ##
-In order to evaluate all runs in an easy way, a linux based pip script can be used. Just ensure your trec_eval directory is in ../trec_eval-9.0.7 and run
+In order to provide help to evaluate all runs, a linux based pip script can be used. Just ensure your trec_eval directory is in ../trec_eval-9.0.7 and run
 ```sh
 python3 runTrecEval.py
+```
+It generate a .txt for each run, plus allmaps.txt, with MAP and NDCG scores from every run in the same file in
+```bash
+runs/scores/
 ```
 
 ### License ###
