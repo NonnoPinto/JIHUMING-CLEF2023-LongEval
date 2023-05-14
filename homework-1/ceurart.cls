@@ -93,7 +93,6 @@
 \RequirePackage{microtype}
 \RequirePackage{hyperref}
 \RequirePackage{listings}
-\usepackage{float}
 
 \lstset{
 showstringspaces = false, %% prevent space marking in strings, string is defined as the text that is generally printed directly to the console
