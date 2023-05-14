@@ -469,25 +469,31 @@ public class MultilingualDirectoryIndexer {
      */
     public static void main(String[] args) throws Exception {
         final int ramBuffer = 256;
-        final String enDocsPath = "C:\\longeval_train\\publish\\English\\Documents\\Json";
-        final String frDocsPath = "C:\\longeval_train\\publish\\French\\Documents\\Json";
-        final String indexPath = "created_indexes/2023_05_05_multilingual_4gram_synonym_ner";
+        // FILL: English documents path
+        final String enDocsPath = "D:\\longeval_test\\test-collection\\B-Long-September\\English\\Documents\\Json";
+        // FILL: French documents path
+        final String frDocsPath = "D:\\longeval_test\\test-collection\\B-Long-September\\French\\Documents\\Json";
+        String indexPath;
+        // FILL: Created index path
+        indexPath = "D:\\created_indexes\\test_long\\2023_05_13_multilingual_4gram_synonym_ner";
 
+        // FILL: extension of the files containing documents
         final String extension = "json";
-        final int expectedDocs = 1570734;
+        // FILE: number of expected documents
+        final int expectedDocs = 1081334;
         final String charsetName = "ISO-8859-1";
 
         final EnglishAnalyzer enAn = new EnglishAnalyzer();
         final FrenchAnalyzer frAn = new FrenchAnalyzer();
-        final NGramAnalyzer ngramAn = new NGramAnalyzer(4);
+        NGramAnalyzer ngramAn;
+        ngramAn = new NGramAnalyzer(4);
         final NERAnalyzer nerAnalyzer = new NERAnalyzer();
 
-        MultilingualDirectoryIndexer i = new MultilingualDirectoryIndexer(enAn, frAn, ngramAn, nerAnalyzer, new BM25Similarity(),
+        MultilingualDirectoryIndexer i;
+
+        i = new MultilingualDirectoryIndexer(enAn, frAn, ngramAn, nerAnalyzer, new BM25Similarity(),
                 ramBuffer, indexPath, enDocsPath, frDocsPath, extension, charsetName, expectedDocs,
                 LongEvalParser.class);
-
         i.index();
-
-        i.printVocabularyStatistics(10);
     }
 }
