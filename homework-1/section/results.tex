@@ -2,7 +2,7 @@
 \label{sec:results}
 
 %TODO: check, at the very end, if chars and table are in the right place
-\begin{table}
+\begin{table}[h!]
     \begin{center}
         \caption{MAP and NCDG scores for all runs}
         \label{tab:all_scores}
@@ -49,19 +49,11 @@
 %language models and n-gram sizes for indexing.
 %MAP measures how effectively the IR system returns relevant results for a given query, while NDCG indicates the ranking
 %quality of the results.\\
-The analysis shows that the highest MAP score (0.1748) is achieved by \texttt{fr\_fr\_5gram},
-followed by \texttt{fr\_fr\_4gram} (0.1737) and \texttt{fr\_fr\_3gram} (0.698), while the lowest MAP score (0.0360) is
-obtained by \texttt{en\_en\_4gram\_ner}.
-Similarly, the highest NDCG score (0.3208) belongs to \texttt{fr\_fr\_4gram\_ner}, followed by \texttt{fr\_fr\_5gram}
-(0.3285) and \texttt{fr\_fr\_4gram} (0.3269), whereas the lowest NDCG score (0.1098) corresponds to
-\texttt{en\_en\_4gram\_ner}.\\
+The analysis shows that the highest MAP score (0.1748) is achieved by \texttt{fr\_fr\_5gram}, followed by \texttt{fr\_fr\_4gram} (0.1737) and \texttt{fr\_fr\_3gram} (0.698), while the lowest MAP score (0.0360) is obtained by \texttt{en\_en\_4gram\_ner}.
+Similarly, the highest NDCG score (0.3208) belongs to \texttt{fr\_fr\_4gram\_ner}, followed by \texttt{fr\_fr\_5gram} (0.3285) and \texttt{fr\_fr\_4gram} (0.3269), whereas the lowest NDCG score (0.1098) corresponds to \texttt{en\_en\_4gram\_ner}.\\
 
-Results suggest that French queries perform better than their English counterparts, possibly due to the training data's
-French origin and later translation into English.
-Moreover, the IR system's effectiveness generally increases with a larger N-gram size, as indicated by the higher scores
-of \texttt{en\_en\_5gram} and \texttt{fr\_fr\_5gram}.
-Conversely, the inclusion of NER in the indexing process seems to have a negative impact on the scores, as shown by the
-lower scores of \texttt{en\_en\_4gram\_ner} and \texttt{fr\_fr\_4gram\_ner}.
+Results suggest that French queries perform better than their English counterparts, possibly due to the training data's French origin and later translation into English. Moreover, the IR system's effectiveness generally increases with a larger N-gram size, as indicated by the higher scores
+of \texttt{en\_en\_5gram} and \texttt{fr\_fr\_5gram}. Conversely, the inclusion of NER in the indexing process seems to have a negative impact on the scores, as shown by the lower scores of \texttt{en\_en\_4gram\_ner} and \texttt{fr\_fr\_4gram\_ner}.
 The use of query expansion with synonyms in English does not seem to improve the search results to any great extent.\\
 
 Here we can see a chart ranking of the five best scores, they are the runs that have been presented at CLEF:
@@ -72,13 +64,9 @@ Here we can see a chart ranking of the five best scores, they are the runs that 
 	\label{fig:best_scores}
 \end{figure}
 
-It's interesting to notice that the cross-language approaches (\texttt{en\_en\_fr\_5gram} and
-\texttt{fr\_en\_fr\_5gram}) are out of the five bests systems.
-It turns out that searching for English words in French documents and vice versa messes up the search, lowering the
-score.
-Another interesting aspect is that the worst-performing index is the one with named entity recognition in English
-(\texttt{en\_en\_4gram\_ner}): it combines translated queries and NER, which appears to be the two worst-performing
-approaches.\\
+It's interesting to notice that the cross-language approaches (\texttt{en\_en\_fr\_5gram} and \texttt{fr\_en\_fr\_5gram}) are out of the five bests systems.
+It turns out that searching for English words in French documents and vice versa messes up the search, lowering the score.
+Another interesting aspect is that the worst-performing index is the one with named entity recognition in English (\texttt{en\_en\_4gram\_ner}): it combines translated queries and NER, which appears to be the two worst-performing approaches.\\
 
 In general, we focus more on trying multiple approaches, this is why our score has such a big space for improvement.
 As already said, French queries with bigger N-gram sizes perform better.
