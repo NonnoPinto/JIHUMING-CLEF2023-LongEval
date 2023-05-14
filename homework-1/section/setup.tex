@@ -8,22 +8,8 @@ Our work was initiated based on the experimental setups outlined below.
 	\item During the development and the experimentation, personal computers were used.
 	\item Java JDK version 17, Apache version 2, Lucene version 9.5, and Maven.
 \end{itemize}
-In order to do different run experiments our team has created several indexes from the provided collection during the
-development of the final version of the project.
-In other words, the first created indexes only include several characteristics explained in this report, while the last
-indexes correspond to the final version of the project.\\
-All the created indexes are \textbf{multilingual}, which allows us to take full advantage of the (bilingual) data
-collection.
-Additionally, we did some experiments with character N-grams generating different versions of indexes with 3-grams,
-4-grams and 5-grams.
-Our motivation for experimenting with this was to compare how the size of different character N-grams affect to the
-effectiveness of our system.
-3-grams are able to collecting more specific information about our documents, while 4-grams and 5-grams are more open
-to the context.
-An additional functionality of some indexes is query expansion, but as commented, this is only applied to the English
-body.
-One index uses Named Entity Recognition which provides not only the search for keywords but also identifying and
-extracting specific named entities.
+In order to do different run experiments our team has created several indexes from the provided collection during the development of the final version of the project. In other words, the first created indexes only include several characteristics explained in this report, while the last indexes correspond to the final version of the project.\\
+All the created indexes are \textbf{multilingual}, which allows us to take full advantage of the (bilingual) data collection. Additionally, we did some experiments with character N-grams generating different versions of indexes with 3-grams, 4-grams and 5-grams. Our motivation for experimenting with this was to compare how the size of different character N-grams affect to the effectiveness of our system. 3-grams are able to collecting more specific information about our documents, while 4-grams and 5-grams are more open to the context. An additional functionality of some indexes is query expansion, but as commented, this is only applied to the English body. One index uses Named Entity Recognition which provides not only the search for keywords but also identifying and extracting specific named entities.
 The subsequent indexes are:
 \begin{itemize}
 	\item \texttt{2023\_04\_24\_multilingual\_3gram}: both languages of documents, using character 3-grams.
