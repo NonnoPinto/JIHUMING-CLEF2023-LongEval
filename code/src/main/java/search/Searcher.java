@@ -464,7 +464,7 @@ public class Searcher {
             INDEX_MUL_3GRAM_SYN_P = "D:\\created_indexes\\test_long\\2023_05_11_multilingual_3gram_synonym";
             INDEX_MUL_4GRAM_SYN_P = "D:\\created_indexes\\test_long\\2023_05_11_multilingual_4gram_synonym";
             INDEX_MUL_5GRAM_SYN_P = "D:\\created_indexes\\test_long\\2023_05_11_multilingual_5gram_synonym";
-            INDEX_MUL_4GRAM_SYN_NER_P = ""; //TODO
+            INDEX_MUL_4GRAM_SYN_NER_P = "D:\\created_indexes\\test_long\\2023_05_13_multilingual_4gram_synonym_ner";
 
             EXPECTED_TOPICS = 923;
 
@@ -479,7 +479,7 @@ public class Searcher {
             INDEX_MUL_3GRAM_SYN_P = "D:\\created_indexes\\test_short\\2023_05_12_multilingual_3gram_synonym";
             INDEX_MUL_4GRAM_SYN_P = "D:\\created_indexes\\test_short\\2023_05_12_multilingual_4gram_synonym";
             INDEX_MUL_5GRAM_SYN_P = "D:\\created_indexes\\test_short\\2023_05_12_multilingual_5gram_synonym";
-            INDEX_MUL_4GRAM_SYN_NER_P = ""; //TODO
+            INDEX_MUL_4GRAM_SYN_NER_P = "D:\\created_indexes\\test_short\\2023_05_12_multilingual_4gram_synonym_ner";
 
             EXPECTED_TOPICS = 882;
 
