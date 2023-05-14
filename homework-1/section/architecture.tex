@@ -20,13 +20,13 @@ Thus, our parser is based on the Java library \texttt{Gson} including streaming 
 The whole parser is made up of the following classes:
 \begin{itemize}
     \item \texttt{DocumentParser}: an abstract class representing a streaming parser.
-    Implements \texttt{Iterator} and \text{Iterable}.
+          Implements \texttt{Iterator} and \text{Iterable}.
     \item \texttt{JsonDocument}: a Java POJO for the deserialization of JSON documents.
     \item \texttt{ParsedDocument}: represents a document already parsed.
-    Note that this class only contains an identifier and a body.
+          Note that this class only contains an identifier and a body.
     \item \texttt{LongEvalParser}: real parser implementing the class \texttt{DocumentParser}.
-    Here is where the streaming logic is implemented.
-    Objects of this class can be used as iterators that yield parsed documents.
+          Here is where the streaming logic is implemented.
+          Objects of this class can be used as iterators that yield parsed documents.
 \end{itemize}
 
 \subsection{Analyzer}\label{subsec:analyzer}
@@ -48,32 +48,32 @@ The processing applied to the English version of the documents (in the class \te
 \begin{enumerate}
     \item Tokenize based on whitespaces.
     \item Eliminate some strange characters found in the documents.
-    It is unlikely that a user would perform a query including these characters.
+          It is unlikely that a user would perform a query including these characters.
     \item Delete punctuation marks at the beginning and end of words.
-    Necessary as we are using the whitespace tokenizer (for example: "address," or "city.").
+          Necessary as we are using the whitespace tokenizer (for example: "address," or "city.").
     \item Apply the \texttt{WordDelimiterGraphFilter} Lucene filter.
-    It splits words into subwords and performs optional transformations on subword groups.
-    We decided to include the following operations:
-    \begin{enumerate}
-        \item Divide words into different subwords based on the lower/upper case.
-        Example: "PowerShot" converted into tokens "Power" and "Shot".
-        \item Divide numbers into different parts based on special characters located in intermediate positions.
-        Example: "500-42" converted into "500" and "42".
-        \item Concatenate numbers with special characters located in intermediate positions.
-        Example "500-42" converted into "50042".
-        \item Remove the trailing "s" of English possessives.
-        Example: "O'Neil's" converted into "O" and "Neil".
-        \item Always maintain the original terms.
-        Example: the tokens "PowerShot", "500-42", and "O'Neil's" will be maintained.
-    \end{enumerate}
+          It splits words into subwords and performs optional transformations on subword groups.
+          We decided to include the following operations:
+          \begin{enumerate}
+              \item Divide words into different subwords based on the lower/upper case.
+                    Example: "PowerShot" converted into tokens "Power" and "Shot".
+              \item Divide numbers into different parts based on special characters located in intermediate positions.
+                    Example: "500-42" converted into "500" and "42".
+              \item Concatenate numbers with special characters located in intermediate positions.
+                    Example "500-42" converted into "50042".
+              \item Remove the trailing "s" of English possessives.
+                    Example: "O'Neil's" converted into "O" and "Neil".
+              \item Always maintain the original terms.
+                    Example: the tokens "PowerShot", "500-42", and "O'Neil's" will be maintained.
+          \end{enumerate}
     \item Lowercase all the tokens.
     \item Apply the Terrier~\cite{OunisEtAl2006} stopword list.
     \item Apply query expansion with synonyms using \texttt{SynonymTokenFilter} from Lucene, which is based on the
-    WordNet synonym map~\cite{wordnet}.
-    A maximum of 10 synonyms can be added to each term.
+          WordNet synonym map~\cite{wordnet}.
+          A maximum of 10 synonyms can be added to each term.
     \item Apply a minimal stemming process using \texttt{EnglishMinimalStemFilter} from Lucene.
     \item Delete tokens that may have been left empty because of the previous filters.
-    For this, we created a custom token filter, \texttt{EmptyTokenFilter} implementing \texttt{FilteringTokenFilter}.
+          For this, we created a custom token filter, \texttt{EmptyTokenFilter} implementing \texttt{FilteringTokenFilter}.
 \end{enumerate}
 
 \subsubsection{French body field}
@@ -92,8 +92,8 @@ Character N-grams are created in the analyzer class \texttt{NGramAnalyzer}, whic
     \item Tokenize based on whitespaces.
     \item Lowercase all the tokens.
     \item Delete all characters except letters.
-    Note that we also maintain the French accent letters.
-    After conducting tests on character N-grams with numbers, which resulted in many meaningless numbers being generated, we made the decision to avoid including them.
+          Note that we also maintain the French accent letters.
+          After conducting tests on character N-grams with numbers, which resulted in many meaningless numbers being generated, we made the decision to avoid including them.
     \item Delete empty tokens (\texttt{EmptyTokenFilter}).
     \item Generate character N-grams using \texttt{NGramTokenFilter} from Lucene.
 \end{enumerate}
@@ -116,13 +116,34 @@ The processing of the tokens in this analyzer (\texttt{NERAnalyzer}) is the foll
 \subsection{Index}\label{subsec:index}
 %TODO: explain the deprecated indexers
 %TODO: review this part
-We used the standard Lucene Indexer with the BM25\cite{BM25} similarity.\\
-We decide to use NGram analyzer with a multilingual indexer,
-in order to index two versions of the same document, creating documents with
-unique IDs and bodies from each language.\\
-Ngrams are represented as characters from both English and French version of
-the documents. N parameter is set at the analyzer level and class is a field,
-not stored, in order to minimize space occupation.\\
+The \texttt{MultilingualDirectoryIndexer} is used in the IR system for indexing multilingual
+documents and retrieving basic statistics about the resulting index's vocabulary.
+It initializes several variables such as the paths to the directories where
+the English and French documents are stored, the path to the directory where
+the index will be created, and the expected number of documents to be indexed.
+It also creates instances of custom analyzers, such as \texttt{EnglishAnalyzer},
+\texttt{FrenchAnalyzer}, \texttt{NGramAnalyzer}, and \texttt{NERAnalyzer}, which are used for tokenizing
+and processing the text of the documents during indexing.\\
+
+The  \texttt{MultilingualDirectoryIndexer}  class is instantiated with these
+analyzers, along with other parameters such as the similarity function
+\texttt{BM25Similarity}, the size of the RAM buffer used during indexing,
+and the parser class \texttt{LongEvalParser} used to extract the relevant
+content from the documents. Then \texttt{MultilingualDirectoryIndexer} use \texttt{index} to create the index based on the documents found in the
+specified directories.\\
+
+During indexing, \texttt{MultilingualDirectoryIndexer} reads the documents from
+\texttt{enDocsPath} and \texttt{frDocsPath} and processes them using the specified analyzers
+to create an inverted index.\\
+
+Finally, the \texttt{printVocabularyStatistics()} method is called to print some
+statistics about the resulting index's vocabulary. Specifically, it retrieves
+the vocabularies for English and French documents separately and stores them
+in a list. For each vocabulary, the method prints the total number of unique
+terms, the total number of terms, and a list of terms with their \texttt{document
+frequency (DF)} and frequency in the collection. This provides an overview of
+the vocabulary used in the indexed documents and can be used for further
+analysis and optimization of the search system.\\
 
 \subsection{Search}\label{subsec:search}
 The search package (only made up of the class \texttt{Searcher}) is in charge of doing the effective search, i.e.,
@@ -153,8 +174,8 @@ not the topics.
 Thus:
 \begin{itemize}
     \item \texttt{LongEvalTopic} is a simple Java POJO representing each query provided by LongEval.
-    Each query has a number (\texttt{<num>}) and a title (\texttt{<title>}).
-    It is the equivalent of \texttt{QualityQuery} when working with \textbf{TrecTopicsReader}.
+          Each query has a number (\texttt{<num>}) and a title (\texttt{<title>}).
+          It is the equivalent of \texttt{QualityQuery} when working with \textbf{TrecTopicsReader}.
     \item \texttt{LongEvalTopicReader} is the query reader we developed.
-    It considers the query file as an XML file and parses it using the Java XML library.
+          It considers the query file as an XML file and parses it using the Java XML library.
 \end{itemize}
