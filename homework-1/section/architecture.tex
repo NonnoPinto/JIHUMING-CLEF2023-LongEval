@@ -114,36 +114,38 @@ The processing of the tokens in this analyzer (\texttt{NERAnalyzer}) is the foll
 \end{enumerate}
 
 \subsection{Index}\label{subsec:index}
-%TODO: explain the deprecated indexers
-%TODO: review this part
-The \texttt{MultilingualDirectoryIndexer} is used in the IR system for indexing multilingual
-documents and retrieving basic statistics about the resulting index's vocabulary.
-It initializes several variables such as the paths to the directories where
-the English and French documents are stored, the path to the directory where
-the index will be created, and the expected number of documents to be indexed.
-It also creates instances of custom analyzers, such as \texttt{EnglishAnalyzer},
-\texttt{FrenchAnalyzer}, \texttt{NGramAnalyzer}, and \texttt{NERAnalyzer}, which are used for tokenizing
-and processing the text of the documents during indexing.\\
 
-The  \texttt{MultilingualDirectoryIndexer}  class is instantiated with these
-analyzers, along with other parameters such as the similarity function
-\texttt{BM25Similarity}, the size of the RAM buffer used during indexing,
-and the parser class \texttt{LongEvalParser} used to extract the relevant
-content from the documents. Then \texttt{MultilingualDirectoryIndexer} use \texttt{index} to create the index based on the documents found in the
-specified directories.\\
+During the initial stages of the project, we developed an indexer that took into account only one version of the
+documents (either English or French);
+this can be found in the class \texttt{DirectoryIndexer}.
+As soon as we decided to consider both versions of the documents, we marked it as \texttt{Deprecated} and developed
+the \texttt{MultilingualDirectoryIndexer} class, that is the final version of our indexer.\\
 
-During indexing, \texttt{MultilingualDirectoryIndexer} reads the documents from
-\texttt{enDocsPath} and \texttt{frDocsPath} and processes them using the specified analyzers
-to create an inverted index.\\
+As previously mentioned, \texttt{MultilingualDirectoryIndexer} is used for indexing multilingual documents, but also for
+retrieving basic statistics about the resulting index's vocabulary.
+To create an instance of this indexer, several parameters must be provided, such as the paths to the directories where
+the English and French documents are stored, the path to the directory where the index will be created, and the expected
+number of documents to be indexed.
+It must also receive instances of our custom analyzers, i.e., \texttt{EnglishAnalyzer}, \texttt{FrenchAnalyzer},
+\texttt{NGramAnalyzer}, and \texttt{NERAnalyzer}, which will be used for tokenizing and processing the text of the
+documents.
+In addition, we must provide the similarity function used for indexing (we decided to use BM25) and the size of the RAM
+buffer used during indexing.\\
 
-Finally, the \texttt{printVocabularyStatistics()} method is called to print some
-statistics about the resulting index's vocabulary. Specifically, it retrieves
-the vocabularies for English and French documents separately and stores them
-in a list. For each vocabulary, the method prints the total number of unique
-terms, the total number of terms, and a list of terms with their \texttt{document
-frequency (DF)} and frequency in the collection. This provides an overview of
-the vocabulary used in the indexed documents and can be used for further
-analysis and optimization of the search system.\\
+During indexing, \texttt{MultilingualDirectoryIndexer} reads the documents from the directory of the English files, the
+directory of the French files and processes them using the specified analyzers to create an inverted index.
+Note that for the process to conclude properly, both directories must contain the same number of files, the files must
+contain the same number of documents and the documents must have the same ID\@.
+In other words, at each iteration, the indexer accesses the two versions (English and French) of the same document, to
+create a single Lucene document in the index.\\
+
+After indexing, we have used a method to print some statistics about the resulting index's vocabulary.
+This method prints the total number of unique terms, the total number of terms and a list of terms with their frequency
+for both English and French vocabularies.
+This functionality has proven to be highly useful as it provides an overview of the indexed vocabulary.
+This overview can be utilized for further analysis and optimization of the search system.
+Another useful feature of the indexer is the ability to estimate the remaining time required for the indexing process.
+This is particularly valuable as we have observed that these processes can be time-consuming.\\
 
 \subsection{Search}\label{subsec:search}
 The search package (only made up of the class \texttt{Searcher}) is in charge of doing the effective search, i.e.,
@@ -154,7 +156,7 @@ The searcher will first apply the explained analyzers to the query title, in ord
 matched with the corresponding index fields.
 This process is performed by relying on the \texttt{QueryParser} class from Lucene.
 After this, the title of the query is searched in the appropriate index fields using the similarity function
-BM25~\cite{BM25}.\\
+BM25.\\
 
 To perform a query, we must specify: the path of the index, the path of the topics file, the number of expected topics,
 a run descriptor, and the maximum number of documents to be retrieved (1000).

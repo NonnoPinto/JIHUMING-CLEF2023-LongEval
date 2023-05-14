@@ -469,12 +469,17 @@ public class MultilingualDirectoryIndexer {
      */
     public static void main(String[] args) throws Exception {
         final int ramBuffer = 256;
+        // FILL: English documents path
         final String enDocsPath = "D:\\longeval_test\\test-collection\\B-Long-September\\English\\Documents\\Json";
+        // FILL: French documents path
         final String frDocsPath = "D:\\longeval_test\\test-collection\\B-Long-September\\French\\Documents\\Json";
         String indexPath;
+        // FILL: Created index path
         indexPath = "D:\\created_indexes\\test_long\\2023_05_13_multilingual_4gram_synonym_ner";
 
+        // FILL: extension of the files containing documents
         final String extension = "json";
+        // FILE: number of expected documents
         final int expectedDocs = 1081334;
         final String charsetName = "ISO-8859-1";
 
