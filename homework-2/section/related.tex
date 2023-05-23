@@ -1,4 +1,13 @@
 \section{Related Work}
 \label{sec:related}
 
-Describe related works, i.e. previous approaches to solve your problem you have started or improved from.
+There are many search engines, using different techniques to enhance retrieval effectiveness, from which we have taken
+inspiration from.
+The BM25 similarity function is widely used information retrieval as it considers term frequencies and document length.
+This function has demonstrated effectiveness in balancing precision and recall in search results~\cite{BM25}, even if it
+doesn't consider meta-data document information as other approaches~\cite{robertson2009probabilistic} do.\\
+
+The tokenization technique we have employed, whitespace tokenization, has not been the primary focus of research in any
+study.
+Anyway, it seems to provide a useful baseline for tokenization as some studies~\cite{gowsmith2022improving} suggest that
+allowing tokens to include spaces produces problem, especially when working with transformers.
