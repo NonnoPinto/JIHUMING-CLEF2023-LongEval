@@ -1,9 +1,23 @@
 \section{Related Work}
 \label{sec:related}
 
+\section{Related Work}
+\label{sec:related}
 
-In the paper "Learning to Estimate Query Temporal Dynamics for Web Search" by Fei Cai, 
-Hongning Wang, and ChengXiang Zhai (2014), the importance of understanding query temporal 
+There are many search engines, using different techniques to enhance retrieval effectiveness, from which we have taken
+inspiration from.
+The BM25 similarity function is widely used information retrieval as it considers term frequencies and document length.
+This function has demonstrated effectiveness in balancing precision and recall in search results~\cite{BM25}, even if it
+doesn't consider meta-data document information as other approaches~\cite{robertson2009probabilistic} do.\\
+
+The tokenization technique we have employed, whitespace tokenization, has not been the primary focus of research in any
+study.
+Anyway, it seems to provide a useful baseline for tokenization as some studies~\cite{gowsmith2022improving} suggest that
+allowing tokens to include spaces produces problem, especially when working with transformers.
+
+
+In the paper "Learning to Estimate Query Temporal Dynamics for Web Search" ~\cite{cai2014learning}, 
+the importance of understanding query temporal 
 dynamics for search result ranking is highlighted. By considering the temporal patterns of 
 queries, search engines can adapt their ranking algorithms to better meet the evolving information 
 needs of users. This can involve giving more weight to recent queries or adjusting the ranking 
@@ -19,8 +33,7 @@ guide the system's adaptation to changes in the datasets, enabling it to provide
 timely search results. \\
 
 
-The paper "Evaluating Web Search Systems Considering Time" by Katja Hofmann, Shimon Whiteson, and 
-Maarten de Rijke (2014) presents valuable insights into evaluation methodologies for temporal aspects 
+The paper "Evaluating Web Search Systems Considering Time" ~\cite{hofmann2014evaluating} presents valuable insights into evaluation methodologies for temporal aspects 
 in web search systems. While the paper focuses specifically on web search, many of the concepts and 
 methodologies discussed can be applied to the task of assessing an information retrieval system with 
 changing datasets. \\
