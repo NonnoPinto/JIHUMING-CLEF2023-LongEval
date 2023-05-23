@@ -7,24 +7,34 @@ Search Engine course 22/23 of the master's degree in Computer Engineering and Da
 Italy.
 As a group in this subject, we are participating in the 2023 CLEF LongEval: Longitudinal Evaluation of Model
 Performance~\cite{LongEval}.
-This annual evaluation campaign focuses on the longitudinal evaluation of model performance in information retrieval and
-natural language processing.\\
+This annual evaluation campaign focuses on evaluating the temporal persistence of information retrieval (IR) systems and
+text classifiers.\\
 
 % The LongEval corpus
-The LongEval collection~\cite{traindata} relies on a large set of data provided by Qwant (a commercial privacy-focused
+The LongEval collection relies on a large set of data provided by Qwant (a commercial privacy-focused
 search engine that was launched in France in 2013).
 Their idea regarding the dataset (collected in June 2022) was to reflect changes of the Web across time, providing
 evolving document and query sets.
-The training collection consists of 672 \textbf{queries}, 98 held-out queries, and 9656 evaluation assignments.
-The \textbf{documents} were chosen based on queries using the Qwant click model, in addition to random selection from
-the Qwant index.
-The training queries are categorized into twenty \textbf{topics}, such as: car-related, antivirus-related,
-employment-related, energy-related, recipe-related, etc.
+The training collection~\cite{traindata} consists of 1,570,734 documents, 672 queries, 98 held-out queries, and 9656
+evaluation assignments.
+The documents were chosen based on queries using the Qwant click model, in addition to random selection from the Qwant
+index.
+The queries are categorized into twenty topics, such as: car-related, antivirus-related, employment-related,
+energy-related, recipe-related, etc.
 In addition to the original French version, the collection also includes English translations of the documents and
-queries using the CUBBITT~\cite{CUBBITT} system.\\
+queries using the CUBBITT~\cite{CUBBITT} system.
+% TODO: cite test data
+The test collection for the short-term persistence sub-task was gathered during July 2022, comprising 1,593,376
+documents and 882 queries.
+The test collection for the long-term persistence sub-task was collected in September 2022, containing 1,081,334
+documents and 923 queries.\\
 
+% Organization
 The paper is organized as follows: Section~\ref{sec:related} introduces related works;
-Section~\ref{sec:methodology} describes our approach;
+Section~\ref{sec:methodology} briefly describes our approach;
+Section~\ref{sec:architecture} describes our code in detail;
 Section~\ref{sec:setup} explains our experimental setup;
+Section~\ref{sec:runs_selection} explains how we selected the systems submitted to the competition among our
+experiments;
 Section~\ref{sec:results} discusses our main findings;
 finally, Section~\ref{sec:conclusion} draws some conclusions and outlooks for future work.
