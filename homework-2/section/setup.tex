@@ -14,47 +14,30 @@ Our work was initiated based on the experimental setups outlined below.
 	\item Java JDK version 17, Apache version 2, Lucene version 9.5, and Maven.
 \end{itemize}
 
-In order to do different run experiments our team has created several indexes from the provided collection during the
-development of the final version of the project.
-In other words, the first created indexes only include several characteristics explained in this report, while the last
-indexes correspond to the final version of the project.\\
+In order to do different run experiments our team has created several indexes from each of the provided collections
+(train, short-term test, and long-term test).
+Put simply, certain indexes mentioned in this report incorporate only a few of the characteristics discussed, while
+others encompass all the characteristics outlined in the final version of the project.\\
 
 All the created indexes are \textbf{multilingual}, which allows us to take full advantage of the (bilingual) data
 collection.
 Additionally, we did some experiments with character N-grams generating different versions of indexes with 3-grams,
 4-grams and 5-grams.
-Our motivation for experimenting with this was to compare how the size of different character N-grams affect to the
-effectiveness of our system.
+Our motivation was to compare how the size of different character N-grams affect to the effectiveness of our system.
 3-grams are able to collecting more specific information about our documents, while 4-grams and 5-grams are more open to
 the context.
 An additional functionality of some indexes is query expansion, but as commented, this is only applied to the English
 body.
-One index uses Named Entity Recognition which provides not only the search for keywords but also identifying and extracting
-specific named entities.\\
-
-In order to do different run experiments our team has created several indexes from the provided collection during the
-development of the final version of the project.
-In other words, the first created indexes only include several of the characteristics explained in this report, while
-the last indexes correspond to the final version of the project.\\
-
-All the created indexes are multilingual, which allows us to take full advantage of the (bilingual) data collection.
-Additionally, we did some experiments with character 3-grams, 4-grams and 5-grams.
-Our motivation for experimenting with this was to compare how the size of different character N-grams affect to the
-effectiveness of our system.
-3-grams are able to collect more specific information, while 4-grams and 5-grams allow considering bigger structures
-with more context and information.
-An additional functionality of some indexes is query expansion, but as commented, this is only applied to the English
-body.
-Finally, we created indexes with NER, which provides not only the search for keywords but also identifying and
+One index uses Named Entity Recognition which provides not only the search for keywords but also identifying and
 extracting specific named entities.\\
 
 The subsequent indexes are:
 \begin{itemize}
-	\item \texttt{2023\_04\_24\_multilingual\_3gram}: both languages of documents, using character 3-grams.
-	\item \texttt{2023\_04\_29\_multilingual\_3gram\_synonym}: both languages, character 3-grams, (English) query expansion with synonyms.
-	\item \texttt{2023\_05\_01\_multilingual\_4gram\_synonym}: both languages, character 4-grams, (English) query expansion with synonyms.
-	\item \texttt{2023\_05\_01\_multilingual\_5gram\_synonym}: both languages, character 5-grams, (English) query expansion with synonyms.
-	\item \texttt{2023\_05\_05\_multilingual\_4gram\_synonym\_ner}: both languages, character 4-grams, (English) query expansion with synonyms, NER techniques.
+	\item \texttt{multilingual\_3gram}: both languages of documents, using character 3-grams.
+	\item \texttt{multilingual\_3gram\_synonym}: both languages, character 3-grams, (English) query expansion with synonyms.
+	\item \texttt{multilingual\_4gram\_synonym}: both languages, character 4-grams, (English) query expansion with synonyms.
+	\item \texttt{multilingual\_5gram\_synonym}: both languages, character 5-grams, (English) query expansion with synonyms.
+	\item \texttt{multilingual\_4gram\_synonym\_ner}: both languages, character 4-grams, (English) query expansion with synonyms, NER techniques.
 \end{itemize}
 
 The indexes also can be found in the following
@@ -64,9 +47,6 @@ After creating indexes, we were able to conduct multiple runs to evaluate the ef
 These runs not only experiment with some of the techniques specified here, but also consider different versions (English
 or French version) of the queries.
 With them we can compare and analyze different aspects of our system's performance, such as precision and recall.
-We then computed the MAP and NDCG scores for each run, which allowed us to further evaluate the performance of our
-system.
-The results will be commented in the Section~\ref{sec:results}.
 The runs are the following:
 \begin{itemize}
 	\item \texttt{seupd2223-JIHUMING-01\_en\_en}: English topics; using English body field.
@@ -83,9 +63,14 @@ The runs are the following:
 	\item \texttt{seupd2223-JIHUMING-12\_fr\_fr\_4gram\_ner}: French topics; using French body field, 4-gram field and NER technique.
 \end{itemize}
 
-The process of creating the indexes typically took around 1 hour, with the exception of the indexes that included NER,
-which took approximately 16 hours.
+The process of creating the indexes typically took around 1 hour, except the indexes that included NER, which took
+approximately 16 hours.
 On the other hand, generating the runs was a much quicker process, taking consistently less than a minute and a half to
-complete.
+complete.\\
 
-% TODO: here we have to comment on the NEW EVALUATION techniques we are going to use.
+For the runs on the \textbf{training data}, we computed MAP and NDCG scores with the purpose of selecting five systems
+to submit to the competition.
+See Section~\ref{sec:runs_selection}.
+% TODO: Complete and uncomment the following sentence
+%For the runs on the \textbf{test data} we computed
+The results will be commented in the Section~\ref{sec:results}.
