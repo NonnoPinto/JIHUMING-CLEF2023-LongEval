@@ -77,5 +77,5 @@ for i in range(1, total_script+1):
     ndcg_line = result.stdout.split('\n')[55]
 
     # Save the line to a text file
-    with open(outFileName, 'a') as f:
+    with open(outFileName + '.txt', 'a') as f:
         f.write(f"{title_line}\n{map_line}\n{rprec_line}\n{ndcg_line}\n")
