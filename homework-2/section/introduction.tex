@@ -15,19 +15,20 @@ The LongEval collection relies on a large set of data provided by Qwant (a comme
 search engine that was launched in France in 2013).
 Their idea regarding the dataset (collected in June 2022) was to reflect changes of the Web across time, providing
 evolving document and query sets.
-The training collection~\cite{traindata} consists of 1,570,734 documents, 672 queries, 98 held-out queries, and 9656
-evaluation assignments.
+The train collection~\cite{traindata} consists of 1,570,734 documents, 672 queries, 98 held-out queries, and 9656
+evaluation assessments.
 The documents were chosen based on queries using the Qwant click model, in addition to random selection from the Qwant
 index.
 The queries are categorized into twenty topics, such as: car-related, antivirus-related, employment-related,
 energy-related, recipe-related, etc.
 In addition to the original French version, the collection also includes English translations of the documents and
 queries using the CUBBITT~\cite{CUBBITT} system.
-% TODO: cite test data
-The test collection for the short-term persistence sub-task was gathered during July 2022, comprising 1,593,376
-documents and 882 queries.
+The test collection~\cite{testdata} for the short-term persistence sub-task was gathered during July 2022, comprising
+1,593,376 documents and 882 queries.
 The test collection for the long-term persistence sub-task was collected in September 2022, containing 1,081,334
-documents and 923 queries.\\
+documents and 923 queries.
+We will also use the test collection evaluation assesments~\cite{test_qrels} provided for the held-out queries, the
+short-term queries and the long-term queries.\\
 
 % Organization
 The paper is organized as follows: Section~\ref{sec:related} introduces related works;

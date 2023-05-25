@@ -5,7 +5,8 @@ There are many search engines, using different techniques to enhance retrieval e
 inspiration from.\\
 
 % About our techniques
-The BM25~\cite{BM25} similarity function is widely used information retrieval as it considers term frequencies and document length.
+The BM25~\cite{BM25} similarity function is widely used information retrieval as it considers term frequencies and
+document length.
 This function has demonstrated effectiveness in balancing precision and recall in search results, even if it
 doesn't consider meta-data document information as other approaches~\cite{robertson2009probabilistic} do.
 Whitespace tokenization has not been the primary focus of research in any study.
@@ -16,8 +17,8 @@ Token lowercasing is also a recurring method in information retrieval~\cite{mann
 reduces the vocabulary size;
 it is always applied after more advanced token filters as \textit{WordDelimiterGraphFilter}.\\
 
-The TERRIER stopword list has been used in plenty of search engines because of the good results if offers working with
-web documents as blogs~\cite{Ounis2006OverviewOT} or even recommender systems.
+The Terrier~\cite{OunisEtAl2006} stopword list has been used in plenty of search engines because of the good results if
+offers working with web documents as blogs~\cite{ounis2009overview} or even recommender systems.
 Another basic information retrieval technique used in our search engine has been stemming.
 We have relied on the work of Jivani et al.\cite{jivani2011comparative} to get an overview of the most adequate stemming
 techniques for our documents.
