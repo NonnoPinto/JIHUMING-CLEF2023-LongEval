@@ -23,14 +23,73 @@ Instead of relying on single-word matches, the queries could take place with mor
 results.\\
 
 \subsection{Short Term Test Data}
-
-%TODO: Here we should include a table like the one we have previously done (MAP, nDCG, but also RnD) for the SHORT TERM runs, for the 5 systems submitted to CLEF.
-%TODO: this is, we have to use trec_eval with the new qrels.txt file (for SHORT TERM) that have been submitted to CLEF on 22/5/2023 (see CLEF web page)
+\begin{table}[h!]
+    \begin{center}
+        \caption{MAP, NCDG and Rprec scores for submitted runs in test data, short term evaluation}
+        \label{tab:shortTerms_scores}
+        \begin{tabular}{|c|c||c|c|c|}
+            \hline
+            \textbf{Run ID} & \textbf{Run} & \textbf{NCDG Score} & \textbf{MAP Score} & \textbf{RPREC Score}\\
+            \hline\hline
+            07 & fr\_fr & 0.3367 & 0.1883 & 0.1561 \\
+            \hline
+            08 & fr\_fr\_3gram & 0.3384 & 0.1893 & 0.1579 \\
+            \hline
+            09 & fr\_fr\_4gram & 0.3423 & 0.1911 & 0.1581 \\
+            \hline
+            10 & fr\_fr\_5gram & 0.3447 & 0.1926 & 0.1603 \\
+            \hline
+            12 & fr\_fr\_4gram\_ner & 0.2980 & 0.1468 & 0.1172 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table}
 
 \subsection{Long Term Test Data}
+\begin{table}[h!]
+    \begin{center}
+        \caption{MAP, NCDG and Rprec scores for submitted runs in test data, long term evaluation}
+        \label{tab:longTerms_scores}
+        \begin{tabular}{|c|c||c|c|c|}
+            \hline
+            \textbf{Run ID} & \textbf{Run} & \textbf{NCDG Score} & \textbf{MAP Score} & \textbf{RPREC Score}\\
+            \hline\hline
+            07 & fr\_fr & 0.3447 & 0.1880 & 0.1589 \\
+            \hline
+            08 & fr\_fr\_3gram & 0.3454 & 0.1881 & 0.1600 \\
+            \hline
+            09 & fr\_fr\_4gram & 0.3480 & 0.1888 & 0.1611 \\
+            \hline
+            10 & fr\_fr\_5gram & 0.3533 & 0.1920 & 0.1642 \\
+            \hline
+            12 & fr\_fr\_4gram\_ner & 0.3046 & 0.1433 & 0.1192\\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table}
 
-%TODO: Here we should include a table like the one we have previously done (MAP, nDCG, but also RnD) for the LONG TERM runs, for the 5 systems submitted to CLEF.
-%TODO: this is, we have to use trec_eval with the new qrels.txt file (for LONG TERM) that have been submitted to CLEF on 22/5/2023 (see CLEF web page)
+\subsection{Held Out Test Data}
+\begin{table}[h!]
+    \begin{center}
+        \caption{MAP, NCDG and Rprec scores for submitted runs in test data, held out evaluation}
+        \label{tab:heldOut_scores}
+        \begin{tabular}{|c|c||c|c|c|}
+            \hline
+            \textbf{Run ID} & \textbf{Run} & \textbf{NCDG Score} & \textbf{MAP Score} & \textbf{RPREC Score}\\
+            \hline\hline
+            07 & fr\_fr & 0.3271 & 0.1746 & 0.1397 \\
+            \hline
+            08 & fr\_fr\_3gram & 0.3307 & 0.1725 & 0.1326 \\
+            \hline
+            09 & fr\_fr\_4gram & 0.3364 & 0.1763 & 0.1397 \\
+            \hline
+            10 & fr\_fr\_5gram & 0.3413 & 0.1788 & 0.1385 \\
+            \hline
+            12 & fr\_fr\_4gram\_ner & 0.2868 & 0.1369 & 0.1004 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{table}
 
 \subsection{Anova 2 Analysis}
 
