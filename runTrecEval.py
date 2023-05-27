@@ -74,9 +74,9 @@ if __name__ == '__main__':
         outFileName = "runs/experiments/scores/scores_WT"
         scoretype = "WT"
 
-    # Clear maps score file
-    #with open(outFileName, 'w') as f:
-    #    pass
+    # Clear file
+    with open(outFileName, 'w') as f:
+        pass
 
     for i, script in enumerate(scripts, start=1):
         result = subprocess.run(script, shell=True, capture_output=True, text=True)
