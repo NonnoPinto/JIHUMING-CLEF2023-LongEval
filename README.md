@@ -46,7 +46,7 @@ The repository is organized as follows (only main dir exposed):
 └───slides
 ```
 
-### Group memebers ###
+### Group members ###
 - Jesús Moncada Ramírez  
 - Isil Atabek  
 - Huimin Chen  
@@ -54,19 +54,32 @@ The repository is organized as follows (only main dir exposed):
 - Nicolò Santini  
 - Giovanni Zago
 
-## Scoring runs with trec_eval ##
-In order to provide help to evaluate all runs, a linux based pip script can be used. Just ensure your trec_eval directory is in ../trec_eval-9.0.7 and run
+## Navigate thought scores ##
+```bash
+results\JIHUMING_scores.xlsx
+```
+provides two tables and relative Pivot tables and charts for a complete view of all used scores for the project. File is protected, but by using slicers in `Analysis` pages different comparisons can easily be done.
+## Scoring runs with trec_eval #
+To provide help to evaluate all runs, a Linux-based pip script can be used. Just ensure your trec_eval directory is in ../trec_eval-9.0.7 and run it.  
+Variable `run` decide which evaluation will be used:
+```bash
+# 1 = all runs
+# 2 = short term runs
+# 3 = long term runs
+# 4 = held out test
+```
+After setting `run` value as you prefer, launch py with this terminal command:
 ```sh
 python3 runTrecEval.py
 ```
-It generate a .txt for each run, plus allmaps.txt, with MAP and NDCG scores from every run in the same file in
+It generates a .txt for each run, plus allmaps.txt, with MAP and NDCG scores from every run in the same file in
 ```bash
-runs/scores/
+runs/experiments/scores
 ```
+Output files' name generally is `output<score_metrics>.txt` for files with all results and `<score_metrics>_scores.`txt` for sum-up files with just MAP, NDCG and Rprec scores.
 
 ### License ###
 
 All the contents of this repository are shared using the [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
 
 ![CC logo](https://i.creativecommons.org/l/by-sa/4.0/88x31.png)
-
