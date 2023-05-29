@@ -4,12 +4,13 @@ Our work was initiated based on the experimental setups outlined below.
 \begin{itemize}
 	\item MAP (Mean Average Precision) and NDCG (Normalized Discounted Cumulative Gain) scores computed for our systems
 	on the train data, in order to select the five systems to be submitted to CLEF.
-	\item MAP (Mean Average Precision) and NDCG (Normalized Discounted Cumulative Gain) scores computed for our systems
-	on the test data, to get a reliable estimatior of the final performance.
-	% TODO: include what measures are we going to include in the test data tables.
-	\item Statistical analysis with Two-Way ANOVA using AP (Average Precision) of our five submitted system over all
-	the topics.
-	\item~\citep[Repository]{jihuming}. %TODO: do what Ferro wrote in the correction (I don't understand)
+	\item MAP (Mean Average Precision), NDCG (Normalized Discounted Cumulative Gain) and Rprec (Precision at the Recall
+	base)scores computed for our systems on the test data (short-term, long-term and held-out), to get a reliable
+	estimator of the final performance.
+	\item Statistical analysis using Two-Way ANOVA to assess the Average Precision (AP) of the five system submissions
+	across all the topics on the test data (short-term, long-term and held-out).
+	\item All the code and documentation has been developed in our
+	\href{https://bitbucket.org/upd-dei-stud-prj/seupd2223-jihuming/src/master/}{group repository}~\cite{jihuming}.
 	\item During the development and the experimentation, personal computers were used.
 	\item Java JDK version 17, Apache version 2, Lucene version 9.5, and Maven.
 \end{itemize}

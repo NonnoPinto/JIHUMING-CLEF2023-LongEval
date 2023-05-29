@@ -24,8 +24,7 @@
 
 %%
 %% The "title" command
-% TODO: <short description> should be substituted by a title (probably)
-\title{SEUPD@CLEF: Team JIHUMING on <Short Description>}
+\title{SEUPD@CLEF: Team JIHUMING on Enhancing Search Engine Performance on the CLEF LongEval Corpus with Character N-Grams, Query Expansion, and Named Entity Recognition}
 
 \title[mode=sub]{Notebook for the LongEval Lab at CLEF 2023}
 
@@ -79,9 +78,14 @@ url=http://www.dei.unipd.it/~ferro/,
   Entity Recognition (NER) to further refine our system.
   The similarity function utilized in our approach is BM25.
   Our system was developed in Java and primarily utilized the Lucene library.
-  % Experiments and results
+  % Experiments
   After extensive experiments on these techniques, we came up with five systems that have produced the best results in
-  terms of MAP and NDCG scores. %TODO: include new results from HW2 if any
+  terms of MAP and NDCG scores.
+  We analyzed these five selected systems by examining their MAP, NDCG, and Rprec scores on the test data.
+  Additionally, we performed a Two-Way ANOVA to assess the AP of the systems.
+  % Results
+  In summary, our analysis reveals that using French queries improves search results, larger N-gram sizes enhance
+  effectiveness, and our NER approach has a detrimental impact on the scores.
 \end{abstract}
 
 %%
