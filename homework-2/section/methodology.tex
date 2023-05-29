@@ -12,19 +12,18 @@ In the \textbf{index}, we decided to include four fields: (1) the (processed) En
 from the French (original) version.
 As similarity function we have used BM25~\cite{BM25} as it takes into account both term frequency and document length.\\
 
-The text added to the fields must first be processed, for this we have developed four different \textbf{analyzers}.
+The text in the fields of our indexes must first be processed, for this we have developed four different \textbf{analyzers}.
 The English analyzer is based on whitespace tokenization, breaking of words and numbers based on special characters,
-lowercasing, applying the Terrier~\cite{OunisEtAl2006} stopword list, query expansion with synonyms based on
+lowercasing, applying the Terrier stopword list, query expansion with synonyms based on
 the WordNet synonym map~\cite{wordnet}, and stemming.
 The French analyzer is based on whitespace tokenization, breaking of words and numbers based on special characters,
 lowercasing, applying a French stopword list~\cite{stopword_french} and stemming.
-To generate the character N-grams we consider only the letters of the documents (i.e. we discard numbers and
-punctuation).
-To perform NER we apply NLP techniques based on Apache OpenNLP~\cite{ApacheOpenNLP} to the original (French) version of
-the documents.
-Specifically, we used NER applied to locations, person names and organizations.\\
+To generate the character N-grams we consider only the letters of the documents (i.e.\ we discard numbers and punctuation).
+To perform NER we apply NLP techniques based on Apache OpenNLP~\cite{ApacheOpenNLP}, specifically, we used NER applied
+to locations, person names and organizations.\\
 
 We conducted some experiments to generate the runs, i.e., we have tried different combinations of the explained
 techniques.
-Thus, our searcher will always use BM25~\cite{BM25}, but the rest of characteristics depend on the run it is generating.
+Thus, our searcher will always use BM25~\cite{BM25}, but the rest of characteristics will depend on the run it is
+generating.
 See Section~\ref{sec:setup} for more details.
