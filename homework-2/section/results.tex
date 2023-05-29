@@ -2,11 +2,17 @@
 \section{Results and Discussion}
 \label{sec:results}
 
-We will conduct an analysis of the mentioned scores for our systems across each test collection (short-term, long-term)
-and the held-out collection.
-Subsequently, we will perform a Two-Way ANOVA analysis.\\
-
 \subsection{Short Term Test Data}\label{subsec:short_term}
+
+In Table~\ref{tab:st_scores} we can see the mentioned scores computed for our five submitted systems on the (test)
+short-term collection.\\
+
+Based on the Two-Way ANOVA analysis presented in Table~\ref{tab:st_anova}, we observed a significant p-value (p < 0.05).
+Thus, we can conclude that there are significant differences among our systems.
+As ANOVA does not tell which systems are significantly different from each other, in Table~\ref{tab:st_comparison} we
+can observe the Tukey’s honestly significantly differenced (HSD) test.
+It suggests that pairwise comparisons between systems 7--12, 8--12, 9--12 and 10--12 reject null hypothesis (p < 0.05)
+and indicates statistical significant differences.
 
 \begin{table}[h!]
     \begin{center}
@@ -32,38 +38,46 @@ Subsequently, we will perform a Two-Way ANOVA analysis.\\
 
 \begin{table}[h!]
     \centering
-    \caption{Two-Way ANOVA table assessing AP on the short-term collection}
+    \caption{Two-Way ANOVA table assessing AP for the submitted systems on the (test) short-term collection}
     \label{tab:st_anova}
     \begin{tabular}{|l|l|l|l|l|l|}
     \hline
-        \textbf{SHORT TERM SECTION} & \textbf{df} & \textbf{sum\_sq} & \textbf{mean\_sq} & \textbf{F} & \textbf{PR(>F)} \\ \hline\hline
+        \textbf{Source} & \textbf{df} & \textbf{sum\_sq} & \textbf{mean\_sq} & \textbf{F} & \textbf{PR(>F)} \\ \hline\hline
         \textbf{C(system)} & 4 & 1,348254 & 0,337063 & 6,250613 & 0,000052 \\ \hline
-        \textbf{Residual} & 4405 & 237,539013 & 0,053925 & NaN & NaN \\ \hline
+        \textbf{Residual} & 4405 & 237,539013 & 0,053925 & -- & -- \\ \hline
     \end{tabular}
 \end{table}
 
 \begin{table}[h!]
     \centering
-    \caption{Other scores} %TODO
+    \caption{Tukey Honestly Significant Difference test for the submitted systems on the (test) short-term collection}
     \label{tab:st_comparison}
-    \begin{tabular}{|r|l|l||c|c|c|c|c|}
+    \begin{tabular}{|l|l||c|c|c|c|c|}
         \hline
-        \multicolumn{8}{|l|}{\textbf{SHORT TERM SECTION}} \\ \hline\hline
-        \textbf{ID} & \textbf{group 1} & \textbf{group 2} & \textbf{Diff} & \textbf{Lower} & \textbf{Upper} & \textbf{q-value} & \textbf{p-value} \\ \hline
-        0 & 07\_fr\_fr & 08\_fr\_fr\_3gram & 0,000986 & -0,029190 & 0,031162 & 0,126122 & 0,900000 \\ \hline
-        1 & 07\_fr\_fr & 09\_fr\_fr\_4gram & 0,002808 & -0,027368 & 0,032984 & 0,359124 & 0,900000 \\ \hline
-        2 & 07\_fr\_fr & 10\_fr\_fr\_5gram & 0,004282 & -0,025894 & 0,034458 & 0,547611 & 0,900000 \\ \hline
-        3 & 07\_fr\_fr & 12\_fr\_fr\_4gram\_ner & 0,041538 & 0,011362 & 0,071714 & 5,312288 & 0,001641 \\ \hline
-        4 & 08\_fr\_fr\_3gram & 09\_fr\_fr\_4gram & 0,001822 & -0,028354 & 0,031998 & 0,233002 & 0,900000 \\ \hline
-        5 & 08\_fr\_fr\_3gram & 10\_fr\_fr\_5gram & 0,003296 & -0,026880 & 0,033472 & 0,421489 & 0,900000 \\ \hline
-        6 & 08\_fr\_fr\_3gram & 12\_fr\_fr\_4gram\_ner & 0,042524 & 0,012348 & 0,072700 & 5,438410 & 0,001152 \\ \hline
-        7 & 09\_fr\_fr\_4gram & 10\_fr\_fr\_5gram & 0,001474 & -0,028702 & 0,031650 & 0,188487 & 0,900000 \\ \hline
-        8 & 09\_fr\_fr\_4gram & 12\_fr\_fr\_4gram\_ner & 0,044346 & 0,014170 & 0,074522 & 5,671412 & 0,001000 \\ \hline
-        9 & 10\_fr\_fr\_5gram & 12\_fr\_fr\_4gram\_ner & 0,045820 & 0,015644 & 0,075995 & 5,859899 & 0,001000 \\ \hline\hline
+        \textbf{Run 1} & \textbf{Run 2} & \textbf{Diff} & \textbf{Lower} & \textbf{Upper} & \textbf{q-value} & \textbf{p-value} \\ \hline
+        07\_fr\_fr & 08\_fr\_fr\_3gram & 0,000986 & -0,029190 & 0,031162 & 0,126122 & 0,900000 \\ \hline
+        07\_fr\_fr & 09\_fr\_fr\_4gram & 0,002808 & -0,027368 & 0,032984 & 0,359124 & 0,900000 \\ \hline
+        07\_fr\_fr & 10\_fr\_fr\_5gram & 0,004282 & -0,025894 & 0,034458 & 0,547611 & 0,900000 \\ \hline
+        07\_fr\_fr & 12\_fr\_fr\_4gram\_ner & 0,041538 & 0,011362 & 0,071714 & 5,312288 & 0,001641 \\ \hline
+        08\_fr\_fr\_3gram & 09\_fr\_fr\_4gram & 0,001822 & -0,028354 & 0,031998 & 0,233002 & 0,900000 \\ \hline
+        08\_fr\_fr\_3gram & 10\_fr\_fr\_5gram & 0,003296 & -0,026880 & 0,033472 & 0,421489 & 0,900000 \\ \hline
+        08\_fr\_fr\_3gram & 12\_fr\_fr\_4gram\_ner & 0,042524 & 0,012348 & 0,072700 & 5,438410 & 0,001152 \\ \hline
+        09\_fr\_fr\_4gram & 10\_fr\_fr\_5gram & 0,001474 & -0,028702 & 0,031650 & 0,188487 & 0,900000 \\ \hline
+        09\_fr\_fr\_4gram & 12\_fr\_fr\_4gram\_ner & 0,044346 & 0,014170 & 0,074522 & 5,671412 & 0,001000 \\ \hline
+        10\_fr\_fr\_5gram & 12\_fr\_fr\_4gram\_ner & 0,045820 & 0,015644 & 0,075995 & 5,859899 & 0,001000 \\ \hline
     \end{tabular}
 \end{table}
 
 \subsection{Long Term Test Data}\label{subsec:long_term}
+
+In Table~\ref{tab:lt_scores} we can see the mentioned scores computed for our five submitted systems on the (test)
+long-term collection.\\
+
+In the Two-Way ANOVA analysis presented in Table~\ref{tab:lt_anova} we observed a significant p-value (p < 0.05), so we
+can conclude that there are significant differences among our systems.
+The Tukey's honestly significantly differenced (HSD) test in Table~\ref{tab:lt_comparison} again suggests that pairwise
+comparisons between systems 7--12, 8--12, 9--12 and 10--12 reject null hypothesis (p < 0.05).
+Thus system 12 presents statistical significant difference.
 
 \begin{table}[h!]
     \begin{center}
@@ -89,11 +103,11 @@ Subsequently, we will perform a Two-Way ANOVA analysis.\\
 
 \begin{table}[!ht]
     \centering
-    \caption{Two-Way ANOVA table assessing AP on the long-term collection}
+    \caption{Two-Way ANOVA table assessing AP for the submitted systems on the (test) long-term collection}
     \label{tab:lt_anova}
     \begin{tabular}{|l|l|l|l|l|l|}
     \hline
-        \textbf{LONG TERM SECTION} & \textbf{df} & \textbf{sum\_sq} & \textbf{mean\_sq} & \textbf{F} & \textbf{PR(>F)} \\ \hline\hline
+        \textbf{Source} & \textbf{df} & \textbf{sum\_sq} & \textbf{mean\_sq} & \textbf{F} & \textbf{PR(>F)} \\ \hline\hline
         \textbf{C(system)} & 4 & 1,564386 & 0,391097 & 8,562506 & 7,01E-07 \\ \hline
         \textbf{Residual} & 4610 & 210,56392 & 0,045675 & NaN & NaN \\ \hline
     \end{tabular}
@@ -101,26 +115,31 @@ Subsequently, we will perform a Two-Way ANOVA analysis.\\
 
 \begin{table}[h!]
     \centering
-    \caption{Other scores} %TODO
-    \label{tab:other_scores}
-    \begin{tabular}{|r|l|l||c|c|c|c|c|}
+    \caption{Tukey Honestly Significant Difference test for the submitted systems on the (test) long-term collection}
+    \label{tab:lt_comparison}
+    \begin{tabular}{|l|l||c|c|c|c|c|}
         \hline
-        \multicolumn{8}{|l|}{\textbf{LONG TERM SECTION}} \\ \hline\hline
-        \textbf{ID} & \textbf{group 1} & \textbf{group 2} & \textbf{Diff} & \textbf{Lower} & \textbf{Upper} & \textbf{q-value} & \textbf{p-value} \\ \hline
-        0 & 07\_fr\_fr & 08\_fr\_fr\_3gram & 0,000340 & -0,026808 & 0,027488 & 0,048345 & 0,900000 \\ \hline
-        1 & 07\_fr\_fr & 09\_fr\_fr\_4gram & 0,001090 & -0,026058 & 0,028237 & 0,154891 & 0,900000 \\ \hline
-        2 & 07\_fr\_fr & 10\_fr\_fr\_5gram & 0,004239 & -0,022909 & 0,031387 & 0,602592 & 0,900000 \\ \hline
-        3 & 07\_fr\_fr & 12\_fr\_fr\_4gram\_ner & 0,044458 & 0,017311 & 0,071606 & 6,319943 & 0,001000 \\ \hline
-        4 & 08\_fr\_fr\_3gram & 09\_fr\_fr\_4gram & 0,000750 & -0,026398 & 0,027897 & 0,106546 & 0,900000 \\ \hline
-        5 & 08\_fr\_fr\_3gram & 10\_fr\_fr\_5gram & 0,003899 & -0,023249 & 0,031047 & 0,554247 & 0,900000 \\ \hline
-        6 & 08\_fr\_fr\_3gram & 12\_fr\_fr\_4gram\_ner & 0,044798 & 0,017651 & 0,071946 & 6,368287 & 0,001000 \\ \hline
-        7 & 09\_fr\_fr\_4gram & 10\_fr\_fr\_5gram & 0,003149 & -0,023998 & 0,030297 & 0,447701 & 0,900000 \\ \hline
-        8 & 09\_fr\_fr\_4gram & 12\_fr\_fr\_4gram\_ner & 0,045548 & 0,018400 & 0,072696 & 6,474833 & 0,001000 \\ \hline
-        9 & 10\_fr\_fr\_5gram & 12\_fr\_fr\_4gram\_ner & 0,048697 & 0,021550 & 0,075845 & 6,922534 & 0,001000 \\ \hline\hline
+        \textbf{Run 1} & \textbf{Run 2} & \textbf{Diff} & \textbf{Lower} & \textbf{Upper} & \textbf{q-value} & \textbf{p-value} \\ \hline
+        07\_fr\_fr & 08\_fr\_fr\_3gram & 0,000340 & -0,026808 & 0,027488 & 0,048345 & 0,900000 \\ \hline
+        07\_fr\_fr & 09\_fr\_fr\_4gram & 0,001090 & -0,026058 & 0,028237 & 0,154891 & 0,900000 \\ \hline
+        07\_fr\_fr & 10\_fr\_fr\_5gram & 0,004239 & -0,022909 & 0,031387 & 0,602592 & 0,900000 \\ \hline
+        07\_fr\_fr & 12\_fr\_fr\_4gram\_ner & 0,044458 & 0,017311 & 0,071606 & 6,319943 & 0,001000 \\ \hline
+        08\_fr\_fr\_3gram & 09\_fr\_fr\_4gram & 0,000750 & -0,026398 & 0,027897 & 0,106546 & 0,900000 \\ \hline
+        08\_fr\_fr\_3gram & 10\_fr\_fr\_5gram & 0,003899 & -0,023249 & 0,031047 & 0,554247 & 0,900000 \\ \hline
+        08\_fr\_fr\_3gram & 12\_fr\_fr\_4gram\_ner & 0,044798 & 0,017651 & 0,071946 & 6,368287 & 0,001000 \\ \hline
+        09\_fr\_fr\_4gram & 10\_fr\_fr\_5gram & 0,003149 & -0,023998 & 0,030297 & 0,447701 & 0,900000 \\ \hline
+        09\_fr\_fr\_4gram & 12\_fr\_fr\_4gram\_ner & 0,045548 & 0,018400 & 0,072696 & 6,474833 & 0,001000 \\ \hline
+        10\_fr\_fr\_5gram & 12\_fr\_fr\_4gram\_ner & 0,048697 & 0,021550 & 0,075845 & 6,922534 & 0,001000 \\ \hline
     \end{tabular}
 \end{table}
 
 \subsection{Held Out Test Data}\label{subsec:held_out}
+
+In Table~\ref{tab:ho_scores} we can see the mentioned scores computed for our five submitted systems on the (train)
+held-out collection.\\
+
+In the Two-Way ANOVA analysis presented in Table~\ref{tab:ho_anova} we didn't observe a significant p-value (p >= 0.05),
+so we can conclude that there are not significant differences among our systems.
 
 \begin{table}[h!]
     \begin{center}
@@ -150,32 +169,32 @@ Subsequently, we will perform a Two-Way ANOVA analysis.\\
     \label{tab:ho_anova}
     \begin{tabular}{|l|l|l|l|l|l|}
     \hline
-        \textbf{HELD OUT SECTION} & \textbf{df} & \textbf{sum\_sq} & \textbf{mean\_sq} & \textbf{F} & \textbf{PR(>F)} \\ \hline\hline
+        \textbf{Source} & \textbf{df} & \textbf{sum\_sq} & \textbf{mean\_sq} & \textbf{F} & \textbf{PR(>F)} \\ \hline\hline
         \textbf{C(system)} & 4 & 0,11896 & 0,02974 & 0,689161 & 0,599712 \\ \hline
-        \textbf{Residual} & 485 & 20,929668 & 0,043154 & NaN & NaN \\ \hline
+        \textbf{Residual} & 485 & 20,929668 & 0,043154 & -- & -- \\ \hline
     \end{tabular}
 \end{table}
 
-\begin{table}[h!]
-    \centering
-    \caption{Other scores}
-    \label{tab:other_scores}
-    \begin{tabular}{|r|l|l||c|c|c|c|c|}
-    \hline
-        \multicolumn{8}{|l|}{\textbf{HELD-OUT SECTION}} \\ \hline\hline
-        \textbf{ID} & \textbf{group 1} & \textbf{group 2} & \textbf{Diff} & \textbf{Lower} & \textbf{Upper} & \textbf{q-value} & \textbf{p-value} \\ \hline
-        0 & 07\_fr\_fr & 08\_fr\_fr\_3gram & 0,002054 & -0,079203 & 0,083311 & 0,097886 & 0,900000 \\ \hline
-        1 & 07\_fr\_fr & 09\_fr\_fr\_4gram & 0,001704 & -0,079553 & 0,082961 & 0,081207 & 0,900000 \\ \hline
-        2 & 07\_fr\_fr & 10\_fr\_fr\_5gram & 0,004244 & -0,077013 & 0,085501 & 0,202239 & 0,900000 \\ \hline
-        3 & 07\_fr\_fr & 12\_fr\_fr\_4gram\_ner & 0,037636 & -0,043621 & 0,118892 & 1,793506 & 0,685812 \\ \hline
-        4 & 08\_fr\_fr\_3gram & 09\_fr\_fr\_4gram & 0,003758 & -0,077499 & 0,085015 & 0,179093 & 0,900000 \\ \hline
-        5 & 08\_fr\_fr\_3gram & 10\_fr\_fr\_5gram & 0,006298 & -0,074959 & 0,087555 & 0,300125 & 0,900000 \\ \hline
-        6 & 08\_fr\_fr\_3gram & 12\_fr\_fr\_4gram\_ner & 0,035582 & -0,045675 & 0,116838 & 1,695620 & 0,725010 \\ \hline
-        7 & 09\_fr\_fr\_4gram & 10\_fr\_fr\_5gram & 0,002540 & -0,078717 & 0,083797 & 0,121032 & 0,900000 \\ \hline
-        8 & 09\_fr\_fr\_4gram & 12\_fr\_fr\_4gram\_ner & 0,039340 & -0,041917 & 0,120597 & 1,874713 & 0,653298 \\ \hline
-        9 & 10\_fr\_fr\_5gram & 12\_fr\_fr\_4gram\_ner & 0,041880 & -0,039377 & 0,123136 & 1,995746 & 0,604835 \\ \hline
-    \end{tabular}
-\end{table}
+%\begin{table}[h!]
+%    \centering
+%    \caption{Other scores}
+%    \label{tab:ho_comparison}
+%    \begin{tabular}{|r|l|l||c|c|c|c|c|}
+%    \hline
+%        \multicolumn{8}{|l|}{\textbf{HELD-OUT SECTION}} \\ \hline\hline
+%        \textbf{ID} & \textbf{group 1} & \textbf{group 2} & \textbf{Diff} & \textbf{Lower} & \textbf{Upper} & \textbf{q-value} & \textbf{p-value} \\ \hline
+%        0 & 07\_fr\_fr & 08\_fr\_fr\_3gram & 0,002054 & -0,079203 & 0,083311 & 0,097886 & 0,900000 \\ \hline
+%        1 & 07\_fr\_fr & 09\_fr\_fr\_4gram & 0,001704 & -0,079553 & 0,082961 & 0,081207 & 0,900000 \\ \hline
+%        2 & 07\_fr\_fr & 10\_fr\_fr\_5gram & 0,004244 & -0,077013 & 0,085501 & 0,202239 & 0,900000 \\ \hline
+%        3 & 07\_fr\_fr & 12\_fr\_fr\_4gram\_ner & 0,037636 & -0,043621 & 0,118892 & 1,793506 & 0,685812 \\ \hline
+%        4 & 08\_fr\_fr\_3gram & 09\_fr\_fr\_4gram & 0,003758 & -0,077499 & 0,085015 & 0,179093 & 0,900000 \\ \hline
+%        5 & 08\_fr\_fr\_3gram & 10\_fr\_fr\_5gram & 0,006298 & -0,074959 & 0,087555 & 0,300125 & 0,900000 \\ \hline
+%        6 & 08\_fr\_fr\_3gram & 12\_fr\_fr\_4gram\_ner & 0,035582 & -0,045675 & 0,116838 & 1,695620 & 0,725010 \\ \hline
+%        7 & 09\_fr\_fr\_4gram & 10\_fr\_fr\_5gram & 0,002540 & -0,078717 & 0,083797 & 0,121032 & 0,900000 \\ \hline
+%        8 & 09\_fr\_fr\_4gram & 12\_fr\_fr\_4gram\_ner & 0,039340 & -0,041917 & 0,120597 & 1,874713 & 0,653298 \\ \hline
+%        9 & 10\_fr\_fr\_5gram & 12\_fr\_fr\_4gram\_ner & 0,041880 & -0,039377 & 0,123136 & 1,995746 & 0,604835 \\ \hline
+%    \end{tabular}
+%\end{table}
 
 \subsection{General results}\label{subsec:general-results}
 
