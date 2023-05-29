@@ -2,21 +2,21 @@
 
 Our work was initiated based on the experimental setups outlined below.
 \begin{itemize}
-	\item MAP (Mean Average Precision) and NDCG (Normalized Discounted Cumulative Gain) scores computed for our systems
-	on the train data, in order to select the five systems to be submitted to CLEF.
-	\item MAP (Mean Average Precision), NDCG (Normalized Discounted Cumulative Gain) and Rprec (Precision at the Recall
-	base)scores computed for our systems on the test (short-term, and long-term) and held-out collections to
-	get a reliable estimator of the final performance.
-	\item Statistical analysis using Two-Way ANOVA to assess the Average Precision (AP) of the five system submissions
+	\item MAP (Mean Average Precision) and NDCG (Normalized Discounted Cumulative Gain) scores computed for all our
+	systems' runs on the training collection, in order to select the five systems to be submitted to CLEF\@.
+	\item MAP, NDCG and Rprec (Precision at the Recall
+	base) scores computed for the submitted systems' runs on the test (short-term, and long-term) and held-out
+	collections, in order to get a reliable estimator of the final performance.
+	\item Statistical analysis using Two-Way ANOVA to assess the Average Precision (AP) of the five submitted systems
 	across all the topics on the test (short-term, and long-term) and held-out collections.
-	\item Comparison of all our systems using the Tukey Honestly Significant Difference (HSD) test.
+	\item Pairwise comparisons of the submitted systems using the Tukey Honestly Significant Difference (HSD) test.
 	\item All the code and documentation has been developed in our
 	\href{https://bitbucket.org/upd-dei-stud-prj/seupd2223-jihuming/src/master/}{group repository}~\cite{jihuming}.
 	\item During the development and the experimentation, personal computers were used.
 	\item Java JDK version 17, Apache version 2, Lucene version 9.5, and Maven.
 \end{itemize}
 
-In order to do different run experiments our team has created several indexes from each of the provided collections
+In order to do different run experiments, our team has created several indexes from each of the provided collections
 (train, short-term test, and long-term test).
 Put simply, certain indexes mentioned in this report incorporate only a few of the characteristics discussed, while
 others encompass all the characteristics outlined in the final version of the project.\\
@@ -24,13 +24,13 @@ others encompass all the characteristics outlined in the final version of the pr
 All the created indexes are \textbf{multilingual}, which allows us to take full advantage of the (bilingual) data
 collection.
 Additionally, we did some experiments with character N-grams generating different versions of indexes with 3-grams,
-4-grams and 5-grams.
-Our motivation was to compare how the size of different character N-grams affect to the effectiveness of our system.
-3-grams are able to collecting more specific information about our documents, while 4-grams and 5-grams are more open to
+4-grams and 5-grams;
+the motivation was to compare how this parameter affects to the effectiveness of our systems.
+3-grams are able to collecting more local information in our documents, while 4-grams and 5-grams are more open to
 the context.
 An additional functionality of some indexes is query expansion, but as commented, this is only applied to the English
 body.
-One index uses Named Entity Recognition which provides not only the search for keywords but also identifying and
+One index includes Named Entity Recognition which provides not only the search for keywords but also identifying and
 extracting specific named entities.
 The subsequent indexes are:
 \begin{itemize}
@@ -43,10 +43,10 @@ The subsequent indexes are:
 The indexes also can be found in the following
 \href{https://drive.google.com/drive/folders/1CK_kLeZ5Us3VJe8hiG1vhwPrDs94cLvU?usp=share_link}{Google Drive folder}.\\
 
-After creating indexes, we were able to conduct multiple runs to evaluate the effectiveness of our system.
-These runs not only experiment with some of the techniques specified here, but also consider different versions (English
-or French version) of the queries.
-With them we can compare and analyze different aspects of our system's performance, such as precision and recall.
+After creating the indexes, we were able to conduct multiple runs to evaluate the effectiveness of our system.
+These runs not only experiment with some techniques specified here, but also consider different versions (English
+or French) of the queries.
+With them, we can compare and analyze different aspects of our system's performance, such as precision and recall.
 The runs are the following:
 \begin{itemize}
 	\item \texttt{seupd2223-JIHUMING-01\_en\_en}: English topics; using English body field.
@@ -54,13 +54,13 @@ The runs are the following:
 	\item \texttt{seupd2223-JIHUMING-03\_en\_en\_4gram}: English topics; using English body field and 4-gram field.
 	\item \texttt{seupd2223-JIHUMING-04\_en\_en\_5gram}: English topics; using English body field and 5-gram field.
 	\item \texttt{seupd2223-JIHUMING-05\_en\_en\_fr\_5gram}: English topics; using English and French body fileds and 5-gram field.
-	\item \texttt{seupd2223-JIHUMING-06\_en\_en\_4gram\_ner}: English topics; using English body field, 4-gram field and NER technique.
+	\item \texttt{seupd2223-JIHUMING-06\_en\_en\_4gram\_ner}: English topics; using English body field, 4-gram field and NER information field.
 	\item \texttt{seupd2223-JIHUMING-07\_fr\_fr}: French topics; using French body field.
 	\item \texttt{seupd2223-JIHUMING-08\_fr\_fr\_3gram}: French topics; using French body field and 3-gram field.
 	\item \texttt{seupd2223-JIHUMING-09\_fr\_fr\_4gram}: French topics; using French body field and 4-gram field.
 	\item \texttt{seupd2223-JIHUMING-10\_fr\_fr\_5gram}: French topics; using French body field and 5-gram field.
 	\item \texttt{seupd2223-JIHUMING-11\_fr\_en\_fr\_5gram}: French topics; using English and French body fields and 5-gram field.
-	\item \texttt{seupd2223-JIHUMING-12\_fr\_fr\_4gram\_ner}: French topics; using French body field, 4-gram field and NER technique.
+	\item \texttt{seupd2223-JIHUMING-12\_fr\_fr\_4gram\_ner}: French topics; using French body field, 4-gram field and NER information field.
 \end{itemize}
 
 The process of creating the indexes typically took around 1 hour, except the indexes that included NER, which took
@@ -68,5 +68,5 @@ approximately 16 hours.
 On the other hand, generating the runs was a much quicker process, taking consistently less than a minute and a half to
 complete.\\
 
-The mentioned analysis of the runs on the training data will take place in Section~\ref{sec:runs_selection}.
-The analysis of the runs on the test data will take place in Section~\ref{sec:results}.
+The mentioned analysis of the runs on the training collection will take place in Section~\ref{sec:runs_selection}.
+The analysis of the runs on the test collection will take place in Section~\ref{sec:results}.
