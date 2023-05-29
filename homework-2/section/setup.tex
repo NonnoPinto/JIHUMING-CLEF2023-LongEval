@@ -5,10 +5,11 @@ Our work was initiated based on the experimental setups outlined below.
 	\item MAP (Mean Average Precision) and NDCG (Normalized Discounted Cumulative Gain) scores computed for our systems
 	on the train data, in order to select the five systems to be submitted to CLEF.
 	\item MAP (Mean Average Precision), NDCG (Normalized Discounted Cumulative Gain) and Rprec (Precision at the Recall
-	base)scores computed for our systems on the test data (short-term, long-term and held-out), to get a reliable
-	estimator of the final performance.
+	base)scores computed for our systems on the test (short-term, and long-term) and held-out collections to
+	get a reliable estimator of the final performance.
 	\item Statistical analysis using Two-Way ANOVA to assess the Average Precision (AP) of the five system submissions
-	across all the topics on the test data (short-term, long-term and held-out).
+	across all the topics on the test (short-term, and long-term) and held-out collections.
+	\item Comparison of all our systems using the Tukey Honestly Significant Difference (HSD) test.
 	\item All the code and documentation has been developed in our
 	\href{https://bitbucket.org/upd-dei-stud-prj/seupd2223-jihuming/src/master/}{group repository}~\cite{jihuming}.
 	\item During the development and the experimentation, personal computers were used.
@@ -39,7 +40,6 @@ The subsequent indexes are:
 	\item \texttt{multilingual\_5gram\_synonym}: both languages, character 5-grams, (English) query expansion with synonyms.
 	\item \texttt{multilingual\_4gram\_synonym\_ner}: both languages, character 4-grams, (English) query expansion with synonyms, NER techniques.
 \end{itemize}
-
 The indexes also can be found in the following
 \href{https://drive.google.com/drive/folders/1CK_kLeZ5Us3VJe8hiG1vhwPrDs94cLvU?usp=share_link}{Google Drive folder}.\\
 
@@ -68,9 +68,5 @@ approximately 16 hours.
 On the other hand, generating the runs was a much quicker process, taking consistently less than a minute and a half to
 complete.\\
 
-For the runs on the \textbf{training data}, we computed MAP and NDCG scores with the purpose of selecting five systems
-to submit to the competition.
-See Section~\ref{sec:runs_selection}.
-% TODO: Complete and uncomment the following sentence
-%For the runs on the \textbf{test data} we computed
-The results will be commented in the Section~\ref{sec:results}.
+The mentioned analysis of the runs on the training data will take place in Section~\ref{sec:runs_selection}.
+The analysis of the runs on the test data will take place in Section~\ref{sec:results}.
