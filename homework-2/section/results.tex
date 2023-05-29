@@ -109,7 +109,7 @@ Thus system 12 presents statistical significant difference.
     \hline
         \textbf{Source} & \textbf{df} & \textbf{sum\_sq} & \textbf{mean\_sq} & \textbf{F} & \textbf{PR(>F)} \\ \hline\hline
         \textbf{C(system)} & 4 & 1,564386 & 0,391097 & 8,562506 & 7,01E-07 \\ \hline
-        \textbf{Residual} & 4610 & 210,56392 & 0,045675 & NaN & NaN \\ \hline
+        \textbf{Residual} & 4610 & 210,56392 & 0,045675 & -- & -- \\ \hline
     \end{tabular}
 \end{table}
 
@@ -213,6 +213,19 @@ score.
 Another interesting aspect is that the worst-performing index is the one with named entity recognition in English
 (\texttt{en\_en\_4gram\_ner}): it combines translated queries and NER, which appears to be the two worst-performing
 approaches.\\
+
+Our findings indicate that the MAP and NDCG scores in the training data closely align with those in the test data.
+Interestingly, there are instances where the scores in the test data show improvement compared to the training data.
+Thus, according to the test data, the ranking of our best-performing systems is the same as in
+Section~\ref{sec:runs_selection} (in order of importance): \texttt{10\_fr\_fr\_5gram},
+\texttt{09\_fr\_fr\_4gram}, \texttt{08\_fr\_fr\_3gram}, \texttt{07\_fr\_fr}, and \texttt{12\_fr\_fr\_4gram\_ner}.\\
+
+Based on the ANOVA analysis, the null hypothesis is only not rejected in the runs on the held-out collection, suggesting
+no statistically significant difference.
+We attribute this finding to the limited number of queries in that particular collection.
+However, in cases where a statistical significant difference exists among the systems, it appears that system number 12
+(\texttt{12\_fr\_fr\_4gram\_ner}) is the only one with a significant impact.
+This aligns with our expectations since system number 12 is the only submission utilizing NER among the others.\\
 
 In general, we focus more on trying multiple approaches, this is why our score has such a big space for improvement.
 As already said, French queries with bigger N-gram sizes perform better.
