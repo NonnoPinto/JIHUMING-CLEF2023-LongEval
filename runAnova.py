@@ -148,7 +148,7 @@ if __name__ == '__main__':
     # replace column names
     df_melted.columns = ['topic', 'system', 'average_precision']
 
-    model = ols("average_precision ~ C(topic) + C(system)", data=df_melted).fit()
+    model = ols("average_precision ~ C(system)", data=df_melted).fit()
     anova_table = sm.stats.anova_lm(model, typ=2)
 
     #print(anova_table)

@@ -9,9 +9,9 @@ To generate an index based on the provided documents, first, we have to parse th
 this is, get their text into Java data structures.
 All this parser package has been developed following the instructions provided by the organizers.\\
 
-We decided to use the \textbf{JSON} version of the documents because they can easily be manipulated and queried using a
+We decided to use the JSON version of the documents because they can easily be manipulated and queried using a
 variety of tools and libraries.
-In our case, because of the large number of documents we are working with, we had to create a \textbf{streaming} parser,
+In our case, because of the large number of documents we are working with, we had to create a streaming parser,
 that allocates into the main memory only one document at a time.
 Thus, our parser is based on the Java library \texttt{Gson} including streaming funtionalities.\\
 
@@ -34,7 +34,7 @@ All of them follow the typical workflow: use a \texttt{Tokenizer} and a list of 
 \texttt{TokenStream}.\\
 
 The final version of the project creates an index with four fields for each document.
-Because of this, we had to create \textbf{four different analyzers}.
+Because of this, we had to create four different analyzers.
 Note that we are not taking into account the first field which is the id, obviously presented in the index, to which no
 processing is applied.
 All the following described analyzers use some functionalities from the helper class \texttt{AnalyzerUtil} developed by
@@ -165,7 +165,7 @@ It also allows distinguishing between train and test data.\\
 
 \subsection{Topic}\label{subsec:topic}
 
-To read the queries (in TREC format) we couldn't use the class \textbf{TrecTopicsReader} already included in Lucene.
+To read the queries (in TREC format) we couldn't use the class \texttt{TrecTopicsReader} already included in Lucene.
 This class expects queries to be in a more specific format than the one provided by the organizers.
 Thus, we developed our LongEval topic reader in the package \texttt{topic}, containing the classes
 \texttt{LongEvalTopic} and \texttt{LongEvalTopicReader}.
@@ -175,7 +175,7 @@ Thus:
 \begin{itemize}
     \item \texttt{LongEvalTopic} is a simple Java POJO representing each query provided by LongEval.
           Each query has a number (\texttt{<num>}) and a title (\texttt{<title>}).
-          It is the equivalent of \texttt{QualityQuery} when working with \textbf{TrecTopicsReader}.
+          It is the equivalent of \texttt{QualityQuery} when working with \texttt{TrecTopicsReader}.
     \item \texttt{LongEvalTopicReader} is the query reader we developed.
           It considers the query file as an XML file and parses it using the Java XML library.
 \end{itemize}
