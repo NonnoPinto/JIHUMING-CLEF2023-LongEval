@@ -47,18 +47,17 @@ The repository is organized as follows (only main dir exposed):
 ```
 
 ### Group members ###
-- Jesús Moncada Ramírez  
 - Isil Atabek  
 - Huimin Chen  
-- Michele Canale  
+- Jesús Moncada Ramírez  
 - Nicolò Santini  
 - Giovanni Zago
 
-## Navigate thought scores ##
+## Navigate through scores ##
 ```bash
 results\JIHUMING_scores.xlsx
 ```
-provides two tables and relative Pivot tables and charts for a complete view of all used scores for the project. File is protected, but by using slicers in `Analysis` pages different comparisons can easily be done.
+provides two tables and relative Pivot tables and charts for a complete view of all used scores for the project. The file is protected, but by using slicers in `Analysis` pages different comparisons can easily be done.
 ## Scoring runs with trec_eval #
 To provide help to evaluate all runs, a Linux-based pip script can be used. Just ensure your trec_eval directory is in ../trec_eval-9.0.7 and run it.  
 Variable `run` decide which evaluation will be used:
