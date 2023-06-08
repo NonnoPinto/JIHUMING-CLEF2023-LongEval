@@ -1,0 +1,235 @@
+\begin{thebibliography}{27}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\href}[2]{#2}
+\providecommand{\path}[1]{#1}
+\providecommand{\DOIprefix}{doi:}
+\providecommand{\ArXivprefix}{arXiv:}
+\providecommand{\URLprefix}{URL: }
+\providecommand{\Pubmedprefix}{pmid:}
+\providecommand{\doi}[1]{\href{http://dx.doi.org/#1}{\path{#1}}}
+\providecommand{\Pubmed}[1]{\href{pmid:#1}{\path{#1}}}
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Misc
+\bibitem[{{CLEF2023}(2023)}]{LongEval}
+\bibinfo{author}{{CLEF2023}}, \bibinfo{title}{{LongEval CLEF 2023 Lab}},
+  \bibinfo{howpublished}{{\url{https://clef-longeval.github.io/}}},
+  \bibinfo{year}{2023}.
+%Type = Misc
+\bibitem[{Galu{\v s}{\v c}{\'a}kov{\'a} et~al.(2023)Galu{\v s}{\v
+  c}{\'a}kov{\'a}, Devaud, Gonzalez-Saez, Mulhem, Goeuriot, Piroi, and
+  Popel}]{traindata}
+\bibinfo{author}{P.~Galu{\v s}{\v c}{\'a}kov{\'a}},
+  \bibinfo{author}{R.~Devaud}, \bibinfo{author}{G.~Gonzalez-Saez},
+  \bibinfo{author}{P.~Mulhem}, \bibinfo{author}{L.~Goeuriot},
+  \bibinfo{author}{F.~Piroi}, \bibinfo{author}{M.~Popel},
+  \bibinfo{title}{{LongEval} train collection}, \bibinfo{year}{2023}.
+  \URLprefix \url{http://hdl.handle.net/11234/1-5010},
+  \bibinfo{note}{{LINDAT}/{CLARIAH}-{CZ} digital library at the Institute of
+  Formal and Applied Linguistics ({{\'U}FAL}), Faculty of Mathematics and
+  Physics, Charles University}.
+%Type = Article
+\bibitem[{Popel et~al.(2020)Popel, Tomkova, Tomek, Kaiser, Uszkoreit, Bojar,
+  and {\v{Z}}abokrtsk{\'{y}}}]{CUBBITT}
+\bibinfo{author}{M.~Popel}, \bibinfo{author}{M.~Tomkova},
+  \bibinfo{author}{J.~Tomek}, \bibinfo{author}{{\L}.~Kaiser},
+  \bibinfo{author}{J.~Uszkoreit}, \bibinfo{author}{O.~Bojar},
+  \bibinfo{author}{Z.~{\v{Z}}abokrtsk{\'{y}}},
+\newblock \bibinfo{title}{Transforming machine translation: a deep learning
+  system reaches news translation quality comparable to human professionals},
+\newblock \bibinfo{journal}{Nature Communications} \bibinfo{volume}{11}
+  (\bibinfo{year}{2020}) \bibinfo{pages}{1--15}. \URLprefix
+  \url{https://www.nature.com/articles/s41467-020-18073-9}.
+  \DOIprefix\doi{10.1038/s41467-020-18073-9}.
+%Type = Misc
+\bibitem[{Galu{\v s}{\v c}{\'a}kov{\'a} et~al.(2023{\natexlab{a}})Galu{\v s}{\v
+  c}{\'a}kov{\'a}, Devaud, Gonzalez-Saez, Mulhem, Goeuriot, Piroi, and
+  Popel}]{testdata}
+\bibinfo{author}{P.~Galu{\v s}{\v c}{\'a}kov{\'a}},
+  \bibinfo{author}{R.~Devaud}, \bibinfo{author}{G.~Gonzalez-Saez},
+  \bibinfo{author}{P.~Mulhem}, \bibinfo{author}{L.~Goeuriot},
+  \bibinfo{author}{F.~Piroi}, \bibinfo{author}{M.~Popel},
+  \bibinfo{title}{{LongEval} test collection},
+  \bibinfo{year}{2023}{\natexlab{a}}. \URLprefix
+  \url{http://hdl.handle.net/11234/1-5139},
+  \bibinfo{note}{{LINDAT}/{CLARIAH}-{CZ} digital library at the Institute of
+  Formal and Applied Linguistics ({{\'U}FAL}), Faculty of Mathematics and
+  Physics, Charles University}.
+%Type = Misc
+\bibitem[{Galu{\v s}{\v c}{\'a}kov{\'a} et~al.(2023{\natexlab{b}})Galu{\v s}{\v
+  c}{\'a}kov{\'a}, Devaud, Gonzalez-Saez, Mulhem, Goeuriot, Piroi, and
+  Popel}]{test_qrels}
+\bibinfo{author}{P.~Galu{\v s}{\v c}{\'a}kov{\'a}},
+  \bibinfo{author}{R.~Devaud}, \bibinfo{author}{G.~Gonzalez-Saez},
+  \bibinfo{author}{P.~Mulhem}, \bibinfo{author}{L.~Goeuriot},
+  \bibinfo{author}{F.~Piroi}, \bibinfo{author}{M.~Popel},
+  \bibinfo{title}{{LongEval} click-model relevance judgements (qrels)},
+  \bibinfo{year}{2023}{\natexlab{b}}. \URLprefix
+  \url{http://hdl.handle.net/11234/1-5151},
+  \bibinfo{note}{{LINDAT}/{CLARIAH}-{CZ} digital library at the Institute of
+  Formal and Applied Linguistics ({{\'U}FAL}), Faculty of Mathematics and
+  Physics, Charles University}.
+%Type = Inproceedings
+\bibitem[{Robertson et~al.(1994)Robertson, Walker, Jones, Hancock-Beaulieu, and
+  Gatford}]{BM25}
+\bibinfo{author}{S.~E. Robertson}, \bibinfo{author}{S.~Walker},
+  \bibinfo{author}{S.~Jones}, \bibinfo{author}{M.~Hancock-Beaulieu},
+  \bibinfo{author}{M.~Gatford},
+\newblock \bibinfo{title}{Okapi at trec-3},
+\newblock in: \bibinfo{booktitle}{Text Retrieval Conference},
+  \bibinfo{year}{1994}.
+%Type = Article
+\bibitem[{Robertson(2009)}]{robertson2009probabilistic}
+\bibinfo{author}{S.~Robertson},
+\newblock \bibinfo{title}{{The Probabilistic Relevance Framework: BM25 and
+  Beyond}},
+\newblock \bibinfo{journal}{Foundations and Trends{\textregistered} in
+  Information Retrieval} \bibinfo{volume}{3} (\bibinfo{year}{2009})
+  \bibinfo{pages}{333--389}. \URLprefix
+  \url{http://scholar.google.de/scholar.bib?q=info:U4l9kCVIssAJ:scholar.google.com/&output=citation&hl=de&as_sdt=2000&as_vis=1&ct=citation&cd=1}.
+%Type = Misc
+\bibitem[{Gow-Smith et~al.(2022)Gow-Smith, Madabushi, Scarton, and
+  Villavicencio}]{gowsmith2022improving}
+\bibinfo{author}{E.~Gow-Smith}, \bibinfo{author}{H.~T. Madabushi},
+  \bibinfo{author}{C.~Scarton}, \bibinfo{author}{A.~Villavicencio},
+  \bibinfo{title}{Improving tokenisation by alternative treatment of spaces},
+  \bibinfo{year}{2022}. \href{http://arxiv.org/abs/2204.04058}{{\tt
+  arXiv:2204.04058}}.
+%Type = Book
+\bibitem[{Manning et~al.(2008)Manning, Raghavan, and
+  Schütze}]{manning2008introduction}
+\bibinfo{author}{C.~D. Manning}, \bibinfo{author}{P.~Raghavan},
+  \bibinfo{author}{H.~Schütze}, \bibinfo{title}{Introduction to Information
+  Retrieval}, \bibinfo{publisher}{Cambridge University Press},
+  \bibinfo{address}{Cambridge, UK}, \bibinfo{year}{2008}. \URLprefix
+  \url{http://nlp.stanford.edu/IR-book/information-retrieval-book.html}.
+%Type = Inproceedings
+\bibitem[{Ounis et~al.(2006)Ounis, Amati, Plachouras, He, Macdonald, and
+  Lioma}]{OunisEtAl2006}
+\bibinfo{author}{I.~Ounis}, \bibinfo{author}{G.~Amati},
+  \bibinfo{author}{V.~Plachouras}, \bibinfo{author}{B.~He},
+  \bibinfo{author}{C.~Macdonald}, \bibinfo{author}{C.~Lioma},
+\newblock \bibinfo{title}{{Terrier: A High Performance and Scalable Information
+  Retrieval Platform}},
+\newblock in: \bibinfo{editor}{M.~Beigbeder}, \bibinfo{editor}{W.~Buntine},
+  \bibinfo{editor}{W.~G. Yee} (Eds.), \bibinfo{booktitle}{{Proc. of the ACM
+  SIGIR 2006 Workshop on Open Source Information Retrieval (OSIR 2006)}},
+  \bibinfo{year}{2006}.
+%Type = Misc
+\bibitem[{Soboroff et~al.(2010)Soboroff, Macdonald, and
+  Ounis}]{ounis2009overview}
+\bibinfo{author}{I.~Soboroff}, \bibinfo{author}{C.~Macdonald},
+  \bibinfo{author}{I.~Ounis}, \bibinfo{title}{Overview of the trec-2009 blog
+  track}, \bibinfo{year}{2010}. \URLprefix
+  \url{https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=905208}.
+%Type = Article
+\bibitem[{Jivani et~al.(2011)}]{jivani2011comparative}
+\bibinfo{author}{A.~G. Jivani}, et~al.,
+\newblock \bibinfo{title}{A comparative study of stemming algorithms},
+\newblock \bibinfo{journal}{Int. J. Comp. Tech. Appl} \bibinfo{volume}{2}
+  (\bibinfo{year}{2011}) \bibinfo{pages}{1930--1938}.
+%Type = Article
+\bibitem[{Harman(1991)}]{Harman1991HowEI}
+\bibinfo{author}{D.~K. Harman},
+\newblock \bibinfo{title}{How effective is suffixing?},
+\newblock \bibinfo{journal}{J. Am. Soc. Inf. Sci.} \bibinfo{volume}{42}
+  (\bibinfo{year}{1991}) \bibinfo{pages}{7--15}.
+%Type = Article
+\bibitem[{Savoy(1999)}]{frenchStemmer}
+\bibinfo{author}{J.~Savoy},
+\newblock \bibinfo{title}{A stemming procedure and stopword list for general
+  french corpora},
+\newblock \bibinfo{journal}{J. Am. Soc. Inf. Sci.} \bibinfo{volume}{50}
+  (\bibinfo{year}{1999}) \bibinfo{pages}{944–952}.
+%Type = Article
+\bibitem[{Efthimiadis(1996)}]{efthimiadis1996query}
+\bibinfo{author}{E.~N. Efthimiadis},
+\newblock \bibinfo{title}{Query expansion.},
+\newblock \bibinfo{journal}{Annual review of information science and technology
+  (ARIST)} \bibinfo{volume}{31} (\bibinfo{year}{1996})
+  \bibinfo{pages}{121--87}.
+%Type = Book
+\bibitem[{Fellbaum(1998)}]{Fellbaum1998}
+\bibinfo{editor}{C.~Fellbaum} (Ed.), \bibinfo{title}{WordNet: An Electronic
+  Lexical Database}, Language, Speech, and Communication,
+  \bibinfo{publisher}{MIT Press}, \bibinfo{address}{Cambridge, MA},
+  \bibinfo{year}{1998}.
+%Type = Inproceedings
+\bibitem[{Wilson and Raaijmakers(2008)}]{wilson2008comparing}
+\bibinfo{author}{T.~Wilson}, \bibinfo{author}{S.~Raaijmakers},
+\newblock \bibinfo{title}{Comparing word, character, and phoneme n-grams for
+  subjective utterance recognition},
+\newblock \bibinfo{year}{2008}, pp. \bibinfo{pages}{1614--1617}.
+  \DOIprefix\doi{10.21437/Interspeech.2008-270}.
+%Type = Misc
+\bibitem[{Goodman(2001)}]{goodman2001bit}
+\bibinfo{author}{J.~Goodman}, \bibinfo{title}{A bit of progress in language
+  modeling}, \bibinfo{year}{2001}. \href{http://arxiv.org/abs/cs/0108005}{{\tt
+  arXiv:cs/0108005}}.
+%Type = Article
+\bibitem[{Mohit(2014)}]{mohit2014named}
+\bibinfo{author}{B.~Mohit},
+\newblock \bibinfo{title}{Named entity recognition},
+\newblock \bibinfo{journal}{Natural language processing of semitic languages}
+  (\bibinfo{year}{2014}) \bibinfo{pages}{221--245}.
+%Type = Article
+\bibitem[{Popovski et~al.(2020)Popovski, Seljak, and
+  Eftimov}]{popovski2020survey}
+\bibinfo{author}{G.~Popovski}, \bibinfo{author}{B.~K. Seljak},
+  \bibinfo{author}{T.~Eftimov},
+\newblock \bibinfo{title}{A survey of named-entity recognition methods for food
+  information extraction},
+\newblock \bibinfo{journal}{IEEE Access} \bibinfo{volume}{8}
+  (\bibinfo{year}{2020}) \bibinfo{pages}{31586--31594}.
+%Type = Article
+\bibitem[{Brandsen et~al.(2022)Brandsen, Verberne, Lambers, and
+  Wansleeben}]{brandsen2022can}
+\bibinfo{author}{A.~Brandsen}, \bibinfo{author}{S.~Verberne},
+  \bibinfo{author}{K.~Lambers}, \bibinfo{author}{M.~Wansleeben},
+\newblock \bibinfo{title}{Can bert dig it? named entity recognition for
+  information retrieval in the archaeology domain},
+\newblock \bibinfo{journal}{Journal on Computing and Cultural Heritage (JOCCH)}
+  \bibinfo{volume}{15} (\bibinfo{year}{2022}) \bibinfo{pages}{1--18}.
+%Type = Inproceedings
+\bibitem[{Cai et~al.(2014)Cai, Wang, and Zhai}]{cai2014learning}
+\bibinfo{author}{F.~Cai}, \bibinfo{author}{H.~Wang}, \bibinfo{author}{C.~Zhai},
+\newblock \bibinfo{title}{Learning to estimate query temporal dynamics for web
+  search},
+\newblock in: \bibinfo{booktitle}{Proceedings of the 37th International ACM
+  SIGIR Conference on Research \& Development in Information Retrieval},
+  \bibinfo{year}{2014}, pp. \bibinfo{pages}{373--382}.
+%Type = Inproceedings
+\bibitem[{Hofmann et~al.(2014)Hofmann, Whiteson, and
+  de~Rijke}]{hofmann2014evaluating}
+\bibinfo{author}{K.~Hofmann}, \bibinfo{author}{S.~Whiteson},
+  \bibinfo{author}{M.~de~Rijke},
+\newblock \bibinfo{title}{Evaluating web search systems considering time},
+\newblock in: \bibinfo{booktitle}{Proceedings of the 37th International ACM
+  SIGIR Conference on Research \& Development in Information Retrieval},
+  \bibinfo{year}{2014}, pp. \bibinfo{pages}{321--330}.
+%Type = Misc
+\bibitem[{{Princeton University}(2005)}]{wordnet}
+\bibinfo{author}{{Princeton University}}, \bibinfo{title}{{About WordNet}},
+  \bibinfo{howpublished}{{\url{https://wordnet.princeton.edu/download/current-version}}},
+  \bibinfo{year}{2005}.
+%Type = Misc
+\bibitem[{{G. Diaz, A. Suriyawongkul}(2023)}]{stopword_french}
+\bibinfo{author}{{G. Diaz, A. Suriyawongkul}}, \bibinfo{title}{{Stopword list
+  in French}},
+  \bibinfo{howpublished}{{\url{https://github.com/stopwords-iso/stopwords-fr/tree/master}}},
+  \bibinfo{year}{2023}.
+%Type = Misc
+\bibitem[{{Apache}(2023)}]{ApacheOpenNLP}
+\bibinfo{author}{{Apache}}, \bibinfo{title}{{Apache OpenNLP}},
+  \bibinfo{howpublished}{{\url{https://opennlp.apache.org/}}},
+  \bibinfo{year}{2023}.
+%Type = Misc
+\bibitem[{{Atabek, Canale, Chen, Moncada-Ramirez, Santini and
+  Zago}(2023)}]{jihuming}
+\bibinfo{author}{{Atabek, Canale, Chen, Moncada-Ramirez, Santini and Zago}},
+  \bibinfo{title}{{JIHUMING}},
+  \bibinfo{howpublished}{{\url{https://bitbucket.org/upd-dei-stud-prj/seupd2223-jihuming/src/master/}}},
+  \bibinfo{year}{2023}.
+
+\end{thebibliography}
