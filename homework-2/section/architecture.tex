@@ -113,12 +113,6 @@ The processing of the tokens in this analyzer (\texttt{NERAnalyzer}) is the foll
 
 \subsection{Index}\label{subsec:index}
 
-During the initial stages of the project, we developed an indexer that took into account only one version of the
-documents (either English or French);
-this can be found in the class \texttt{DirectoryIndexer}.
-As soon as we decided to consider both versions of the documents, we marked it as \texttt{Deprecated} and developed
-the \texttt{MultilingualDirectoryIndexer} class, that is the final version of our indexer.\\
-
 As previously mentioned, \texttt{MultilingualDirectoryIndexer} is used for indexing multilingual documents, but also for
 retrieving basic statistics about the resulting index's vocabulary.
 To create an instance of this indexer, several parameters must be provided, such as the paths to the directories where
